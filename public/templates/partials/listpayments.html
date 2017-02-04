@@ -1,0 +1,30 @@
+<div>
+
+	<table class="table table-striped" ng-if="payments.length > 0">
+		<thead>
+			<tr>
+				<th>Created</th>
+				<th>Value</th>
+				<th>Fee</th>
+				<th>Payment hash</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="payment in payments">
+				<td>{{ payment.creation_date * 1000 | date:'medium' }}</td>
+				<td>{{ payment.value }}</td>
+				<td>{{ payment.fee }}</td>
+				<td>{{ payment.payment_hash }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div ng-if="payments.length == 0">
+		<span>No payments</span>
+	</div>
+
+	<div id="listpayments-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>

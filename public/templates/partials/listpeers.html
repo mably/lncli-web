@@ -1,0 +1,38 @@
+<div>
+
+	<table class="table table-striped" ng-if="peers.length > 0">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Pubkey</th>
+				<th>Address</th>
+				<th>Sat<br/>sent</th>
+				<th>Sat<br/>recv</th>
+				<th>Bytes<br/>sent</th>
+				<th>Bytes<br/>recv</th>
+				<th>Ping<br/>time</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="peer in peers">
+				<td>{{ peer.peer_id }}</td>
+				<td>{{ peer.pub_key }}</td>
+				<td>{{ peer.address }}</td>
+				<td>{{ peer.sat_sent }}</td>
+				<td>{{ peer.sat_recv }}</td>
+				<td>{{ peer.bytes_sent }}</td>
+				<td>{{ peer.bytes_recv }}</td>
+				<td>{{ peer.ping_time }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div ng-if="peers.length == 0">
+		<span>No known peers</span>
+	</div>
+
+	<div id="listpeers-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>

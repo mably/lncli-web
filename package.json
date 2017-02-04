@@ -1,0 +1,39 @@
+{
+  "name": "lncli-web",
+  "version": "1.0.0",
+  "description": "Lnd Web Client",
+  "main": "server.js",
+  "scripts": {
+    "postinstall": "bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mably/lncli-web.git"
+  },
+  "keywords": [
+    "lnd",
+    "lncli",
+    "web",
+    "client",
+    "nodejs",
+    "grpc",
+    "lightning",
+    "network",
+    "bitcoin"
+  ],
+  "author": "Francois Masurel",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/mably/lncli-web/issues"
+  },
+  "homepage": "https://github.com/mably/lncli-web#readme",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "express": "^4.14.1",
+    "grpc": "^1.1.1",
+    "method-override": "^2.3.7"
+  },
+  "devDependencies": {
+    "bower": "^1.8.0"
+  }
+}

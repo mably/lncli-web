@@ -1,0 +1,573 @@
+syntax = "proto3";
+
+//import "google/api/annotations.proto";
+
+package lnrpc;
+
+service Lightning {
+    rpc WalletBalance(WalletBalanceRequest) returns (WalletBalanceResponse) {
+        option (google.api.http) = {
+            get: "/v1/balance/blockchain"
+        };
+    }
+    rpc ChannelBalance(ChannelBalanceRequest) returns (ChannelBalanceResponse) {
+        option (google.api.http) = {
+            get: "/v1/balance/channels"
+        };
+    }
+
+    rpc GetTransactions(GetTransactionsRequest) returns (TransactionDetails) {
+        option (google.api.http) = {
+            get: "/v1/transactions" 
+        };
+    }
+    rpc SendCoins(SendCoinsRequest) returns (SendCoinsResponse) {
+        option (google.api.http) = {
+            post: "/v1/transactions"
+            body: "*"
+        };
+    }
+    rpc SubscribeTransactions(GetTransactionsRequest) returns (stream Transaction);
+
+    rpc SendMany(SendManyRequest) returns (SendManyResponse);
+
+    rpc NewAddress(NewAddressRequest) returns (NewAddressResponse);
+    rpc NewWitnessAddress(NewWitnessAddressRequest) returns (NewAddressResponse) {
+        option (google.api.http) = {
+            get: "/v1/newaddress"
+        };
+    }
+
+    rpc ConnectPeer(ConnectPeerRequest) returns (ConnectPeerResponse) {
+        option (google.api.http) = {
+            post: "/v1/peers"
+            body: "*"
+        };
+    }
+    rpc ListPeers(ListPeersRequest) returns (ListPeersResponse) {
+        option (google.api.http) = {
+            get: "/v1/peers"
+        };
+    }
+    rpc GetInfo(GetInfoRequest) returns (GetInfoResponse) {
+        option (google.api.http) = {
+            get: "/v1/getinfo"
+        };
+    }
+
+    // TODO(roasbeef): merge with below with bool?
+    rpc PendingChannels(PendingChannelRequest) returns (PendingChannelResponse) {
+        option (google.api.http) = {
+           get: "/v1/channels/pending"
+        };
+    }
+    rpc ListChannels(ListChannelsRequest) returns (ListChannelsResponse) {
+        option (google.api.http) = {
+            get: "/v1/channels"
+        };
+    }
+    rpc OpenChannelSync(OpenChannelRequest) returns (ChannelPoint) {
+        option (google.api.http) = {
+            post: "/v1/channels"
+            body: "*"
+        };
+    }
+
+    rpc OpenChannel(OpenChannelRequest) returns (stream OpenStatusUpdate);
+
+    rpc CloseChannel(CloseChannelRequest) returns (stream CloseStatusUpdate) {
+        option (google.api.http) = {
+            delete: "/v1/channels/{channel_point.funding_txid}/{channel_point.output_index}/{force}"
+        };
+    }
+
+    rpc SendPayment(stream SendRequest) returns (stream SendResponse);
+
+    rpc SendPaymentSync(SendRequest) returns (SendResponse) {
+        option (google.api.http) = {
+            post: "/v1/channels/transactions"
+            body: "*"
+        };
+    }
+
+    rpc AddInvoice(Invoice) returns (AddInvoiceResponse) {
+        option (google.api.http) = {
+            post: "/v1/invoices"
+            body: "*"
+        };
+    }
+    rpc ListInvoices(ListInvoiceRequest) returns (ListInvoiceResponse) {
+        option (google.api.http) = {
+            get: "/v1/invoices/{pending_only}"
+        };
+    }
+    rpc LookupInvoice(PaymentHash) returns (Invoice) {
+        option (google.api.http) = {
+            get: "/v1/invoices/{r_hash_str}"
+        };
+    }
+    rpc SubscribeInvoices(InvoiceSubscription) returns (stream Invoice) {
+        option (google.api.http) = {
+            get: "/v1/invoices/subscribe"
+        };
+    }
+    rpc DecodePayReq(PayReqString) returns (PayReq) {
+        option (google.api.http) = {
+            get: "/v1/payreq/{pay_req}"
+        };
+    }
+
+    rpc ListPayments(ListPaymentsRequest) returns (ListPaymentsResponse){
+        option (google.api.http) = {
+            get: "/v1/payments"
+        };
+    };
+
+    rpc DeleteAllPayments(DeleteAllPaymentsRequest) returns (DeleteAllPaymentsResponse) {
+        option (google.api.http) = {
+            delete: "/v1/payments"
+        };
+    };
+
+    rpc DescribeGraph(ChannelGraphRequest) returns (ChannelGraph) {
+        option (google.api.http) = {
+            get: "/v1/graph"
+        };
+    }
+
+    rpc GetChanInfo(ChanInfoRequest) returns (ChannelEdge) {
+        option (google.api.http) = {
+            get: "/v1/graph/edge/{chan_id}"
+        };
+    }
+
+    rpc GetNodeInfo(NodeInfoRequest) returns (NodeInfo) {
+        option (google.api.http) = {
+            get: "/v1/graph/node/{pub_key}"
+        };
+    }
+
+    rpc QueryRoute(RouteRequest) returns (Route) {
+        option (google.api.http) = {
+            get: "/v1/graph/route/{pub_key}/{amt}"
+        };
+    }
+
+    rpc GetNetworkInfo(NetworkInfoRequest) returns (NetworkInfo) {
+        option (google.api.http) = {
+            get: "/v1/graph/info"
+        };
+    }
+
+    rpc SetAlias(SetAliasRequest) returns (SetAliasResponse);
+
+    rpc DebugLevel(DebugLevelRequest) returns (DebugLevelResponse);
+}
+
+message Transaction {
+    string tx_hash = 1;
+    double amount = 2;
+    int32 num_confirmations = 3;
+    string block_hash = 4;
+    int32 block_height = 5;
+    int64 time_stamp = 6;
+    int64 total_fees = 7;
+}
+message GetTransactionsRequest {
+}
+message TransactionDetails {
+    repeated Transaction transactions = 1;
+}
+
+message SendRequest {
+    bytes dest = 1;
+    string dest_string = 2;
+
+    int64 amt = 3;
+
+    bytes payment_hash = 4;
+    string payment_hash_string = 5;
+
+    string payment_request = 6;
+}
+message SendResponse {
+    Route payment_route = 1;
+}
+
+message ChannelPoint {
+    bytes funding_txid = 1;
+    string funding_txid_str = 2;
+    uint32 output_index = 3;
+}
+
+message LightningAddress {
+    string pubkey = 1;
+    string host = 2;
+}
+
+message SendManyRequest {
+    map<string, int64> AddrToAmount = 1;
+}
+message SendManyResponse {
+    string txid = 1;
+}
+
+message SendCoinsRequest {
+    string addr = 1;
+    int64 amount = 2;
+}
+message SendCoinsResponse {
+    string txid = 1;
+}
+
+message NewAddressRequest {
+    enum AddressType {
+        WITNESS_PUBKEY_HASH = 0;
+        NESTED_PUBKEY_HASH = 1;
+        PUBKEY_HASH = 2;
+    }
+    AddressType type = 1;
+}
+message NewWitnessAddressRequest {}
+message NewAddressResponse {
+    string address = 1;
+}
+
+message ConnectPeerRequest {
+    LightningAddress addr = 1;
+    bool perm = 2;
+}
+message ConnectPeerResponse {
+    int32 peer_id = 1;
+}
+
+message HTLC {
+    bool incoming = 1;
+    int64 amount = 2;
+    bytes hash_lock = 3;
+    uint32 expiration_height = 4;
+    uint32 revocation_delay = 5;
+}
+
+message ActiveChannel {
+    string remote_pubkey = 1;
+    string channel_point = 2;
+    uint64 chan_id = 3;
+
+    int64 capacity = 4;
+    int64 local_balance = 5;
+    int64 remote_balance = 6;
+
+    int64 unsettled_balance = 7;
+    int64 total_satoshis_sent = 8;
+    int64 total_satoshis_received = 9;
+    uint64 num_updates = 10;
+
+    repeated HTLC pending_htlcs = 11;
+}
+
+message ListChannelsRequest {}
+message ListChannelsResponse {
+    repeated ActiveChannel channels = 11;
+}
+
+message Peer {
+    string pub_key = 1;
+    int32 peer_id = 2;
+    string address = 3;
+
+    uint64 bytes_sent = 4;
+    uint64 bytes_recv = 5;
+
+    int64 sat_sent = 6;
+    int64 sat_recv = 7;
+
+    bool inbound = 8;
+
+    int64 ping_time = 9;
+}
+
+message ListPeersRequest {}
+message ListPeersResponse {
+    repeated Peer peers = 1;
+}
+
+message GetInfoRequest{}
+message GetInfoResponse {
+    string identity_pubkey = 1;
+    string alias = 2;
+
+    uint32 num_pending_channels = 3;
+    uint32 num_active_channels = 4;
+
+    uint32 num_peers = 5;
+
+    uint32 block_height = 6;
+    string block_hash  = 8;
+
+    bool synced_to_chain = 9;
+    bool testnet = 10;
+}
+
+message ConfirmationUpdate {
+    bytes block_sha = 1;
+    int32 block_height = 2;
+
+    uint32 num_confs_left = 3;
+}
+
+message ChannelOpenUpdate {
+   ChannelPoint channel_point = 1;
+}
+
+message ChannelCloseUpdate {
+    bytes closing_txid = 1;
+
+    bool success = 2;
+}
+
+message CloseChannelRequest {
+    ChannelPoint channel_point = 1;
+    int64 time_limit = 2;
+    bool force = 3;
+}
+message CloseStatusUpdate {
+    oneof update {
+        PendingUpdate close_pending = 1;
+        ConfirmationUpdate confirmation = 2;
+        ChannelCloseUpdate chan_close = 3;
+    }
+}
+
+message PendingUpdate {
+    bytes txid = 1;
+}
+
+message OpenChannelRequest {
+    int32 target_peer_id = 1;
+    bytes node_pubkey = 2;
+    string node_pubkey_string = 3;
+
+    int64 local_funding_amount = 4;
+    int64 push_sat = 5;
+
+    uint32 num_confs = 6;
+}
+message OpenStatusUpdate {
+    oneof update {
+        PendingUpdate chan_pending = 1;
+        ConfirmationUpdate confirmation = 2;
+        ChannelOpenUpdate chan_open = 3;
+    }
+}
+
+enum ChannelStatus {
+    ALL = 0;
+    OPENING = 1;
+    CLOSING = 2;
+}
+message PendingChannelRequest {
+    ChannelStatus status = 1;
+}
+message PendingChannelResponse {
+    message PendingChannel {
+        int32 peer_id = 1;
+
+        string identity_key = 2;
+        string channel_point = 3;
+
+        int64 capacity = 4;
+        int64 local_balance = 5;
+        int64 remote_balance = 6;
+
+        string closing_txid = 7;
+
+        ChannelStatus status = 8;
+    }
+
+    repeated PendingChannel pending_channels = 1;
+}
+
+message WalletBalanceRequest {
+    bool witness_only = 1;
+}
+message WalletBalanceResponse {
+    double balance = 1;
+}
+
+message ChannelBalanceRequest {
+}
+message ChannelBalanceResponse {
+    int64 balance = 1;
+}
+
+message RouteRequest {
+    string pub_key = 1;
+    int64 amt = 2;
+}
+
+message Hop {
+    uint64 chan_id = 1;
+    int64 chan_capacity = 2;
+    int64 amt_to_forward = 3;
+    int64 fee = 4;
+}
+
+message Route {
+    uint32 total_time_lock = 1;
+    int64 total_fees = 2;
+    int64 total_amt = 3;
+
+    repeated Hop hops = 4;
+}
+
+message NodeInfoRequest{
+    string pub_key = 1; 
+}
+
+message NodeInfo {
+    LightningNode node = 1;
+
+    uint32 num_channels = 2;
+    int64 total_capacity = 3;
+}
+
+message LightningNode {
+    uint32 last_update = 1;
+    string pub_key = 2;
+    string address = 3;
+    string alias = 4;
+}
+
+message RoutingPolicy {
+    uint32 time_lock_delta = 1;
+    int64 min_htlc = 2;
+    int64 fee_base_msat = 3;
+    int64 fee_rate_milli_msat = 4;
+}
+
+message ChannelEdge {
+    uint64 channel_id = 1;
+    string chan_point = 2;
+
+    uint32 last_update = 3;
+
+    string node1_pub = 4;
+    string node2_pub = 5;
+
+    int64 capacity = 6;
+
+    RoutingPolicy node1_policy = 7;
+    RoutingPolicy node2_policy = 8;
+}
+
+message ChannelGraphRequest{}
+
+message ChannelGraph {
+    repeated LightningNode nodes = 1;
+    repeated ChannelEdge edges = 2;
+}
+
+message ChanInfoRequest {
+    uint64 chan_id = 1;
+}
+
+message NetworkInfoRequest{}
+message NetworkInfo {
+    uint32 graph_diameter = 1;
+    double avg_out_degree = 2;
+    uint32 max_out_degree = 3;
+
+    uint32 num_nodes = 4;
+    uint32 num_channels = 5;
+
+    int64 total_network_capacity = 6;
+
+    double avg_channel_size = 7;
+    int64 min_channel_size = 8;
+    int64 max_channel_size = 9;
+
+    // TODO(roasbeef): fee rate info, expiry
+    //  * also additional RPC for tracking fee info once in
+}
+
+message SetAliasRequest {
+    string new_alias = 1;
+}
+message SetAliasResponse{}
+
+message Invoice {
+    string memo = 1;
+    bytes receipt = 2;
+
+    bytes r_preimage = 3;
+    bytes r_hash = 4;
+
+    int64 value = 5;
+
+    bool settled = 6;
+
+    int64 creation_date = 7;
+    int64 settle_date = 8;
+
+    string payment_request = 9;
+}
+message AddInvoiceResponse {
+    bytes r_hash = 1;
+
+    string payment_request = 2;
+}
+message PaymentHash {
+    string r_hash_str = 1;
+    bytes r_hash = 2;
+}
+message ListInvoiceRequest {
+    bool pending_only = 1;
+}
+message ListInvoiceResponse {
+    repeated Invoice invoices = 1;
+}
+
+message InvoiceSubscription {}
+
+
+message Payment {
+    string payment_hash = 1;
+    int64 value = 2;
+
+    int64 creation_date = 3;
+
+    repeated string path = 4;
+
+    int64 fee = 5;
+}
+
+message ListPaymentsRequest {
+}
+
+message ListPaymentsResponse {
+    repeated Payment payments = 1;
+}
+
+message DeleteAllPaymentsRequest {
+}
+
+message DeleteAllPaymentsResponse {
+}
+
+message DebugLevelRequest {
+    bool show = 1;
+    string level_spec = 2;
+}
+message DebugLevelResponse {
+    string sub_systems = 1;
+}
+
+message PayReqString {
+    string pay_req = 1;
+}
+message PayReq {
+    string destination = 1;
+    string payment_hash = 2;
+    int64 num_satoshis = 3;
+}

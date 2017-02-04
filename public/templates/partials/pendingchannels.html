@@ -1,0 +1,33 @@
+<div>
+
+	<table class="table table-striped" ng-if="channels.length > 0">
+		<thead>
+			<tr>
+				<th>Chan Id</th>
+				<th>Remote Pubkey</th>
+				<th>Capacity</th>
+				<th>Local<br/>balance</th>
+				<th>Remote<br/>balance</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="channel in channels">
+				<td>{{ channel.chan_id }}</td>
+				<td>{{ channel.remote_pubkey }}</td>
+				<td>{{ channel.capacity }}</td>
+				<td>{{ channel.local_balance }}</td>
+				<td>{{ channel.remote_balance }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div ng-if="channels.length == 0">
+		<span>No pending channels</span>
+	</div>
+	
+	<div id="pendingchannels-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>
+

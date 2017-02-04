@@ -1,0 +1,34 @@
+<div>
+
+	<table class="table table-striped" ng-if="invoices.length > 0">
+		<thead>
+			<tr>
+				<th>Created</th>
+				<th>Memo</th>
+				<th>Value</th>
+				<th>Settled</th>
+				<th>Settle date</th>
+				<th>Payment request</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="invoice in invoices">
+				<td>{{ invoice.creation_date * 1000 | date:'medium' }}</td>
+				<td>{{ invoice.memo }}</td>
+				<td>{{ invoice.value }}</td>
+				<td>{{ invoice.settled }}</td>
+				<td>{{ invoice.settle_date * 1000 | date:'medium' }}</td>
+				<td style="max-width:28em;overflow-wrap: break-word;">{{ invoice.payment_request }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div ng-if="invoices.length == 0">
+		<span>No invoices</span>
+	</div>
+
+	<div id="listinvoices-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>

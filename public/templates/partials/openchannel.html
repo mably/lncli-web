@@ -1,0 +1,33 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="modal-title">Open channel</h3>
+	</div>
+	<div class="modal-body" id="modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="openchannel-pubkey">Node pubkey</label>
+				<input type="text" class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">
+			</div>
+			<div class="form-group">
+				<label for="openchannel-local-amt">Local amount</label>
+				<input type="numeric" class="form-control" id="openchannel-local-amt" placeholder="local amount" ng-model="$ctrl.values.localamt">
+			</div>
+			<div class="form-group">
+				<label for="openchannel-push-amt">Push amount</label>
+				<input type="numeric" class="form-control" id="openchannel-push-amt" placeholder="push amount" ng-model="$ctrl.values.pushamt">
+			</div>
+			<div class="form-group">
+				<label for="openchannel-num-conf">Number of confirmations</label>
+				<input type="numeric" class="form-control" id="openchannel-num-conf" placeholder="number of confirmations required" ng-model="$ctrl.values.numconf">
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+	</div>
+<div>

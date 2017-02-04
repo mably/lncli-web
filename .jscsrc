@@ -1,0 +1,16 @@
+{
+	"preset": "airbnb",
+	"validateIndentation": "\t",
+	"requireTrailingComma": false,
+	"maximumLineLength" : false,
+	"validateQuoteMarks": "\"",
+	"requireCurlyBraces": [
+		"if",
+		"else",
+		"for",
+		"while",
+		"do",
+		"try",
+		"catch"
+	]
+}

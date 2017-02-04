@@ -1,0 +1,33 @@
+{
+  "name": "lncli-web",
+  "description": "Lnd Web Client",
+  "main": "server.js",
+  "authors": [
+    "Francois Masurel"
+  ],
+  "license": "AGPL-3.0",
+  "keywords": [
+    "lnd",
+    "lncli",
+    "web",
+    "client",
+    "nodejs",
+    "grpc",
+    "lightning",
+    "network",
+    "bitcoin"
+  ],
+  "homepage": "https://github.com/mably/lncli-web",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "public/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-local-storage": "^0.5.2",
+    "bootstrap": "^3.3.7"
+  }
+}
