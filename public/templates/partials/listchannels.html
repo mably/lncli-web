@@ -1,0 +1,44 @@
+<div>
+
+	<table class="table table-striped" ng-if="channels.length > 0">
+		<thead>
+			<tr>
+				<th>Chan Id</th>		
+				<th>Remote Pubkey</th>
+				<th>Capacity</th>
+				<th>Local<br/>balance</th>
+				<th>Remote<br/>balance</th>
+				<th>Sat<br/>sent</th>
+				<th>Sat<br/>recv</th>
+				<th>Num<br/>updates</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="channel in channels">
+				<td>{{ channel.chan_id }}</td>
+				<td>{{ channel.remote_pubkey }}</td>
+				<td>{{ channel.capacity }}</td>
+				<td>{{ channel.local_balance }}</td>
+				<td>{{ channel.remote_balance }}</td>
+				<td>{{ channel.total_satoshis_sent }}</td>
+				<td>{{ channel.total_satoshis_received }}</td>
+				<td>{{ channel.num_updates }}</td>
+				<td>
+					<div class="btn-toolbar pull-right">
+						<button type="button" class="btn btn-default btn-sm" aria-label="Close" ng-click="close(channel)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div ng-if="channels.length == 0">
+		<span>No pending channels</span>
+	</div>
+
+	<div id="listchannels-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>

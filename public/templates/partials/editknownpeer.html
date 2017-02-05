@@ -1,0 +1,25 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="editknownpeer-modal-title">Edit known peer</h3>
+	</div>
+	<div class="modal-body" id="editknownpeer-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="editknownpeer-pubkey">Pubkey</label>
+				<input type="text" class="form-control" id="editknownpeer-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pub_key" disabled>
+			</div>
+			<div class="form-group">
+				<label for="editknownpeer-num-conf">Alias</label>
+				<input type="numeric" class="form-control" id="editknownpeer-alias" placeholder="alias" ng-model="$ctrl.values.alias">
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+	</div>
+<div>

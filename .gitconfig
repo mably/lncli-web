@@ -1,0 +1,2 @@
+[filter "tabify"]
+	clean = unexpand --tabs=4 --first-only
