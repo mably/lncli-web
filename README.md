@@ -32,9 +32,25 @@ npm install
 Start de back-end server:
 
 ```
-node server.js
+node server
 ```
 
-Open your browser at the following address: http://localhost:8280
+Available command-line arguments:
+
+```
+node server --help
+
+  Usage: server [options]
+
+  Options:
+
+    -h, --help                  output usage information
+    -V, --version               output the version number
+    -s, --serverport [port]     web server listening port (defaults to 8280)
+    -l, --lndhost  [host:port]  RPC lnd host (defaults to localhost:10009)
+
+```
+
+Open your browser at the following address: [http://localhost:8280](http://localhost:8280)
 
 Enjoy!
