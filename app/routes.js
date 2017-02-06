@@ -1,5 +1,8 @@
 // app/routes.js
 
+var bitcore = require('bitcore-lib');
+var BufferUtil = bitcore.util.buffer;
+
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
 
@@ -140,9 +143,11 @@ module.exports = function(app, lightning) {
 
     // openchannel
     app.post('/api/closechannel', function(req, res) {
+		var fundingTxIdBuffer = BufferUtil.hexToBuffer(req.body.funding_txid);
+		var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
 		var closeChannelRequest = {
 			channel_point: {
-				funding_txid: req.body.funding_txid,
+				funding_txid: revFundingTxIdBuffer,
 				output_index: Number(req.body.output_index)
 			},
 			force: !!req.body.force
