@@ -4,8 +4,5 @@ lnwebcli.directive("getNetworkInfo", [function () {
 		replace: true,
 		transclude: false,
 		templateUrl: "templates/partials/getnetworkinfo.html",
-		scope: {
-			info: "="
-		},
 	};
 }]);

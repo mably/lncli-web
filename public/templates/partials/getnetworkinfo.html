@@ -1,1 +1,29 @@
-<pre>{{ info }}</pre>
+<div>
+
+	<dl class="dl-horizontal" style="overflow-wrap: break-word;">
+	  <dt>Graph diameter</dt>
+	  <dd>{{ info.graph_diameter }}</dd>
+	  <dt>Avg out degree</dt>
+	  <dd>{{ info.avg_out_degree }}</dd>
+	  <dt>Max out degree</dt>
+	  <dd>{{ info.max_out_degree }}</dd>
+	  <dt>Number of nodes</dt>
+	  <dd>{{ info.num_nodes }}</dd>
+	  <dt>Number of channels</dt>
+	  <dd>{{ info.num_channels }}</dd>
+	  <dt>Total network capacity</dt>
+	  <dd>{{ info.total_network_capacity }}</dd>
+	  <dt>Avg channel size</dt>
+	  <dd>{{ info.avg_channel_size }}</dd>
+	  <dt>Min channel size</dt>
+	  <dd>{{ info.min_channel_size }}</dd>
+	  <dt>Max channel size</dt>
+	  <dd>{{ info.max_channel_size }}</dd>
+	</dl>
+
+	<div id="getnetworkinfo-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>
+
