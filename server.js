@@ -4,13 +4,24 @@ var app      = express();                        // create our app w/ express
 var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var grpc = require('grpc');
-
-// load app configuration data
+var program = require('commander');
+  
+// load app default configuration data
 var config = require('./config/config');
+
+// parse command line parameters
+program
+  .version('1.0.0')
+  .option('-s, --serverport [port]', 'web server listening port (defaults to 8280)')
+  .option('-l, --lndhost  [host:port]', 'RPC lnd host (defaults to localhost:10009)')
+  .parse(process.argv);
+
+var lndHost = program.lndhost || config.lndHost;
+var serverPort = program.serverport || config.serverPort;
 
 // lightning configuration =================
 var lnrpcDescriptor = grpc.load(config.lndProto);
-var lightning = new lnrpcDescriptor.lnrpc.Lightning(config.lndHost, grpc.credentials.createInsecure());
+var lightning = new lnrpcDescriptor.lnrpc.Lightning(lndHost, grpc.credentials.createInsecure());
 
 // app configuration =================
 app.use(express.static(__dirname + '/public'));                 // set the static files location /public/img will be /img for users
@@ -23,5 +34,5 @@ app.use(methodOverride());
 require("./app/routes.js")(app, lightning);
 
 // listen (start app with node server.js) ======================================
-app.listen(config.serverPort);
-console.log("App listening on port " + config.serverPort);
+app.listen(serverPort);
+console.log("App listening on port " + serverPort);
