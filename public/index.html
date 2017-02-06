@@ -92,8 +92,12 @@
 	<div class="row">
         <div class="col-sm-6">
           <div class="panel panel-default" ng-controller="GetInfoCtrl">
-            <div class="panel-heading">
-              <h3 class="panel-title">Node Info</h3>
+            <div class="panel-heading clearfix">
+              <span class="panel-title">Node Info</span>
+				<div class="btn-toolbar pull-right">
+					<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+					<button type="button" class="btn btn-default btn-sm" aria-label="Show JSON data" data-toggle="collapse" data-target="#getinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
+				</div>			  
             </div>
             <div class="panel-body">
               <get-info info="info" />
@@ -102,9 +106,13 @@
         </div><!-- /.col-sm-6 -->
 		<div class="col-sm-6">
           <div class="panel panel-default" ng-controller="GetNetworkInfoCtrl">
-            <div class="panel-heading">
-              <h3 class="panel-title">Network info</h3>
-            </div>
+            <div class="panel-heading clearfix">
+              <span class="panel-title">Network info</span>
+				<div class="btn-toolbar pull-right">
+					<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+					<button type="button" class="btn btn-default btn-sm" aria-label="Show JSON data" data-toggle="collapse" data-target="#getnetworkinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
+				</div>
+			</div>
             <div class="panel-body">
               <get-network-info info="info" />
             </div>
@@ -172,7 +180,7 @@
           <div class="panel panel-warning" ng-controller="PendingChannelsCtrl">
             <div class="panel-heading clearfix">
               <span class="panel-title">Pending channels</span>
-			  	<div class="btn-toolbar pull-right">
+				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" aria-label="Show JSON data" data-toggle="collapse" data-target="#pendingchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 				</div>

@@ -4,8 +4,5 @@ lnwebcli.directive("getInfo", [function () {
 		replace: true,
 		transclude: false,
 		templateUrl: "templates/partials/getinfo.html",
-		scope: {
-			info: "="
-		},
 	};
 }]);
