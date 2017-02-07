@@ -1,5 +1,10 @@
 <div>
 
+	<div class="alert alert-warning" role="alert" ng-show="warning">
+		<button type="button" class="close" ng-click="dismissWarning()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		{{ warning }}
+	</div>
+
 	<table class="table table-striped" ng-if="channels.length > 0">
 		<thead>
 			<tr>

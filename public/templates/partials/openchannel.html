@@ -10,7 +10,10 @@
 		<form>
 			<div class="form-group">
 				<label for="openchannel-pubkey">Node pubkey</label>
-				<input type="text" class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">
+				<!--<input type="text" class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">-->
+				<select class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">
+					<option ng-repeat="peer in $ctrl.values.peers" value="{{ peer.pub_key }}">{{ peer.pub_key }} - {{ peer.alias }}</option>
+				</select>
 			</div>
 			<div class="form-group">
 				<label for="openchannel-local-amt">Local amount</label>
