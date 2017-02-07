@@ -1,15 +1,16 @@
 // app/routes.js
 
+var grpc = require('grpc');
 var bitcore = require('bitcore-lib');
 var BufferUtil = bitcore.util.buffer;
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
 
-    // api ---------------------------------------------------------------------
+	// api ---------------------------------------------------------------------
 
-    // get lnd network info
-    app.get('/api/getnetworkinfo', function(req, res) {
+	// get lnd network info
+	app.get('/api/getnetworkinfo', function(req, res) {
 		lightning.getNetworkInfo({}, function(err, response) {
 			if (err) {
 				console.log('GetNetworkInfo Error:', err);
@@ -20,10 +21,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node info
-    app.get('/api/getinfo', function(req, res) {
+	// get lnd node info
+	app.get('/api/getinfo', function(req, res) {
 		lightning.getInfo({}, function(err, response) {
 			if (err) {
 				console.log('GetInfo Error:', err);
@@ -34,10 +35,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node active channels list
-    app.get('/api/listpeers', function(req, res) {
+	// get lnd node active channels list
+	app.get('/api/listpeers', function(req, res) {
 		lightning.listPeers({}, function(err, response) {
 			if (err) {
 				console.log('ListPeers Error:', err);
@@ -48,10 +49,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node active channels list
-    app.get('/api/listchannels', function(req, res) {
+	// get lnd node active channels list
+	app.get('/api/listchannels', function(req, res) {
 		lightning.listChannels({}, function(err, response) {
 			if (err) {
 				console.log('ListChannels Error:', err);
@@ -62,10 +63,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node pending channels list
-    app.get('/api/pendingchannels', function(req, res) {
+	// get lnd node pending channels list
+	app.get('/api/pendingchannels', function(req, res) {
 		lightning.pendingChannels({}, function(err, response) {
 			if (err) {
 				console.log('PendingChannels Error:', err);
@@ -76,10 +77,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node payments list
-    app.get('/api/listpayments', function(req, res) {
+	// get lnd node payments list
+	app.get('/api/listpayments', function(req, res) {
 		lightning.listPayments({}, function(err, response) {
 			if (err) {
 				console.log('ListPayments Error:', err);
@@ -90,10 +91,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // get lnd node invoices list
-    app.get('/api/listinvoices', function(req, res) {
+	// get lnd node invoices list
+	app.get('/api/listinvoices', function(req, res) {
 		lightning.listInvoices({}, function(err, response) {
 			if (err) {
 				console.log('ListInvoices Error:', err);
@@ -104,10 +105,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // connect peer to lnd node
-    app.post('/api/connectpeer', function(req, res) {
+	// connect peer to lnd node
+	app.post('/api/connectpeer', function(req, res) {
 		lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {
 			if (err) {
 				console.log('ConnectPeer Error:', err);
@@ -118,10 +119,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // openchannel
-    app.post('/api/openchannel', function(req, res) {
+	// openchannel
+	app.post('/api/openchannel', function(req, res) {
 		var openChannelRequest = {
 			node_pubkey_string: req.body.pubkey,
 			local_funding_amount: Number(req.body.localamt),
@@ -139,10 +140,11 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // openchannel
-    app.post('/api/closechannel', function(req, res) {
+	// closechannel
+	app.post('/api/closechannel', function(req, res) {
+
 		var fundingTxIdBuffer = BufferUtil.hexToBuffer(req.body.funding_txid);
 		var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
 		var closeChannelRequest = {
@@ -153,18 +155,31 @@ module.exports = function(app, lightning) {
 			force: !!req.body.force
 		};
 		console.log(closeChannelRequest);
+
 		var call = lightning.closeChannel(closeChannelRequest);
-		call.on('data', function(statusUpdate) {
-			console.log('CloseChannel Data StatusUpdate', statusUpdate);
+		call.on('data', function(data) {
+			console.log('CloseChannel Data', data);
+			res.json(data);
+			call.cancel(); // don't wait any longer (non-blocking mode)
 		});
 		call.on('end', function() {
 			console.log('CloseChannel End');
-			res.json({ result: "ok" });
 		});
-    });
+		call.on('error', function(err) {
+			console.log('CloseChannel Error', err);
+			if (err.code != grpc.status.CANCELLED) {
+				err.error = err.message;
+				res.json(err);
+			}
+		});
+		call.on('status', function(status) {
+			console.log('CloseChannel Status', status);
+		});
 
-    // addinvoice
-    app.post('/api/addinvoice', function(req, res) {
+	});
+
+	// addinvoice
+	app.post('/api/addinvoice', function(req, res) {
 		lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function(err, response) {
 			if (err) {
 				console.log('AddInvoice Error:', err);
@@ -175,10 +190,10 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
-    // sendpayment
-    app.post('/api/sendpayment', function(req, res) {
+	// sendpayment
+	app.post('/api/sendpayment', function(req, res) {
 		lightning.sendPaymentSync({ payment_request: req.body.payreq }, function(err, response) {
 			if (err) {
 				console.log('SendPayment Error:', err);
@@ -189,7 +204,7 @@ module.exports = function(app, lightning) {
 				res.json(response);
 			}
 		});
-    });
+	});
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
