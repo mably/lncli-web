@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Lnd Web Client",
   "main": "server.js",
-  "scripts": {
-    "postinstall": "bower install"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mably/lncli-web.git"

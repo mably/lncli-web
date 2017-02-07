@@ -21,10 +21,16 @@ Move into the newly created directory:
 cd lncli-web
 ```
 
-Fetch all the backend server and web app dependencies by running:
+Fetch and install all the backend server dependencies by running:
 
 ```
 npm install
+```
+
+Fetch and install all the front end dependencies by running:
+
+```
+bower install --allow-root
 ```
 
 ## Execution
