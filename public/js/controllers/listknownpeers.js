@@ -45,6 +45,10 @@
 				}
 			});
 
+			modalInstance.rendered.then(function() {
+				$("#editknownpeer-alias").focus();
+			});
+
 			modalInstance.result.then(function (values) {
 				console.log("EditKnownPeer updated values", values);
 				$scope.refresh();

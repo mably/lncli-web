@@ -20,8 +20,8 @@
 
 			var modalInstance = $uibModal.open({
 				animation: true,
-				ariaLabelledBy: "modal-title",
-				ariaDescribedBy: "modal-body",
+				ariaLabelledBy: "addpeer-modal-title",
+				ariaDescribedBy: "addpeer-modal-body",
 				templateUrl: "templates/partials/addpeer.html",
 				controller: "ModalAddPeerCtrl",
 				controllerAs: "$ctrl",
@@ -34,6 +34,10 @@
 						};
 					}
 				}
+			});
+
+			modalInstance.rendered.then(function() {
+				$("#addpeer-pubkey").focus();
 			});
 
 			modalInstance.result.then(function (values) {

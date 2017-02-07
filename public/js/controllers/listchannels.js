@@ -22,8 +22,8 @@
 
 					var modalInstance = $uibModal.open({
 						animation: true,
-						ariaLabelledBy: "modal-title",
-						ariaDescribedBy: "modal-body",
+						ariaLabelledBy: "openchannel-modal-title",
+						ariaDescribedBy: "openchannel-modal-body",
 						templateUrl: "templates/partials/openchannel.html",
 						controller: "ModalOpenChannelCtrl",
 						controllerAs: "$ctrl",
@@ -39,6 +39,10 @@
 								};
 							}
 						}
+					});
+
+					modalInstance.rendered.then(function() {
+						$("#openchannel-pubkey").focus();
 					});
 
 					modalInstance.result.then(function (values) {
