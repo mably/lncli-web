@@ -18,8 +18,8 @@
 
 			var modalInstance = $uibModal.open({
 				animation: true,
-				ariaLabelledBy: "modal-title",
-				ariaDescribedBy: "modal-body",
+				ariaLabelledBy: "sendpayment-modal-title",
+				ariaDescribedBy: "sendpayment-modal-body",
 				templateUrl: "templates/partials/sendpayment.html",
 				controller: "ModalSendPaymentCtrl",
 				controllerAs: "$ctrl",
@@ -31,6 +31,10 @@
 						};
 					}
 				}
+			});
+
+			modalInstance.rendered.then(function() {
+				$("#sendpayment-payreq").focus();
 			});
 
 			modalInstance.result.then(function (values) {
