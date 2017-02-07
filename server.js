@@ -29,6 +29,12 @@ app.use(bodyParser.urlencoded({'extended':'true'}));            // parse applica
 app.use(bodyParser.json());                                     // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
+// error handler
+app.use(function(err, req, res, next) {
+  // Do logging and user-friendly error message display
+  console.error(err);
+  res.status(500).send({status:500, message: 'internal error', type:'internal'}); 
+});
 
 // routes =================
 require("./app/routes.js")(app, lightning);
