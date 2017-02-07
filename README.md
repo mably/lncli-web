@@ -30,7 +30,7 @@ npm install
 Fetch and install all the front end dependencies by running:
 
 ```
-bower install --allow-root
+"./node_modules/.bin/bower" install --allow-root
 ```
 
 ## Execution
