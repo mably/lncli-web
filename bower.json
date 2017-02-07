@@ -28,6 +28,7 @@
   ],
   "dependencies": {
     "angular-local-storage": "^0.5.2",
-    "bootstrap": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "bootbox.js": "bootbox#^4.4.0"
   }
 }

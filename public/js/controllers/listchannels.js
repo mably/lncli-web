@@ -16,30 +16,43 @@
 
 		$scope.add = function() {
 
-			var modalInstance = $uibModal.open({
-				animation: true,
-				ariaLabelledBy: "modal-title",
-				ariaDescribedBy: "modal-body",
-				templateUrl: "templates/partials/openchannel.html",
-				controller: "ModalOpenChannelCtrl",
-				controllerAs: "$ctrl",
-				size: "lg",
-				resolve: {
-					defaults: function () {
-						return {
-							pubkey: "03c892e3f3f077ea1e381c081abb36491a2502bc43ed37ffb82e264224f325ff27",
-							localamt: "10000",
-							pushamt: "1000",
-							numconf: "1"
-						};
-					}
-				}
-			});
+			lncli.listPeers(true).then(function(peersResponse) {
 
-			modalInstance.result.then(function (values) {
-				console.log("values", values);
-			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				if (peersResponse && peersResponse.data && peersResponse.data.peers && peersResponse.data.peers.length > 0) {
+
+					var modalInstance = $uibModal.open({
+						animation: true,
+						ariaLabelledBy: "modal-title",
+						ariaDescribedBy: "modal-body",
+						templateUrl: "templates/partials/openchannel.html",
+						controller: "ModalOpenChannelCtrl",
+						controllerAs: "$ctrl",
+						size: "lg",
+						resolve: {
+							defaults: function () {
+								return {
+									peers: peersResponse.data.peers,
+									pubkey: "03c892e3f3f077ea1e381c081abb36491a2502bc43ed37ffb82e264224f325ff27",
+									localamt: "10000",
+									pushamt: "1000",
+									numconf: "1"
+								};
+							}
+						}
+					});
+
+					modalInstance.result.then(function (values) {
+						console.log("values", values);
+					}, function () {
+						console.log('Modal dismissed at: ' + new Date());
+					});
+
+				} else {
+
+					bootbox.alert("You cannot open a channel, you are not connected to any peers!");
+
+				}
+
 			});
 
 		};
@@ -51,6 +64,10 @@
 			}, function(err) {
 				console.log('Error', err);
 			});
+		}
+		
+		$scope.dismissWarning = function() {
+			$scope.warning = null;
 		}
 
 		$scope.refresh();

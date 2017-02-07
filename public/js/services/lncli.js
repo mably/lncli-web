@@ -55,11 +55,11 @@
 				deferred.resolve(peersCache);
 			} else {
 				$http.get(API.LISTPEERS).then(function (response) {
-					peersCache = response;
-					deferred.resolve(response);
 					if (response.data && response.data.peers) {
 						updateKnownPeers(response.data.peers);
 					}
+					peersCache = response;
+					deferred.resolve(response);
 				}, function (err) {
 					deferred.reject(response);
 				});
