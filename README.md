@@ -54,3 +54,7 @@ node server --help
 Open your browser at the following address: [http://localhost:8280](http://localhost:8280)
 
 Enjoy!
+
+## Screenshots
+
+Check here to see the mandatory screenshots: [http://imgur.com/a/LgWcs](http://imgur.com/a/LgWcs)
