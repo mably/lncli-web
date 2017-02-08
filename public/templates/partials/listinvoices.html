@@ -19,7 +19,7 @@
 					<td>{{ invoice.value }}</td>
 					<td>{{ invoice.settled }}</td>
 					<td>{{ invoice.settle_date * 1000 | date:'medium' }}</td>
-					<td style="max-width:28em;overflow-wrap: break-word;">{{ invoice.payment_request }}</td>
+					<td class="payreq">{{ invoice.payment_request }}</td>
 				</tr>
 			</tbody>
 		</table>

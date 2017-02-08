@@ -15,8 +15,8 @@
 			<tbody>
 				<tr ng-repeat="channel in channels">
 					<td>{{ channel.peer_id }}</td>
-					<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.identity_key }}</td>
-					<!--<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.channel_point }}</td>-->
+					<td class="pubkey">{{ channel.identity_key }}</td>
+					<!--<td class="pubkey">{{ channel.channel_point }}</td>-->
 					<td>{{ channel.capacity }}</td>
 					<td>{{ channel.local_balance }}</td>
 					<td>{{ channel.remote_balance }}</td>
