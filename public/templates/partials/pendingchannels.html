@@ -1,32 +1,34 @@
 <div>
 
-	<table class="table table-striped" ng-if="channels.length > 0">
-		<thead>
-			<tr>
-				<th>Peer Id</th>
-				<th>Identity Key</th>
-				<!--<th>Channel Point</th>-->
-				<th>Capacity</th>
-				<th>Local<br/>balance</th>
-				<th>Remote<br/>balance</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr ng-repeat="channel in channels">
-				<td>{{ channel.peer_id }}</td>
-				<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.identity_key }}</td>
-				<!--<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.channel_point }}</td>-->
-				<td>{{ channel.capacity }}</td>
-				<td>{{ channel.local_balance }}</td>
-				<td>{{ channel.remote_balance }}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table table-striped" ng-if="channels.length > 0">
+			<thead>
+				<tr>
+					<th>Peer Id</th>
+					<th>Identity Key</th>
+					<!--<th>Channel Point</th>-->
+					<th>Capacity</th>
+					<th>Local<br/>balance</th>
+					<th>Remote<br/>balance</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="channel in channels">
+					<td>{{ channel.peer_id }}</td>
+					<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.identity_key }}</td>
+					<!--<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.channel_point }}</td>-->
+					<td>{{ channel.capacity }}</td>
+					<td>{{ channel.local_balance }}</td>
+					<td>{{ channel.remote_balance }}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 	<div ng-if="channels.length == 0">
 		<span>No pending channels</span>
 	</div>
-	
+
 	<div id="pendingchannels-data" class="collapse">
 		<pre>{{ data }}</pre>
 	</div>
