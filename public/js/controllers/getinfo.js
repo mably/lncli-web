@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("GetInfoCtrl", ["$scope", "lncli", controller]);
+	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "lncli", controller]);
 
-	function controller($scope, lncli) {
+	function controller($scope, $timeout, $window, lncli) {
 
 		$scope.refresh = function () {
 			lncli.getInfo().then(function(response) {
@@ -12,6 +12,25 @@
 			}, function(err) {
 				console.log('Error: ' + err);
 			});
+		}
+
+		$scope.pubkeyCopied = function(info) {
+			info.pubkeyCopied = true;
+			$timeout(function() {
+				info.pubkeyCopied = false;
+			}, 500);
+		}
+
+		$scope.openBlockInExplorerByHash = function (blockHash) {
+			if (blockHash) {
+				$window.open("https://testnet.smartbit.com.au/block/" + blockHash, "_blank");
+			}
+		}
+
+		$scope.openBlockInExplorerByHeight = function (blockHeight) {
+			if (blockHeight) {
+				$window.open("https://testnet.smartbit.com.au/block/" + blockHeight, "_blank");
+			}
 		}
 
 		$scope.refresh();

@@ -17,10 +17,7 @@
 		var knownPeersCache = null;
 		
 		var updateKnownPeers = function (peers) {
-			var knownPeers = localStorageService.get("known_peers");
-			if (!knownPeers) {
-				knownPeers = {};
-			}
+			var knownPeers = fetchKnownPeers();
 			for (var i = 0; i < peers.length; i++) {
 				var peer = peers[i];
 				var knownPeer = knownPeers[peer.pub_key];
@@ -29,8 +26,18 @@
 				}
 				knownPeers[peer.pub_key] = peer;
 			}
+			writeKnownPeers(knownPeers);
+		}
+
+		var fetchKnownPeers = function () {
+			knownPeersCache = localStorageService.get("known_peers"); // update cache
+			if (!knownPeersCache) { knownPeersCache = {}; }
+			return knownPeersCache;
+		}
+
+		var writeKnownPeers = function (knownPeers) {
 			localStorageService.set("known_peers", knownPeers);
-			knownPeersCache = knownPeers;
+			knownPeersCache = knownPeers; // update cache
 		};
 
 		var convertPropertiesToArray = function (obj) {
@@ -75,13 +82,22 @@
 			return deferred.promise;
 		};
 
-		this.listKnownPeers = function(useCache) {
+		this.getKnownPeers = function (useCache) {
+			var deferred = $q.defer();
+			if (useCache && knownPeersCache) {
+				deferred.resolve(knownPeersCache);
+			} else {
+				deferred.resolve(fetchKnownPeers());
+			}
+			return deferred.promise;
+		};
+
+		this.listKnownPeers = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && knownPeersCache) {
 				deferred.resolve(convertPropertiesToArray(knownPeersCache));
 			} else {
-				knownPeersCache = localStorageService.get("known_peers");
-				deferred.resolve(convertPropertiesToArray(knownPeersCache));
+				deferred.resolve(convertPropertiesToArray(fetchKnownPeers()));
 			}
 			return deferred.promise;
 		};

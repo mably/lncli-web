@@ -48,6 +48,20 @@
 
 		};
 
+		$scope.pubkeyCopied = function(peer) {
+			peer.pubkeyCopied = true;
+			$timeout(function() {
+				peer.pubkeyCopied = false;
+			}, 500);
+		}
+
+		$scope.addressCopied = function(peer) {
+			peer.addressCopied = true;
+			$timeout(function() {
+				peer.addressCopied = false;
+			}, 500);
+		}
+
 		$scope.refresh();
 
 	}

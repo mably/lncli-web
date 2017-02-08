@@ -29,6 +29,8 @@
   "dependencies": {
     "angular-local-storage": "^0.5.2",
     "bootstrap": "^3.3.7",
-    "bootbox.js": "bootbox#^4.4.0"
+    "bootbox.js": "bootbox#^4.4.0",
+    "ngclipboard": "^1.1.1",
+    "angular-bootstrap": "^2.5.0"
   }
 }
