@@ -10,7 +10,9 @@
 			<thead>
 				<tr>
 					<th>Chan Id</th>		
-					<th>Remote Pubkey</th>
+					<th>Peer alias</th>
+					<th>Remote pubkey</th>
+					<th>Channel point</th>
 					<th>Capacity</th>
 					<th>Local<br/>balance</th>
 					<th>Remote<br/>balance</th>
@@ -23,7 +25,10 @@
 			<tbody>
 				<tr ng-repeat="channel in channels">
 					<td>{{ channel.chan_id }}</td>
-					<td>{{ channel.remote_pubkey }}</td>
+					<td>{{ channelPeerAlias(channel) }}</td>
+					<td><span title="{{ channel.remote_pubkey }}">{{ channel.remote_pubkey | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.remote_pubkey }}" ngclipboard-success="pubkeyCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
+					<td><span title="{{ channel.channel_point }}">{{ channel.channel_point | firstlast:6:8 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.channel_point }}" ngclipboard-success="chanpointCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openChannelPointInExplorer(channel)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ channel.capacity }}</td>
 					<td>{{ channel.local_balance }}</td>
 					<td>{{ channel.remote_balance }}</td>
@@ -32,7 +37,7 @@
 					<td>{{ channel.num_updates }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">
-							<button type="button" class="btn btn-default btn-sm" aria-label="Close" ng-click="close(channel)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+							<button type="button" class="btn btn-default btn-xs" aria-label="Close" ng-click="close(channel)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 						</div>
 					</td>
 				</tr>

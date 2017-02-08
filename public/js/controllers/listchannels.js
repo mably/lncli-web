@@ -1,16 +1,19 @@
 (function () {
 
-	lnwebcli.controller("ListChannelsCtrl", ["$scope", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListChannelsCtrl", ["$scope", "$timeout", "$window", "$uibModal", "lncli", controller]);
 
-	function controller($scope, $uibModal, lncli) {
+	function controller($scope, $timeout, $window, $uibModal, lncli) {
 
 		$scope.refresh = function() {
-			lncli.listChannels().then(function(response) {
-				console.log(response);
-				$scope.data = JSON.stringify(response.data, null, "\t");
-				$scope.channels = response.data.channels;
-			}, function(err) {
-				console.log('Error: ' + err);
+			lncli.getKnownPeers(true).then(function(knownPeers) {
+				$scope.knownPeers = knownPeers;
+				lncli.listChannels().then(function(response) {
+					console.log(response);
+					$scope.data = JSON.stringify(response.data, null, "\t");
+					$scope.channels = response.data.channels;
+				}, function(err) {
+					console.log('Error: ' + err);
+				});
 			});
 		};
 
@@ -60,7 +63,7 @@
 			});
 
 		};
-		
+
 		$scope.close = function(channel) {
 			var channelPoint = channel.channel_point.split(":");
 			lncli.closeChannel(channelPoint[0], channelPoint[1], false).then(function(response) {
@@ -69,9 +72,35 @@
 				console.log('Error', err);
 			});
 		}
-		
+
 		$scope.dismissWarning = function() {
 			$scope.warning = null;
+		}
+
+		$scope.channelPeerAlias = function(channel) {
+			var knownPeer = $scope.knownPeers[channel.remote_pubkey];
+			return knownPeer ? knownPeer.alias : null;
+		}
+
+		$scope.pubkeyCopied = function(channel) {
+			channel.pubkeyCopied = true;
+			$timeout(function() {
+				channel.pubkeyCopied = false;
+			}, 500);
+		}
+
+		$scope.chanpointCopied = function(channel) {
+			channel.chanpointCopied = true;
+			$timeout(function() {
+				channel.chanpointCopied = false;
+			}, 500);
+		}
+
+		$scope.openChannelPointInExplorer = function (channel) {
+			if (channel.channel_point) {
+				var txId = channel.channel_point.split(':')[0];
+				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
+			}
 		}
 
 		$scope.refresh();

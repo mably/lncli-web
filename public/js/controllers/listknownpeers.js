@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ListKnownPeersCtrl", ["$scope", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListKnownPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", controller]);
 
-	function controller($scope, $uibModal, lncli) {
+	function controller($scope, $timeout, $uibModal, lncli) {
 
 		var $ctrl = this;
 
@@ -56,6 +56,20 @@
 				console.log('Modal EditKnownPeer dismissed at: ' + new Date());
 			});
 		};
+
+		$scope.pubkeyCopied = function(peer) {
+			peer.pubkeyCopied = true;
+			$timeout(function() {
+				peer.pubkeyCopied = false;
+			}, 500);
+		}
+
+		$scope.addressCopied = function(peer) {
+			peer.addressCopied = true;
+			$timeout(function() {
+				peer.addressCopied = false;
+			}, 500);
+		}
 
 		$scope.refresh();
 

@@ -5,21 +5,26 @@
 			<thead>
 				<tr>
 					<th>Peer Id</th>
-					<th>Identity Key</th>
-					<!--<th>Channel Point</th>-->
+					<th>Peer alias</th>
+					<th>Identity key</th>
+					<th>Channel Point</th>
 					<th>Capacity</th>
 					<th>Local<br/>balance</th>
 					<th>Remote<br/>balance</th>
+					<th>Status</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="channel in channels">
 					<td>{{ channel.peer_id }}</td>
-					<td class="pubkey">{{ channel.identity_key }}</td>
-					<!--<td class="pubkey">{{ channel.channel_point }}</td>-->
+					<td>{{ channelPeerAlias(channel) }}</td>
+					<td><span title="{{ channel.identity_key }}">{{ channel.identity_key | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.identity_key }}" ngclipboard-success="pubkeyCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
+					<td><span title="{{ channel.channel_point }}">{{ channel.channel_point | firstlast:6:8 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.channel_point }}" ngclipboard-success="chanpointCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openChannelPointInExplorer(channel)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ channel.capacity }}</td>
 					<td>{{ channel.local_balance }}</td>
 					<td>{{ channel.remote_balance }}</td>
+					<td>{{ channel.status }}</td>
 				</tr>
 			</tbody>
 		</table>
