@@ -25,6 +25,8 @@
 	<script src="js/services/lncli.js"></script>
 	<script src="js/controllers/getinfo.js"></script>
 	<script src="js/controllers/getnetworkinfo.js"></script>
+	<script src="js/controllers/walletbalance.js"></script>
+	<script src="js/controllers/channelbalance.js"></script>
 	<script src="js/controllers/listpeers.js"></script>
 	<script src="js/controllers/listknownpeers.js"></script>
 	<script src="js/controllers/addpeer.js"></script>
@@ -38,6 +40,8 @@
 	<script src="js/controllers/addinvoice.js"></script>
 	<script src="js/directives/getinfo.js"></script>
 	<script src="js/directives/getnetworkinfo.js"></script>
+	<script src="js/directives/walletbalance.js"></script>
+	<script src="js/directives/channelbalance.js"></script>
 	<script src="js/directives/listpeers.js"></script>
 	<script src="js/directives/listknownpeers.js"></script>
 	<script src="js/directives/listchannels.js"></script>
@@ -71,7 +75,7 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
-	  
+
 	<div class="page-header">
 		<h1>Node and Network informations</h1>
 	</div>
@@ -105,6 +109,41 @@
           </div>
         </div><!-- /.col-sm-6 -->
 	</div>
+
+	<div class="page-header">
+		<h1>Wallet and channel balances</h1>
+	</div>
+	<div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-default" ng-controller="WalletBalanceCtrl">
+            <div class="panel-heading clearfix">
+              <span class="panel-title">Wallet balance</span>
+				<div class="btn-toolbar pull-right">
+					<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+					<button type="button" class="btn btn-default btn-sm" aria-label="Show JSON data" data-toggle="collapse" data-target="#walletbalance-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
+				</div>			  
+            </div>
+            <div class="panel-body">
+              <wallet-balance balance="balance" />
+            </div>
+          </div>
+        </div><!-- /.col-sm-6 -->
+		<div class="col-sm-6">
+          <div class="panel panel-default" ng-controller="ChannelBalanceCtrl">
+            <div class="panel-heading clearfix">
+              <span class="panel-title">Channel balance</span>
+				<div class="btn-toolbar pull-right">
+					<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+					<button type="button" class="btn btn-default btn-sm" aria-label="Show JSON data" data-toggle="collapse" data-target="#channelbalance-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
+				</div>
+			</div>
+            <div class="panel-body">
+              <channel-balance balance="balance" />
+            </div>
+          </div>
+        </div><!-- /.col-sm-6 -->
+	</div>
+
 	<div class="page-header">
 		<h1>Peers</h1>
 	</div>
