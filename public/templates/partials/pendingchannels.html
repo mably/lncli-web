@@ -3,8 +3,9 @@
 	<table class="table table-striped" ng-if="channels.length > 0">
 		<thead>
 			<tr>
-				<th>Chan Id</th>
-				<th>Remote Pubkey</th>
+				<th>Peer Id</th>
+				<th>Identity Key</th>
+				<!--<th>Channel Point</th>-->
 				<th>Capacity</th>
 				<th>Local<br/>balance</th>
 				<th>Remote<br/>balance</th>
@@ -12,8 +13,9 @@
 		</thead>
 		<tbody>
 			<tr ng-repeat="channel in channels">
-				<td>{{ channel.chan_id }}</td>
-				<td>{{ channel.remote_pubkey }}</td>
+				<td>{{ channel.peer_id }}</td>
+				<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.identity_key }}</td>
+				<!--<td style="max-width:20em;overflow-wrap: break-word;">{{ channel.channel_point }}</td>-->
 				<td>{{ channel.capacity }}</td>
 				<td>{{ channel.local_balance }}</td>
 				<td>{{ channel.remote_balance }}</td>
