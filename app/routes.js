@@ -107,6 +107,34 @@ module.exports = function(app, lightning) {
 		});
 	});
 
+	// get the lnd node wallet balance
+	app.get('/api/walletbalance', function(req, res) {
+		lightning.walletBalance({}, function(err, response) {
+			if (err) {
+				console.log('WalletBalance Error:', err);
+				err.error = err.message;
+				res.send(err)
+			} else {
+				console.log('WalletBalance:', response);
+				res.json(response);
+			}
+		});
+	});
+
+	// get the lnd node channel balance
+	app.get('/api/channelbalance', function(req, res) {
+		lightning.channelBalance({}, function(err, response) {
+			if (err) {
+				console.log('ChannelBalance Error:', err);
+				err.error = err.message;
+				res.send(err)
+			} else {
+				console.log('ChannelBalance:', response);
+				res.json(response);
+			}
+		});
+	});
+
 	// connect peer to lnd node
 	app.post('/api/connectpeer', function(req, res) {
 		lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {

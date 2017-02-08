@@ -49,6 +49,14 @@
 			return $http.get('/api/getnetworkinfo');
 		};
 
+		this.walletBalance = function() {
+			return $http.get('/api/walletbalance');
+		};
+
+		this.channelBalance = function() {
+			return $http.get('/api/channelbalance');
+		};
+
 		this.listPeers = function(useCache) {
 			var deferred = $q.defer();
 			if (useCache && peersCache) {
