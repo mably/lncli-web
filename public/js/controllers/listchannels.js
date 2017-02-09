@@ -65,13 +65,31 @@
 		};
 
 		$scope.close = function(channel) {
-			var channelPoint = channel.channel_point.split(":");
-			lncli.closeChannel(channelPoint[0], channelPoint[1], false).then(function(response) {
-				console.log(response);
-			}, function(err) {
-				console.log('Error', err);
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "closechannel-modal-title",
+				ariaDescribedBy: "closechannel-modal-body",
+				templateUrl: "templates/partials/closechannel.html",
+				controller: "ModalCloseChannelCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					channel: angular.copy(channel)
+				}
 			});
-		}
+
+			modalInstance.rendered.then(function() {
+				$("#closechannel-force").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log('Modal dismissed at: ' + new Date());
+			});
+
+		};
 
 		$scope.dismissWarning = function() {
 			$scope.warning = null;

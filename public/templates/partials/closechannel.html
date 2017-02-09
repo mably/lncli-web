@@ -1,0 +1,25 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="closechannel-modal-title">Close channel</h3>
+	</div>
+	<div class="modal-body" id="closechannel-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="closechannel-chanid">Channel Id</label>
+				<input type="text" class="form-control" id="closechannel-chanid" placeholder="channel id" ng-model="$ctrl.channel.chan_id" disabled>
+			</div>
+			<div class="form-group">
+				<label for="closechannel-force">Force</label>
+				<input type="checkbox" id="closechannel-force" ng-model="$ctrl.channel.forceclose">
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Close channel</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+	</div>
+<div>
