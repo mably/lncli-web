@@ -2,15 +2,15 @@
 
 	<dl class="dl-horizontal" style="overflow-wrap: break-word;">
 	  <dt>Node pubkey</dt>
-	  <dd>{{ info.identity_pubkey }} <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.identity_pubkey }}" ngclipboard-success="pubkeyCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></dd>
+	  <dd>{{ info.identity_pubkey }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.identity_pubkey }}" ngclipboard-success="pubkeyCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></dd>
 	  <dt>Pending channels</dt>
 	  <dd>{{ info.num_pending_channels }}</dd>
 	  <dt>Active channels</dt>
 	  <dd>{{ info.num_active_channels }}</dd>
 	  <dt>Block height</dt>
-	  <dd>{{ info.block_height }} <button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHeight(info.block_height)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
+	  <dd><a ng-click="openBlockInExplorerByHeight(info.block_height)" title="Open in block explorer">{{ info.block_height }}</a> <button type="button" class="btn btn-default btn-xs" title="Open in block explorer" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHeight(info.block_height)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Block hash</dt>
-	  <dd>{{ info.block_hash }} <button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHash(info.block_hash)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
+	  <dd><a ng-click="openBlockInExplorerByHash(info.block_hash)" title="Open in block explorer">{{ info.block_hash }}</a> <button type="button" class="btn btn-default btn-xs" title="Open in block explorer" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHash(info.block_hash)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Synced to chain</dt>
 	  <dd>{{ info.synced_to_chain }}</dd>
 	  <dt>Testnet</dt>

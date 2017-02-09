@@ -17,7 +17,8 @@
 					$uibModalInstance.close($ctrl.values);
 					bootbox.alert("Peers successfully imported!");
 				}, function (err) {
-					alert(err);
+					console.log(err);
+					bootbox.alert(err.message);
 				});
 			} catch (err) {
 				$ctrl.warning = err.message;

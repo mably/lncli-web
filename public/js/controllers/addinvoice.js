@@ -18,7 +18,8 @@
 					$uibModalInstance.close($ctrl.values);
 				}
 			}, function (err) {
-				alert(err);
+				console.log(err);
+				bootbox.alert(err.message);
 			});
 		};
 

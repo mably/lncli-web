@@ -20,10 +20,13 @@
 			lncli.connectPeer(peer.pub_key, peer.address).then(function(response) {
 				console.log("ConnectKnownPeer", response);
 				if (response.data.error) {
-					alert(response.data.error);
+					bootbox.alert(response.data.error);
+				} else {
+					// TODO
 				}
 			}, function (err) {
-				alert(err);
+				console.log(err);
+				bootbox.alert(err.message);
 			});
 		};
 
@@ -74,7 +77,7 @@
 			});
 
 			modalInstance.rendered.then(function() {
-				$("#importknownpeer-peersjson").focus();
+				$("#importknownpeers-peersjson").focus();
 			});
 
 			modalInstance.result.then(function (values) {
