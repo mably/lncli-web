@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ListInvoicesCtrl", ["$scope", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListInvoicesCtrl", ["$scope", "$timeout", "$uibModal", "lncli", controller]);
 
-	function controller($scope, $uibModal, lncli) {
+	function controller($scope, $timeout, $uibModal, lncli) {
 
 		$scope.refresh = function() {
 			lncli.listInvoices().then(function(response) {
@@ -45,6 +45,13 @@
 			});
 
 		};
+
+		$scope.payreqCopied = function(invoice) {
+			invoice.payreqCopied = true;
+			$timeout(function() {
+				invoice.payreqCopied = false;
+			}, 500);
+		}
 
 		$scope.refresh();
 
