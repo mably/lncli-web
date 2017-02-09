@@ -57,6 +57,34 @@
 			});
 		};
 
+		$scope.import = function() {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "importknownpeers-modal-title",
+				ariaDescribedBy: "importknownpeers-modal-body",
+				templateUrl: "templates/partials/importknownpeers.html",
+				controller: "ModalImportKnownPeersCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					defaults: {
+						peersjson: angular.toJson($scope.peers, 4)
+					}
+				}
+			});
+
+			modalInstance.rendered.then(function() {
+				$("#importknownpeer-peersjson").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("ImportKnownPeers updated values", values);
+				$scope.refresh();
+			}, function () {
+				console.log('Modal ImportKnownPeers dismissed at: ' + new Date());
+			});
+		};
+
 		$scope.pubkeyCopied = function(peer) {
 			peer.pubkeyCopied = true;
 			$timeout(function() {
