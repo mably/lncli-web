@@ -4,8 +4,6 @@ var bodyParser = require('body-parser');         // pull information from HTML P
 var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 var program = require('commander');
 
-process.env.HTTP_PROXY = "";
-
 // parse command line parameters
 program
   .version('1.0.0')
