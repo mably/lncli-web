@@ -76,7 +76,7 @@
 					peersCache = response;
 					deferred.resolve(response);
 				}, function (err) {
-					deferred.reject(response);
+					deferred.reject(err);
 				});
 			}
 			return deferred.promise;
@@ -111,7 +111,7 @@
 					channelsCache = response;
 					deferred.resolve(response);
 				}, function (err) {
-					deferred.reject(response);
+					deferred.reject(err);
 				});
 			}
 			return deferred.promise;
