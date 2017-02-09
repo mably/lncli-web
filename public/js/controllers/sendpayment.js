@@ -7,6 +7,7 @@
 		var $ctrl = this;
 
 		$ctrl.values = defaults;
+		$ctrl.payment = null;
 
 		$ctrl.ok = function () {
 			lncli.sendPayment($ctrl.values.payreq).then(function(response) {
@@ -19,6 +20,23 @@
 				}
 			}, function (err) {
 				console.log(err);
+				bootbox.alert(err.message);
+			});
+		};
+
+		$ctrl.decode = function () {
+			lncli.decodePayReq($ctrl.values.payreq).then(function(response) {
+				console.log("DecodePayReq", response);
+				if (response.data.error) {
+					$ctrl.payment = null;
+					$ctrl.warning = response.data.error;
+				} else {
+					$ctrl.warning = null;
+					$ctrl.payment = response.data;
+				}
+			}, function (err) {
+				console.log(err);
+				$ctrl.payment = null;
 				bootbox.alert(err.message);
 			});
 		};

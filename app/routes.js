@@ -234,6 +234,20 @@ module.exports = function(app, lightning) {
 		});
 	});
 
+	// decodepayreq
+	app.post('/api/decodepayreq', function(req, res) {
+		lightning.decodePayReq({ pay_req: req.body.payreq }, function(err, response) {
+			if (err) {
+				console.log('DecodePayReq Error:', err);
+				err.error = err.message;
+				res.send(err)
+			} else {
+				console.log('DecodePayReq:', response);
+				res.json(response);
+			}
+		});
+	});
+
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
 		res.sendFile(__dirname + '/../public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
