@@ -161,6 +161,11 @@
 			return $http.post('/api/sendpayment', data);
 		};
 
+		this.decodePayReq = function(payreq) {
+			var data = { payreq: payreq };
+			return $http.post('/api/decodepayreq', data);
+		};
+
 		this.editKnownPeer = function(knownPeer) {
 			var deferred = $q.defer();
 			updateKnownPeers([knownPeer]);
