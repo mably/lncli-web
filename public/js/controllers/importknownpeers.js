@@ -9,13 +9,19 @@
 		$ctrl.values = defaults;
 
 		$ctrl.ok = function () {
-			lncli.importKnownPeers(JSON.parse($ctrl.values.peersjson)).then(function(response) {
-				console.log("ImportKnownPeers", response);
-				$ctrl.warning = null;
-				$uibModalInstance.close($ctrl.values);
-			}, function (err) {
-				alert(err);
-			});
+			try {
+				var peersObj = JSON.parse($ctrl.values.peersjson);
+				lncli.importKnownPeers(peersObj).then(function(response) {
+					console.log("ImportKnownPeers", response);
+					$ctrl.warning = null;
+					$uibModalInstance.close($ctrl.values);
+					bootbox.alert("Peers successfully imported!");
+				}, function (err) {
+					alert(err);
+				});
+			} catch (err) {
+				$ctrl.warning = err.message;
+			}
 		};
 
 		$ctrl.cancel = function () {
