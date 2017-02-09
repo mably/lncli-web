@@ -5,7 +5,7 @@
 	function controller($scope, $timeout, $window, lncli) {
 
 		$scope.refresh = function () {
-			lncli.getInfo().then(function(response) {
+			lncli.getInfo(false).then(function(response) {
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
