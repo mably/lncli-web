@@ -122,6 +122,26 @@
 			return deferred.promise;
 		};
 
+		this.editKnownPeer = function(knownPeer) {
+			var deferred = $q.defer();
+			updateKnownPeers([knownPeer]);
+			deferred.resolve(knownPeer);
+			return deferred.promise;
+		};
+
+		this.removeKnownPeer = function(knownPeerPubKey) {
+			var deferred = $q.defer();
+			var knownPeers = fetchKnownPeers();
+			if (knownPeers.hasOwnProperty(knownPeerPubKey)) {
+				delete knownPeers[knownPeerPubKey];
+				writeKnownPeers(knownPeers);
+				deferred.resolve(true);
+			} else {
+				deferred.resolve(false);
+			}
+			return deferred.promise;
+		};
+
 		this.listChannels = function(useCache) {
 			var deferred = $q.defer();
 			if (useCache && channelsCache) {
@@ -177,13 +197,6 @@
 		this.decodePayReq = function(payreq) {
 			var data = { payreq: payreq };
 			return $http.post('/api/decodepayreq', data);
-		};
-
-		this.editKnownPeer = function(knownPeer) {
-			var deferred = $q.defer();
-			updateKnownPeers([knownPeer]);
-			deferred.resolve(knownPeer);
-			return deferred.promise;
 		};
 
 		Object.seal(this);
