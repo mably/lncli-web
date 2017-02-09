@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/mably/lncli-web#readme",
   "dependencies": {
+    "basic-auth": "^1.1.0",
     "bitcore-lib": "^0.13.19",
     "body-parser": "^1.16.0",
     "commander": "^2.9.0",
