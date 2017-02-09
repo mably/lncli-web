@@ -1,0 +1,21 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="importknownpeers-modal-title">Import known peers</h3>
+	</div>
+	<div class="modal-body" id="importknownpeers-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="importknownpeers-peersjson">Peers JSON</label>
+				<textarea rows="15" class="form-control" id="importknownpeers-peersjson" placeholder="" ng-model="$ctrl.values.peersjson"></textarea>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Import</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+	</div>
+<div>

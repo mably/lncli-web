@@ -44,6 +44,7 @@
 	<script src="js/controllers/listpeers.js"></script>
 	<script src="js/controllers/listknownpeers.js"></script>
 	<script src="js/controllers/addpeer.js"></script>
+	<script src="js/controllers/importknownpeers.js"></script>
 	<script src="js/controllers/editknownpeer.js"></script>
 	<script src="js/controllers/listchannels.js"></script>
 	<script src="js/controllers/pendingchannels.js"></script>
@@ -185,6 +186,7 @@
 			<div class="panel-heading clearfix">
 			  <span class="panel-title">Known peers</span>
 			  <div class="btn-toolbar pull-right">
+				<button type="button" class="btn btn-default btn-sm" aria-label="Import" ng-click="import()"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" aria-label="Show response data" data-toggle="collapse" data-target="#listknownpeers-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>

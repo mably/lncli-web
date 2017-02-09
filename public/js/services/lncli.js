@@ -27,6 +27,7 @@
 				knownPeers[peer.pub_key] = peer;
 			}
 			writeKnownPeers(knownPeers);
+			return knownPeers;
 		}
 
 		var fetchKnownPeers = function () {
@@ -99,6 +100,12 @@
 			} else {
 				deferred.resolve(convertPropertiesToArray(fetchKnownPeers()));
 			}
+			return deferred.promise;
+		};
+
+		this.importKnownPeers = function (knownPeers) {
+			var deferred = $q.defer();
+			deferred.resolve(updateKnownPeers(knownPeers));
 			return deferred.promise;
 		};
 
