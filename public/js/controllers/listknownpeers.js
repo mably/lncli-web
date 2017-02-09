@@ -60,6 +60,18 @@
 			});
 		};
 
+		$scope.remove = function(peer) {
+			bootbox.confirm("Do you really want to remove that peer?", function () {
+				lncli.removeKnownPeer(peer.pub_key).then(function(response) {
+					console.log("RemoveKnownPeer removed=", response);
+					$scope.refresh();
+				}, function (err) {
+					console.log(err);
+					bootbox.alert(err.message);
+				});
+			});
+		};
+
 		$scope.import = function() {
 			var modalInstance = $uibModal.open({
 				animation: true,
