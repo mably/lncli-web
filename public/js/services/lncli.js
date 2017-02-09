@@ -6,12 +6,14 @@
 	function service($http, $q, localStorageService) {
 		
 		var API = {
+			GETINFO: "/api/getinfo",
 			LISTPEERS: "/api/listpeers",
 			LISTCHANNELS: "/api/listchannels",
 			OPENCHANNEL: "/api/openchannel",
 			CLOSECHANNEL: "/api/closechannel"
 		};
 
+		var infoCache = null;
 		var peersCache = null;
 		var channelsCache = null;
 		var knownPeersCache = null;
@@ -49,8 +51,19 @@
 			return array;
 		};
 
-		this.getInfo = function() {
-			return $http.get('/api/getinfo');
+		this.getInfo = function(useCache) {
+			var deferred = $q.defer();
+			if (useCache && infoCache) {
+				deferred.resolve(infoCache);
+			} else {
+				$http.get(API.GETINFO).then(function (response) {
+					infoCache = response;
+					deferred.resolve(response);
+				}, function (err) {
+					deferred.reject(err);
+				});
+			}
+			return deferred.promise;
 		};
 
 		this.getNetworkInfo = function() {
