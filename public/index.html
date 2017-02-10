@@ -8,6 +8,7 @@
 	<title>Lnd Web Client</title>
 
 	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- load bootstrap -->
+	<link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css"><!-- load font-awesome -->
 	<style>
 		html { overflow-y: scroll; }
 		body { padding-top: 50px; }
@@ -100,7 +101,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="GetInfoCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Node Info</span>
+			  <span class="panel-title">Node Info <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#getinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -114,7 +115,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="GetNetworkInfoCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Network info</span>
+			  <span class="panel-title">Network info <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#getnetworkinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -134,7 +135,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="WalletBalanceCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Wallet balance</span>
+			  <span class="panel-title">Wallet balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#walletbalance-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -148,7 +149,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="ChannelBalanceCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Channel balance</span>
+			  <span class="panel-title">Channel balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#channelbalance-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -168,7 +169,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Connected peers</span>
+			  <span class="panel-title">Connected peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Connect peer" aria-label="Connect peer" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -185,7 +186,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-default" ng-controller="ListKnownPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Known peers</span>
+			  <span class="panel-title">Known peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Import peers" aria-label="Import peers" ng-click="import()"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -205,7 +206,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Active channels</span>
+			  <span class="panel-title">Active channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Open channel" aria-label="Open channel" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -222,7 +223,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-warning" ng-controller="PendingChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Pending channels</span>
+			  <span class="panel-title">Pending channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#pendingchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -241,7 +242,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListPaymentsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Payments</span>
+			  <span class="panel-title">Payments <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Send payment" aria-label="Send payment" title="Send payment" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -258,7 +259,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-info" ng-controller="ListInvoicesCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Invoices</span>
+			  <span class="panel-title">Invoices <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  	<div class="btn-toolbar pull-right" pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Add invoice" aria-label="Add invoice" title="Add invoice" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>

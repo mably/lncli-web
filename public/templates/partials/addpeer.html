@@ -1,6 +1,6 @@
 <div>
 	<div class="modal-header">
-		<h3 class="modal-title" id="addpeer-modal-title">Add peer</h3>
+		<h3 class="modal-title" id="addpeer-modal-title">Connect to peer <i class="fa fa-spinner fa-spin" ng-show="$ctrl.spinner > 0"></h3>
 	</div>
 	<div class="modal-body" id="addpeer-modal-body">
 		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
@@ -19,7 +19,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Connect to peer</button>
 		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
 	</div>
 <div>
