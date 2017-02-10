@@ -4,12 +4,17 @@
 
 	function controller($scope, $timeout, $uibModal, lncli) {
 
+		$scope.spinner = 0;
+
 		$scope.refresh = function() {
+			$scope.spinner++;
 			lncli.listInvoices().then(function(response) {
+				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.invoices = response.data.invoices;
 			}, function(err) {
+				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
 		}
