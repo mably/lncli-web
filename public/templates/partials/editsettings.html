@@ -1,0 +1,21 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="editsettings-modal-title">Edit settings</h3>
+	</div>
+	<div class="modal-body" id="editsettings-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="editsettings-autorefresh">Auto-refresh delay (in milliseconds)</label>
+				<input type="numeric" class="form-control" id="editsettings-autorefresh" placeholder="auto-refresh delay" ng-model="$ctrl.values.autorefresh">
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Update settings</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+	</div>
+<div>

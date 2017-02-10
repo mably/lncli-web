@@ -1,15 +1,17 @@
 (function () {
 
-	lnwebcli.controller("ListPeersCtrl", ["$scope", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
 
-	function controller($scope, $uibModal, lncli) {
+	function controller($scope, $timeout, $uibModal, lncli, config) {
 
 		var $ctrl = this;
 
 		$scope.spinner = 0;
+		$scope.nextRefresh = null;
 
 		$scope.refresh = function() {
 			$scope.spinner++;
+			$scope.updateNextRefresh();
 			lncli.listPeers().then(function(response) {
 				$scope.spinner--;
 				console.log(response);
@@ -20,6 +22,12 @@
 				console.log('Error: ' + err);
 			});
 		};
+
+		$scope.updateNextRefresh = function () {
+			$timeout.cancel($scope.nextRefresh);
+			$scope.nextRefresh = $timeout($scope.refresh,
+				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
+		}
 
 		$scope.add = function() {
 

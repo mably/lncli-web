@@ -7,3 +7,12 @@ lnwebcli.config(["localStorageServiceProvider", function (localStorageServicePro
 		.setStorageType("localStorage")
 		.setNotify(true, true);
 }]);
+
+lnwebcli.constant("config", {
+	keys: {
+		AUTO_REFRESH: "autorefresh"
+	},
+	defaults: {
+		AUTO_REFRESH: 60000 // 1 minute
+	}
+});
