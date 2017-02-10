@@ -19,6 +19,13 @@
 		td.payreq {
 			max-width: 28em;
 		}
+		div.page-header {
+			position: relative;
+		}
+		div.page-header > a[name] {
+			position: absolute;
+			top: -70px;
+		}
 		@media screen and (max-width: 767px) {
 			td.pubkey, td.payreq {
 				max-width: 15em;
@@ -66,35 +73,39 @@
 	<script src="js/directives/listpayments.js"></script>
 	<script src="js/directives/listinvoices.js"></script>
 	<script src="js/filters/firstlast.js"></script>
-
 </head>
 
 <body>
-<div class="container">
-	  <nav class="navbar navbar-default">
-		<div class="container-fluid">
-		  <div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-			  <span class="sr-only">Toggle navigation</span>
-			  <span class="icon-bar"></span>
-			  <span class="icon-bar"></span>
-			  <span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="#">Lnd Web Client</a>
-		  </div>
-		  <div id="navbar" class="navbar-collapse collapse">
-			<ul class="nav navbar-nav">
-			  <!--<li class="active"><a href="#">Home</a></li>
-			  <li><a href="#">About</a></li>-->
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-			  <!--<li class="active"><a href="./">Default <span class="sr-only">(current)</span></a></li>-->
-			</ul>
-		  </div><!--/.nav-collapse -->
-		</div><!--/.container-fluid -->
-	  </nav>
 
+	<!-- Fixed navbar -->
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  <div class="container">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="navbar-brand" href="#">Lnd Web Client</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+		  <ul class="nav navbar-nav">
+			  <li><a href="#infos">Informations</a></li>
+			  <li><a href="#balances">Balances</a></li>
+			  <li><a href="#peers">Peers</a></li>
+			  <li><a href="#channels">Channels</a></li>
+			  <li><a href="#payments">Payments</a></li>
+		  </ul>
+		  <ul class="nav navbar-nav navbar-right">
+		  </ul>
+		</div>
+	  </div>
+	</nav>
+
+<div class="container">
 	<div class="page-header">
+		<a name="infos"></a>
 		<h1>Node and Network informations</h1>
 	</div>
 	<div class="row">
@@ -129,6 +140,7 @@
 	</div>
 
 	<div class="page-header">
+		<a name="balances"></a>
 		<h1>Wallet and channel balances</h1>
 	</div>
 	<div class="row">
@@ -163,6 +175,7 @@
 	</div>
 
 	<div class="page-header">
+		<a name="peers"></a>
 		<h1>Peers</h1>
 	</div>
 	<div class="row">
@@ -200,6 +213,7 @@
 		</div><!-- /.col-sm-6 -->
 	</div>	
 	<div class="page-header">
+		<a name="channels"></a>
 		<h1>Channels</h1>
 	</div>
 	<div class="row">
@@ -236,6 +250,7 @@
 		</div><!-- /.col-sm-12 -->
 	</div>
 	<div class="page-header">
+		<a name="payments"></a>
 		<h1>Payments / Invoices</h1>
 	</div>
 	<div class="row">
