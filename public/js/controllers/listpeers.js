@@ -6,12 +6,17 @@
 
 		var $ctrl = this;
 
+		$scope.spinner = 0;
+
 		$scope.refresh = function() {
+			$scope.spinner++;
 			lncli.listPeers().then(function(response) {
+				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.peers = response.data.peers;
 			}, function(err) {
+				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
 		};

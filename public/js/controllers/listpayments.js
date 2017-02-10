@@ -4,12 +4,17 @@
 
 	function controller($scope, $uibModal, lncli) {
 
+		$scope.spinner = 0;
+
 		$scope.refresh = function() {
+			$scope.spinner++;
 			lncli.listPayments().then(function(response) {
+				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.payments = response.data.payments;
 			}, function(err) {
+				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
 		}

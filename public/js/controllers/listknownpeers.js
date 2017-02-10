@@ -6,18 +6,25 @@
 
 		var $ctrl = this;
 
+		$scope.spinner = 0;
+
 		$scope.refresh = function() {
+			$scope.spinner++;
 			lncli.listKnownPeers().then(function(response) {
+				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response, null, "\t");
 				$scope.peers = response;
 			}, function(err) {
+				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
 		};
 
 		$scope.connect = function(peer) {
+			$scope.spinner++;
 			lncli.connectPeer(peer.pub_key, peer.address).then(function(response) {
+				$scope.spinner--;
 				console.log("ConnectKnownPeer", response);
 				if (response.data.error) {
 					bootbox.alert(response.data.error);
@@ -25,6 +32,7 @@
 					// TODO
 				}
 			}, function (err) {
+				$scope.spinner--;
 				console.log(err);
 				bootbox.alert(err.message);
 			});

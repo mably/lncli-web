@@ -4,14 +4,19 @@
 
 	function controller($scope, $timeout, $window, $uibModal, lncli) {
 
+		$scope.spinner = 0;
+
 		$scope.refresh = function() {
 			lncli.getKnownPeers(true).then(function(knownPeers) {
 				$scope.knownPeers = knownPeers;
+				$scope.spinner++;
 				lncli.listChannels().then(function(response) {
+					$scope.spinner--;
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
 					$scope.channels = response.data.channels;
 				}, function(err) {
+					$scope.spinner--;
 					console.log('Error: ' + err);
 				});
 			});
