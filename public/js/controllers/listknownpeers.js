@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ListKnownPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListKnownPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
 
-	function controller($scope, $timeout, $uibModal, lncli) {
+	function controller($scope, $timeout, $uibModal, lncli, config) {
 
 		var $ctrl = this;
 

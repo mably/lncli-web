@@ -1,13 +1,15 @@
 (function () {
 
-	lnwebcli.controller("ListPaymentsCtrl", ["$scope", "$uibModal", "lncli", controller]);
+	lnwebcli.controller("ListPaymentsCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
 
-	function controller($scope, $uibModal, lncli) {
+	function controller($scope, $timeout, $uibModal, lncli, config) {
 
 		$scope.spinner = 0;
+		$scope.nextRefresh = null;
 
 		$scope.refresh = function() {
 			$scope.spinner++;
+			$scope.updateNextRefresh();
 			lncli.listPayments().then(function(response) {
 				$scope.spinner--;
 				console.log(response);
@@ -17,6 +19,12 @@
 				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
+		}
+
+		$scope.updateNextRefresh = function () {
+			$timeout.cancel($scope.nextRefresh);
+			$scope.nextRefresh = $timeout($scope.refresh,
+				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
 		}
 
 		$scope.add = function() {

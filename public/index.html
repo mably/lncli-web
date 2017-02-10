@@ -62,6 +62,8 @@
 	<script src="js/controllers/sendpayment.js"></script>
 	<script src="js/controllers/listinvoices.js"></script>
 	<script src="js/controllers/addinvoice.js"></script>
+	<script src="js/controllers/navbar.js"></script>
+	<script src="js/controllers/editsettings.js"></script>
 	<script src="js/directives/getinfo.js"></script>
 	<script src="js/directives/getnetworkinfo.js"></script>
 	<script src="js/directives/walletbalance.js"></script>
@@ -78,7 +80,7 @@
 <body>
 
 	<!-- Fixed navbar -->
-	<nav class="navbar navbar-default navbar-fixed-top">
+	<nav class="navbar navbar-default navbar-fixed-top" ng-controller="NavBarCtrl">
 	  <div class="container">
 		<div class="navbar-header">
 		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -96,6 +98,7 @@
 			  <li><a href="#peers">Peers</a></li>
 			  <li><a href="#channels">Channels</a></li>
 			  <li><a href="#payments">Payments</a></li>
+			  <li><a ng-click="editSettings()">Settings</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 		  </ul>

@@ -1,15 +1,17 @@
 (function () {
 
-	lnwebcli.controller("PendingChannelsCtrl", ["$scope", "$timeout", "$window", "lncli", controller]);
+	lnwebcli.controller("PendingChannelsCtrl", ["$scope", "$timeout", "$window", "lncli", "config", controller]);
 
-	function controller($scope, $timeout, $window, lncli) {
+	function controller($scope, $timeout, $window, lncli, config) {
 
 		$scope.spinner = 0;
+		$scope.nextRefresh = null;
 
 		$scope.refresh = function () {
 			lncli.getKnownPeers(true).then(function(knownPeers) {
 				$scope.knownPeers = knownPeers;
 				$scope.spinner++;
+				$scope.updateNextRefresh();
 				lncli.pendingChannels().then(function(response) {
 					$scope.spinner--;
 					console.log(response);
@@ -21,6 +23,12 @@
 				});
 			});
 		};
+
+		$scope.updateNextRefresh = function () {
+			$timeout.cancel($scope.nextRefresh);
+			$scope.nextRefresh = $timeout($scope.refresh,
+				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
+		}
 
 		$scope.channelPeerAlias = function(channel) {
 			var knownPeer = $scope.knownPeers[channel.identity_key];

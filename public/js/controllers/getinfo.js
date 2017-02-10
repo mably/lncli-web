@@ -1,13 +1,15 @@
 (function () {
 
-	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "lncli", controller]);
+	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "lncli", "config", controller]);
 
-	function controller($scope, $timeout, $window, lncli) {
+	function controller($scope, $timeout, $window, lncli, config) {
 
 		$scope.spinner = 0;
+		$scope.nextRefresh = null;
 
 		$scope.refresh = function () {
 			$scope.spinner++;
+			$scope.updateNextRefresh();
 			lncli.getInfo(false).then(function(response) {
 				$scope.spinner--;
 				console.log(response);
@@ -17,6 +19,12 @@
 				$scope.spinner--;
 				console.log('Error: ' + err);
 			});
+		}
+
+		$scope.updateNextRefresh = function () {
+			$timeout.cancel($scope.nextRefresh);
+			$scope.nextRefresh = $timeout($scope.refresh,
+				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
 		}
 
 		$scope.pubkeyCopied = function(info) {

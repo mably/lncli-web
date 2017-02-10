@@ -17,7 +17,19 @@
 		var peersCache = null;
 		var channelsCache = null;
 		var knownPeersCache = null;
-		
+		var configCache = null;
+
+		var fetchConfig= function () {
+			configCache = localStorageService.get("config"); // update cache
+			if (!configCache) { configCache = {}; }
+			return configCache;
+		}
+
+		var writeConfig = function (config) {
+			localStorageService.set("config", config);
+			configCache = config; // update cache
+		}
+
 		var updateKnownPeers = function (peers) {
 			var knownPeers = fetchKnownPeers();
 			for (var i = 0; i < peers.length; i++) {
@@ -77,6 +89,47 @@
 		this.channelBalance = function() {
 			return $http.get('/api/channelbalance');
 		};
+
+		this.getConfigValue = function(name, defaultValue) {
+			var config = configCache ? configCache : fetchConfig();
+			var value = config[name];
+			if (!value && defaultValue) {
+				config[name] = defaultValue;
+				writeConfig(config);
+			}
+			return value;
+		}
+
+		this.setConfigValue = function(name, value) {
+			var config = configCache ? configCache : fetchConfig();
+			config[name] = value;
+			writeConfig(config);
+			return true;
+		}
+
+		this.getConfigValues = function() {
+			var config = configCache ? configCache : fetchConfig();
+			return angular.copy(config);
+		}
+
+		this.setConfigValues = function(values) {
+			var deferred = $q.defer();
+			try {
+				if (values) {
+					var config = configCache ? configCache : fetchConfig();
+					for (var name in values) {
+						if (values.hasOwnProperty(name)) {
+							config[name] = values[name];
+						}
+					}
+					writeConfig(config);				
+				}
+				deferred.resolve(true);
+			} catch (err) {
+				deferred.reject(err);
+			}
+			return deferred.promise;
+		}
 
 		this.listPeers = function(useCache) {
 			var deferred = $q.defer();
