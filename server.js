@@ -42,7 +42,14 @@ app.use(function(err, req, res, next) {
 // setup routes =================
 require("./app/routes")(app, lightning);
 
+// init server =================
+var server = require('http').Server(app);  
+var io = require('socket.io')(server);
+
+// setup sockets =================
+require("./app/sockets")(io, lightning);
+
 // listen (start app with node server.js) ======================================
 var serverPort = program.serverport || defaults.serverPort;
-app.listen(serverPort);
+server.listen(serverPort);
 console.log("App listening on port " + serverPort);

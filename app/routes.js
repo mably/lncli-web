@@ -222,7 +222,9 @@ module.exports = function(app, lightning) {
 
 	// sendpayment
 	app.post('/api/sendpayment', function(req, res) {
-		lightning.sendPaymentSync({ payment_request: req.body.payreq }, function(err, response) {
+		var paymentRequest = { payment_request: req.body.payreq };
+		console.log("Sending payment", paymentRequest);
+		lightning.sendPaymentSync(paymentRequest, function(err, response) {
 			if (err) {
 				console.log('SendPayment Error:', err);
 				err.error = err.message;

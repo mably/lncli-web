@@ -1,9 +1,9 @@
 "use strict";
 (function () {
 
-	lnwebcli.service("lncli", ["$http", "$q", "localStorageService", service]);
+	lnwebcli.service("lncli", ["$http", "$timeout", "$q", "ngToast", "localStorageService", service]);
 
-	function service($http, $q, localStorageService) {
+	function service($http, $timeout, $q, ngToast, localStorageService) {
 		
 		var API = {
 			GETINFO: "/api/getinfo",
@@ -12,6 +12,26 @@
 			OPENCHANNEL: "/api/openchannel",
 			CLOSECHANNEL: "/api/closechannel"
 		};
+
+		var socket = io.connect("/", { secure: "https" === location.protocol });
+
+		socket.on("invoice", function(data) {
+			console.log("Invoice received:", data);
+			$timeout(function() {
+				ngToast.success({
+					content: "Payment received: " + data.value + ", " + data.memo
+				});
+			});
+		});
+
+		socket.on("hello", function(data) {
+			console.log("Hello event received:", data);
+			$timeout(function() {
+				ngToast.success({
+					content: "Sucessfully connected!"
+				});
+			});
+		});
 
 		var infoCache = null;
 		var peersCache = null;

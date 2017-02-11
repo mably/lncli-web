@@ -13,14 +13,14 @@
 				<input type="text" class="form-control" id="sendpayment-payreq" placeholder="payment request" ng-model="$ctrl.values.payreq" ng-change="$ctrl.decode()">
 			</div>
 		</form>
-		<div ng-show="$ctrl.payment">
+		<div ng-show="$ctrl.decodedPayment">
 			<dl class="dl-horizontal" style="overflow-wrap: break-word;">
 			  <dt>Destination</dt>
-			  <dd>{{ $ctrl.payment.destination }}</dd>
+			  <dd>{{ $ctrl.decodedPayment.destination }}</dd>
 			  <dt>Payment hash</dt>
-			  <dd>{{ $ctrl.payment.payment_hash }}</dd>
+			  <dd>{{ $ctrl.decodedPayment.payment_hash }}</dd>
 			  <dt>Amount in satoshis</dt>
-			  <dd>{{ $ctrl.payment.num_satoshis }}</dd>
+			  <dd>{{ $ctrl.decodedPayment.num_satoshis }}</dd>
 		</div>
 	</div>
 	<div class="modal-footer">

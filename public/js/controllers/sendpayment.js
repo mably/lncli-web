@@ -1,15 +1,15 @@
 (function () {
 
-	lnwebcli.controller("ModalSendPaymentCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
+	lnwebcli.controller("ModalSendPaymentCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($uibModalInstance, defaults, lncli) {
+	function controller ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 		
 		$ctrl.spinner = 0;
 
 		$ctrl.values = defaults;
-		$ctrl.payment = null;
+		$ctrl.decodedPayment = null;
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
@@ -17,7 +17,11 @@
 				$ctrl.spinner--;
 				console.log("SendPayment", response);
 				if (response.data.error) {
-					$ctrl.warning = response.data.error;
+					if ($ctrl.isClosed) {
+						bootbox.alert(response.data.error);
+					} else {
+						$ctrl.warning = response.data.error;
+					}
 				} else {
 					$ctrl.warning = null;
 					$uibModalInstance.close($ctrl.values);
@@ -35,28 +39,31 @@
 				$ctrl.spinner--;
 				console.log("DecodePayReq", response);
 				if (response.data.error) {
-					$ctrl.payment = null;
+					$ctrl.decodedPayment = null;
 					$ctrl.warning = response.data.error;
 				} else {
 					$ctrl.warning = null;
-					$ctrl.payment = response.data;
+					$ctrl.decodedPayment = response.data;
 				}
 			}, function (err) {
 				$ctrl.spinner--;
 				console.log(err);
-				$ctrl.payment = null;
+				$ctrl.decodedPayment = null;
 				bootbox.alert(err.message);
 			});
 		};
 
 		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss("cancel");
 		};
-		
-		$ctrl.dismissAlert = function() {
+
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
-		}
+		};
 
+		$scope.$on("modal.closing", function (event, reason, closed) {
+			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
+			$ctrl.isClosed = true;
+		});
 	}
-
 })();
