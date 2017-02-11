@@ -69,6 +69,7 @@
 	<script src="js/controllers/addinvoice.js"></script>
 	<script src="js/controllers/navbar.js"></script>
 	<script src="js/controllers/editsettings.js"></script>
+	<script src="js/controllers/queryroute.js"></script>
 	<script src="js/directives/getinfo.js"></script>
 	<script src="js/directives/getnetworkinfo.js"></script>
 	<script src="js/directives/walletbalance.js"></script>
@@ -103,6 +104,12 @@
 			  <li><a href="#peers">Peers</a></li>
 			  <li><a href="#channels">Channels</a></li>
 			  <li><a href="#payments">Payments</a></li>
+			  <li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
+				<ul class="dropdown-menu">
+				  <li><a ng-click="queryRoute()">Query route</a></li>
+				</ul>
+			  </li> 
 			  <li><a ng-click="editSettings()">Settings</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">

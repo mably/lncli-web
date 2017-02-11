@@ -273,6 +273,11 @@
 			return $http.post('/api/decodepayreq', data);
 		};
 
+		this.queryRoute = function(pubkey, amount) {
+			var data = { pubkey: pubkey, amt: amount };
+			return $http.post('/api/queryroute', data);
+		};
+
 		Object.seal(this);
 	}
 
