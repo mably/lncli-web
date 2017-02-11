@@ -26,9 +26,10 @@
 
 		socket.on("hello", function(data) {
 			console.log("Hello event received:", data);
+			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!"
 			$timeout(function() {
 				ngToast.success({
-					content: "Sucessfully connected!"
+					content: helloMsg
 				});
 			});
 		});

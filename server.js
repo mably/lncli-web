@@ -11,13 +11,15 @@ program
   .option('-l, --lndhost [host:port]', 'RPC lnd host (defaults to localhost:10009)')
   .option('-u, --user [login]', 'basic authentication login')
   .option('-p, --pwd [password]', 'basic authentication password')
+  .option('-r, --limituser [login]', 'basic authentication login for readonly account')
+  .option('-w, --limitpwd [password]', 'basic authentication password for readonly account')  
   .parse(process.argv);
   
 // load app default configuration data
 var defaults = require('./config/config');
 
 // setup authentication =================
-var auth = require("./app/basicauth")(program.user, program.pwd).filter;
+var auth = require("./app/basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
 // setup lightning client =================
 var lightning = require("./app/lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));

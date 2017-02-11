@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ModalOpenChannelCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
+	lnwebcli.controller("ModalOpenChannelCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($uibModalInstance, defaults, lncli) {
+	function controller ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -16,7 +16,11 @@
 				$ctrl.spinner--;
 				console.log("OpenChannel", response);
 				if (response.data.error) {
-					$ctrl.warning = response.data.error;
+					if ($ctrl.isClosed) {
+						bootbox.alert(response.data.error);
+					} else {
+						$ctrl.warning = response.data.error;
+					}
 				} else {
 					$ctrl.warning = null;
 					$uibModalInstance.close($ctrl.values);
@@ -24,7 +28,12 @@
 			}, function (err) {
 				$ctrl.spinner--;
 				console.log(err);
-				bootbox.alert(err.message);
+				var errmsg = err.message || err.statusText;
+				if ($ctrl.isClosed) {
+					bootbox.alert(errmsg);
+				} else {
+					$ctrl.warning = errmsg;
+				}
 			});
 		};
 
@@ -35,6 +44,11 @@
 		$ctrl.dismissAlert = function() {
 			$ctrl.warning = null;
 		}
+
+		$scope.$on("modal.closing", function (event, reason, closed) {
+			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
+			$ctrl.isClosed = true;
+		});
 
 	}
 

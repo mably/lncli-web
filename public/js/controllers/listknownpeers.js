@@ -34,7 +34,7 @@
 			}, function (err) {
 				$scope.spinner--;
 				console.log(err);
-				bootbox.alert(err.message);
+				bootbox.alert(err.message || err.statusText);
 			});
 		};
 
