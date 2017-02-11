@@ -50,12 +50,14 @@ node server --help
 
   Options:
 
-    -h, --help                  output usage information
-    -V, --version               output the version number
-    -s, --serverport [port]     web server listening port (defaults to 8280)
-    -l, --lndhost  [host:port]  RPC lnd host (defaults to localhost:10009)
-    -u, --user [login]          basic authentication login
-    -p, --pwd [password]        basic authentication password	
+    -h, --help                 output usage information
+    -V, --version              output the version number
+    -s, --serverport [port]    web server listening port (defaults to 8280)
+    -l, --lndhost [host:port]  RPC lnd host (defaults to localhost:10009)
+    -u, --user [login]         basic authentication login
+    -p, --pwd [password]       basic authentication password
+    -r, --limituser [login]    basic authentication login for readonly account
+    -w, --limitpwd [password]  basic authentication password for readonly account
 
 ```
 
