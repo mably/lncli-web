@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ModalCloseChannelCtrl", ["$uibModalInstance", "channel", "lncli", controller]);
+	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$uibModalInstance", "channel", "lncli", controller]);
 
-	function controller ($uibModalInstance, channel, lncli) {
+	function controller ($scope, $uibModalInstance, channel, lncli) {
 
 		var $ctrl = this;
 

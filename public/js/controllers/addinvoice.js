@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ModalAddInvoiceCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
+	lnwebcli.controller("ModalAddInvoiceCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($uibModalInstance, defaults, lncli) {
+	function controller ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
