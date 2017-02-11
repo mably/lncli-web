@@ -20,6 +20,7 @@
 				}, function(err) {
 					$scope.spinner--;
 					console.log('Error: ' + err);
+					bootbox.alert(err.message || err.statusText);
 				});
 			});
 		};

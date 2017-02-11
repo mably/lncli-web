@@ -40,8 +40,10 @@ module.exports = function(io, lightning) {
 
 		/** printing out the client who joined */
 		console.log("New client connected (id=" + socket.id + ").");
-		
-		socket.emit("hello", { message: "hello world!" });
+
+		socket.emit("hello");
+
+		socket.broadcast.emit("hello", { remoteAddress: socket.handshake.address });
 
 		/** pushing new client to client array*/
 		clients.push(socket);

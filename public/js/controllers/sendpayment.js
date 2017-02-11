@@ -29,7 +29,12 @@
 			}, function (err) {
 				$ctrl.spinner--;
 				console.log(err);
-				bootbox.alert(err.message);
+				var errmsg = err.message || err.statusText;
+				if ($ctrl.isClosed) {
+					bootbox.alert(errmsg);
+				} else {
+					$ctrl.warning = errmsg;
+				}
 			});
 		};
 
@@ -40,7 +45,11 @@
 				console.log("DecodePayReq", response);
 				if (response.data.error) {
 					$ctrl.decodedPayment = null;
-					$ctrl.warning = response.data.error;
+					if ($ctrl.isClosed) {
+						bootbox.alert(response.data.error);
+					} else {
+						$ctrl.warning = response.data.error;
+					}
 				} else {
 					$ctrl.warning = null;
 					$ctrl.decodedPayment = response.data;
@@ -49,7 +58,12 @@
 				$ctrl.spinner--;
 				console.log(err);
 				$ctrl.decodedPayment = null;
-				bootbox.alert(err.message);
+				var errmsg = err.message || err.statusText;
+				if ($ctrl.isClosed) {
+					bootbox.alert(errmsg);
+				} else {
+					$ctrl.warning = errmsg;
+				}
 			});
 		};
 

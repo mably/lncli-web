@@ -137,103 +137,121 @@ module.exports = function(app, lightning) {
 
 	// connect peer to lnd node
 	app.post('/api/connectpeer', function(req, res) {
-		lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {
-			if (err) {
-				console.log('ConnectPeer Error:', err);
-				err.error = err.message;
-				res.send(err)
-			} else {
-				console.log('ConnectPeer:', response);
-				res.json(response);
-			}
-		});
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {
+				if (err) {
+					console.log('ConnectPeer Error:', err);
+					err.error = err.message;
+					res.send(err)
+				} else {
+					console.log('ConnectPeer:', response);
+					res.json(response);
+				}
+			});
+		}
 	});
 
 	// openchannel
 	app.post('/api/openchannel', function(req, res) {
-		var openChannelRequest = {
-			node_pubkey_string: req.body.pubkey,
-			local_funding_amount: Number(req.body.localamt),
-			push_sat: Number(req.body.pushamt),
-			num_confs: Number(req.body.numconf)
-		};
-		console.log(openChannelRequest);
-		lightning.openChannelSync(openChannelRequest, function(err, response) {
-			if (err) {
-				console.log('OpenChannel Error:', err);
-				err.error = err.message;
-				res.send(err)
-			} else {
-				console.log('OpenChannel:', response);
-				res.json(response);
-			}
-		});
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var openChannelRequest = {
+				node_pubkey_string: req.body.pubkey,
+				local_funding_amount: Number(req.body.localamt),
+				push_sat: Number(req.body.pushamt),
+				num_confs: Number(req.body.numconf)
+			};
+			console.log(openChannelRequest);
+			lightning.openChannelSync(openChannelRequest, function(err, response) {
+				if (err) {
+					console.log('OpenChannel Error:', err);
+					err.error = err.message;
+					res.send(err)
+				} else {
+					console.log('OpenChannel:', response);
+					res.json(response);
+				}
+			});
+		}
 	});
 
 	// closechannel
 	app.post('/api/closechannel', function(req, res) {
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var fundingTxIdBuffer = BufferUtil.hexToBuffer(req.body.funding_txid);
+			var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
+			var closeChannelRequest = {
+				channel_point: {
+					funding_txid: revFundingTxIdBuffer,
+					output_index: Number(req.body.output_index)
+				},
+				force: !!req.body.force
+			};
+			console.log(closeChannelRequest);
 
-		var fundingTxIdBuffer = BufferUtil.hexToBuffer(req.body.funding_txid);
-		var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
-		var closeChannelRequest = {
-			channel_point: {
-				funding_txid: revFundingTxIdBuffer,
-				output_index: Number(req.body.output_index)
-			},
-			force: !!req.body.force
-		};
-		console.log(closeChannelRequest);
-
-		var call = lightning.closeChannel(closeChannelRequest);
-		call.on('data', function(data) {
-			console.log('CloseChannel Data', data);
-			res.json(data);
-			call.cancel(); // don't wait any longer (non-blocking mode)
-		});
-		call.on('end', function() {
-			console.log('CloseChannel End');
-		});
-		call.on('error', function(err) {
-			console.log('CloseChannel Error', err);
-			if (err.code != grpc.status.CANCELLED) {
-				err.error = err.message;
-				res.json(err);
-			}
-		});
-		call.on('status', function(status) {
-			console.log('CloseChannel Status', status);
-		});
-
+			var call = lightning.closeChannel(closeChannelRequest);
+			call.on('data', function(data) {
+				console.log('CloseChannel Data', data);
+				res.json(data);
+				call.cancel(); // don't wait any longer (non-blocking mode)
+			});
+			call.on('end', function() {
+				console.log('CloseChannel End');
+			});
+			call.on('error', function(err) {
+				console.log('CloseChannel Error', err);
+				if (err.code != grpc.status.CANCELLED) {
+					err.error = err.message;
+					res.json(err);
+				}
+			});
+			call.on('status', function(status) {
+				console.log('CloseChannel Status', status);
+			});
+		}
 	});
 
 	// addinvoice
 	app.post('/api/addinvoice', function(req, res) {
-		lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function(err, response) {
-			if (err) {
-				console.log('AddInvoice Error:', err);
-				err.error = err.message;
-				res.send(err)
-			} else {
-				console.log('AddInvoice:', response);
-				res.json(response);
-			}
-		});
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function(err, response) {
+				if (err) {
+					console.log('AddInvoice Error:', err);
+					err.error = err.message;
+					res.send(err)
+				} else {
+					console.log('AddInvoice:', response);
+					res.json(response);
+				}
+			});
+		}
 	});
 
 	// sendpayment
 	app.post('/api/sendpayment', function(req, res) {
-		var paymentRequest = { payment_request: req.body.payreq };
-		console.log("Sending payment", paymentRequest);
-		lightning.sendPaymentSync(paymentRequest, function(err, response) {
-			if (err) {
-				console.log('SendPayment Error:', err);
-				err.error = err.message;
-				res.send(err)
-			} else {
-				console.log('SendPayment:', response);
-				res.json(response);
-			}
-		});
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var paymentRequest = { payment_request: req.body.payreq };
+			console.log("Sending payment", paymentRequest);
+			lightning.sendPaymentSync(paymentRequest, function(err, response) {
+				if (err) {
+					console.log('SendPayment Error:', err);
+					err.error = err.message;
+					res.send(err)
+				} else {
+					console.log('SendPayment:', response);
+					res.json(response);
+				}
+			});
+		}
 	});
 
 	// decodepayreq
