@@ -1,5 +1,8 @@
 // app/sockets.js
 
+const debug = require('debug')('lncliweb:sockets')
+const logger = require('winston')
+
 // TODO
 module.exports = function(io, lightning) {
 
@@ -11,35 +14,37 @@ module.exports = function(io, lightning) {
 
 		if (!subscribeInvoicesCall) {
 
-			console.log("Registering to lnd SubscribeInvoices stream");
+			logger.debug("Registering to lnd SubscribeInvoices stream");
 
 			subscribeInvoicesCall = lightning.subscribeInvoices({});
 
 			subscribeInvoicesCall.on("data", function(data) {
-				console.log("SubscribeInvoices Data", data);
+				logger.debug("SubscribeInvoices Data", data);
 				for (var i = 0; i < clients.length; i++) {
 					clients[i].emit("invoice", data);
 				}
 			});
 
 			subscribeInvoicesCall.on("end", function() {
-				console.log("SubscribeInvoices End");
+				logger.debug("SubscribeInvoices End");
 			});
 
 			subscribeInvoicesCall.on("error", function(err) {
-				console.log("SubscribeInvoices Error", err);
+				logger.debug("SubscribeInvoices Error", err);
 			});
 
 			subscribeInvoicesCall.on("status", function(status) {
-				console.log("SubscribeInvoices Status", status);
+				logger.debug("SubscribeInvoices Status", status);
 			});
 		}
 	}
 
 	io.on("connection", function(socket) {
 
+		debug('socket.handshake', socket.handshake);
+
 		/** printing out the client who joined */
-		console.log("New client connected (id=" + socket.id + ").");
+		logger.debug("New socket client connected (id=" + socket.id + ").");
 
 		socket.emit("hello");
 
@@ -49,11 +54,11 @@ module.exports = function(io, lightning) {
 		clients.push(socket);
 
 		initSubscribeInvoicesCall();
-		
+
 		/** listening if client has disconnected */
 		socket.on("disconnect", function() {
 			clients.splice(clients.indexOf(socket), 1);
-			console.log("client disconnected (id=" + socket.id + ").");
+			logger.debug("client disconnected (id=" + socket.id + ").");
 		});
 
 	});
