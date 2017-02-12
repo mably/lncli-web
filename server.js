@@ -10,6 +10,7 @@ program
   .version('1.0.0')
   .option('-s, --serverport [port]', 'web server listening port (defaults to 8280)')
   .option('-l, --lndhost [host:port]', 'RPC lnd host (defaults to localhost:10009)')
+  .option('-t, --usetls [path]', 'path to a directory containing key.pem and cert.pem files')
   .option('-u, --user [login]', 'basic authentication login')
   .option('-p, --pwd [password]', 'basic authentication password')
   .option('-r, --limituser [login]', 'basic authentication login for readonly account')
@@ -51,7 +52,15 @@ app.use(function(err, req, res, next) {
 require("./app/routes")(app, lightning);
 
 // init server =================
-const server = require('http').Server(app);  
+var server;
+if (program.usetls) {
+	server = require('https').createServer({
+		key: require('fs').readFileSync(program.usetls + '/key.pem'),
+		cert: require('fs').readFileSync(program.usetls + '/cert.pem')
+	}, app);
+} else {
+	server = require('http').Server(app);
+}
 const io = require('socket.io')(server);
 
 // setup sockets =================
