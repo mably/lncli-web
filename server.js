@@ -64,7 +64,7 @@ if (program.usetls) {
 const io = require('socket.io')(server);
 
 // setup sockets =================
-require("./app/sockets")(io, lightning);
+require("./app/sockets")(io, lightning, program.user, program.pwd, program.limituser, program.limitpwd);
 
 // listen (start app with node server.js) ======================================
 const serverPort = program.serverport || defaults.serverPort;
