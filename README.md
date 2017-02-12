@@ -54,6 +54,7 @@ node server --help
     -V, --version              output the version number
     -s, --serverport [port]    web server listening port (defaults to 8280)
     -l, --lndhost [host:port]  RPC lnd host (defaults to localhost:10009)
+    -t, --usetls [path]        path to a directory containing key.pem and cert.pem files
     -u, --user [login]         basic authentication login
     -p, --pwd [password]       basic authentication password
     -r, --limituser [login]    basic authentication login for readonly account
@@ -73,37 +74,26 @@ Check here for the mandatory screenshots: [http://imgur.com/a/LgWcs](http://imgu
 
 ## Enabling https for remote access
 
-You need to replace the following line of code in the `<lncli-web>/server.js` file:
+You need to have a `key.pem` (private key) file and a `cert.pem` (certificate) file available in your path (check the --usetls command-line option).
 
-```
-var server = require('http').Server(app);  
-```
-
-By this:
-
-```
-var server = require('https').createServer({
-  key: require('fs').readFileSync('key.pem'),
-  cert: require('fs').readFileSync('cert.pem')
-}, app);
-```
-
-On Linux you can simply create the above required files `key.pem` and `cert.pem` by generating a self-signed certificate using the following command:
+On Linux you can create the above files using a self-signed certificate by executing the following command:
 
 ```
 openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
 ```
 
-You might need to run this command to remove the password protection:
+You might need to run this extra command to remove the password protection:
 
 ```
 openssl rsa -in key.pem -out newkey.pem && mv newkey.pem key.pem
 ```
 
-Example command starting a password protected Lnd Web Client with readonly account enabled and running on port 443:
+And the you need to add the `--usetls` command-line option to point to the directory containing your two `pem` files.
+
+Example command starting a password protected Lnd Web Client with readonly account enabled, running on port 443, and using https with corresponding `pem` files located in the app directory:
 
 ```
-node server -s 443 --user manager --pwd 33H966wG --limituser lnd --limitpwd rocks
+node server -s 443 --usetls . --user manager --pwd 33H966wG --limituser lnd --limitpwd rocks
 ```
 
 Hoping that helps.
