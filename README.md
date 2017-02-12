@@ -58,6 +58,8 @@ node server --help
     -p, --pwd [password]       basic authentication password
     -r, --limituser [login]    basic authentication login for readonly account
     -w, --limitpwd [password]  basic authentication password for readonly account
+    -f, --logfile [file path]  path to file where to store the application logs
+    -e, --loglevel [level]     level of logs to display (debug, info, warn, error)
 
 ```
 

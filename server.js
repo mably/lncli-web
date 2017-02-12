@@ -1,8 +1,9 @@
 // set up ========================
-var express  = require('express');
-var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
-var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-var program = require('commander');
+const debug = require('debug')('lncliweb:server')
+const express  = require('express');
+const bodyParser = require('body-parser');         // pull information from HTML POST (express4)
+const methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
+const program = require('commander');
 
 // parse command line parameters
 program
@@ -12,20 +13,25 @@ program
   .option('-u, --user [login]', 'basic authentication login')
   .option('-p, --pwd [password]', 'basic authentication password')
   .option('-r, --limituser [login]', 'basic authentication login for readonly account')
-  .option('-w, --limitpwd [password]', 'basic authentication password for readonly account')  
+  .option('-w, --limitpwd [password]', 'basic authentication password for readonly account')
+  .option('-f, --logfile [file path]', 'path to file where to store the application logs')
+  .option('-e, --loglevel [level]', 'level of logs to display (debug, info, warn, error)')
   .parse(process.argv);
   
 // load app default configuration data
-var defaults = require('./config/config');
+const defaults = require('./config/config');
+
+// setup winston logging ==========
+const logger = require('./config/log')((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel)); 
 
 // setup authentication =================
-var auth = require("./app/basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
+const auth = require("./app/basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
 // setup lightning client =================
-var lightning = require("./app/lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
+const lightning = require("./app/lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
 
 // app creation =================
-var app = express();                                            // create our app w/ express
+const app = express();                                            // create our app w/ express
 
 // app configuration =================
 app.use(auth);                                                  // enable authentication
@@ -37,7 +43,7 @@ app.use(methodOverride());
 // error handler
 app.use(function(err, req, res, next) {
   // Do logging and user-friendly error message display
-  console.error(err);
+  winston.error(err);
   res.status(500).send({status:500, message: 'internal error', type:'internal'}); 
 });
 
@@ -45,13 +51,13 @@ app.use(function(err, req, res, next) {
 require("./app/routes")(app, lightning);
 
 // init server =================
-var server = require('http').Server(app);  
-var io = require('socket.io')(server);
+const server = require('http').Server(app);  
+const io = require('socket.io')(server);
 
 // setup sockets =================
 require("./app/sockets")(io, lightning);
 
 // listen (start app with node server.js) ======================================
-var serverPort = program.serverport || defaults.serverPort;
+const serverPort = program.serverport || defaults.serverPort;
 server.listen(serverPort);
-console.log("App listening on port " + serverPort);
+logger.info("App listening on port " + serverPort);

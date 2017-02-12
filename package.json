@@ -29,10 +29,13 @@
     "bitcore-lib": "^0.13.19",
     "body-parser": "^1.16.0",
     "commander": "^2.9.0",
+    "debug": "^2.6.1",
     "express": "^4.14.1",
     "grpc": "^1.1.1",
     "method-override": "^2.3.7",
-    "socket.io": "^1.7.2"
+    "socket.io": "^1.7.2",
+    "winston": "^2.3.1",
+    "winston-daily-rotate-file": "^1.4.4"
   },
   "devDependencies": {
     "bower": "^1.8.0"

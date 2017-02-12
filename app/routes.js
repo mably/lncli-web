@@ -1,8 +1,10 @@
 // app/routes.js
 
-var grpc = require('grpc');
-var bitcore = require('bitcore-lib');
-var BufferUtil = bitcore.util.buffer;
+const debug = require('debug')('lncliweb:routes')
+const logger = require('winston')
+const grpc = require('grpc');
+const bitcore = require('bitcore-lib');
+const BufferUtil = bitcore.util.buffer;
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
@@ -13,11 +15,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/getnetworkinfo', function(req, res) {
 		lightning.getNetworkInfo({}, function(err, response) {
 			if (err) {
-				console.log('GetNetworkInfo Error:', err);
+				logger.debug('GetNetworkInfo Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('GetNetworkInfo:', response);
+				logger.debug('GetNetworkInfo:', response);
 				res.json(response);
 			}
 		});
@@ -27,11 +29,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/getinfo', function(req, res) {
 		lightning.getInfo({}, function(err, response) {
 			if (err) {
-				console.log('GetInfo Error:', err);
+				logger.debug('GetInfo Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('GetInfo:', response);
+				logger.debug('GetInfo:', response);
 				res.json(response);
 			}
 		});
@@ -41,11 +43,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/listpeers', function(req, res) {
 		lightning.listPeers({}, function(err, response) {
 			if (err) {
-				console.log('ListPeers Error:', err);
+				logger.debug('ListPeers Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('ListPeers:', response);
+				logger.debug('ListPeers:', response);
 				res.json(response);
 			}
 		});
@@ -55,11 +57,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/listchannels', function(req, res) {
 		lightning.listChannels({}, function(err, response) {
 			if (err) {
-				console.log('ListChannels Error:', err);
+				logger.debug('ListChannels Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('ListChannels:', response);
+				logger.debug('ListChannels:', response);
 				res.json(response);
 			}
 		});
@@ -69,11 +71,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/pendingchannels', function(req, res) {
 		lightning.pendingChannels({}, function(err, response) {
 			if (err) {
-				console.log('PendingChannels Error:', err);
+				logger.debug('PendingChannels Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('PendingChannels:', response);
+				logger.debug('PendingChannels:', response);
 				res.json(response);
 			}
 		});
@@ -83,11 +85,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/listpayments', function(req, res) {
 		lightning.listPayments({}, function(err, response) {
 			if (err) {
-				console.log('ListPayments Error:', err);
+				logger.debug('ListPayments Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('ListPayments:', response);
+				logger.debug('ListPayments:', response);
 				res.json(response);
 			}
 		});
@@ -97,11 +99,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/listinvoices', function(req, res) {
 		lightning.listInvoices({}, function(err, response) {
 			if (err) {
-				console.log('ListInvoices Error:', err);
+				logger.debug('ListInvoices Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('ListInvoices:', response);
+				logger.debug('ListInvoices:', response);
 				res.json(response);
 			}
 		});
@@ -111,11 +113,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/walletbalance', function(req, res) {
 		lightning.walletBalance({}, function(err, response) {
 			if (err) {
-				console.log('WalletBalance Error:', err);
+				logger.debug('WalletBalance Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('WalletBalance:', response);
+				logger.debug('WalletBalance:', response);
 				res.json(response);
 			}
 		});
@@ -125,11 +127,11 @@ module.exports = function(app, lightning) {
 	app.get('/api/channelbalance', function(req, res) {
 		lightning.channelBalance({}, function(err, response) {
 			if (err) {
-				console.log('ChannelBalance Error:', err);
+				logger.debug('ChannelBalance Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('ChannelBalance:', response);
+				logger.debug('ChannelBalance:', response);
 				res.json(response);
 			}
 		});
@@ -142,11 +144,11 @@ module.exports = function(app, lightning) {
 		} else {
 			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {
 				if (err) {
-					console.log('ConnectPeer Error:', err);
+					logger.debug('ConnectPeer Error:', err);
 					err.error = err.message;
 					res.send(err)
 				} else {
-					console.log('ConnectPeer:', response);
+					logger.debug('ConnectPeer:', response);
 					res.json(response);
 				}
 			});
@@ -164,14 +166,14 @@ module.exports = function(app, lightning) {
 				push_sat: Number(req.body.pushamt),
 				num_confs: Number(req.body.numconf)
 			};
-			console.log(openChannelRequest);
+			debug('openChannelRequest', openChannelRequest);
 			lightning.openChannelSync(openChannelRequest, function(err, response) {
 				if (err) {
-					console.log('OpenChannel Error:', err);
+					logger.debug('OpenChannel Error:', err);
 					err.error = err.message;
 					res.send(err)
 				} else {
-					console.log('OpenChannel:', response);
+					logger.debug('OpenChannel:', response);
 					res.json(response);
 				}
 			});
@@ -192,26 +194,26 @@ module.exports = function(app, lightning) {
 				},
 				force: !!req.body.force
 			};
-			console.log(closeChannelRequest);
+			debug('closeChannelRequest', closeChannelRequest);
 
 			var call = lightning.closeChannel(closeChannelRequest);
 			call.on('data', function(data) {
-				console.log('CloseChannel Data', data);
+				logger.debug('CloseChannel Data', data);
 				res.json(data);
 				call.cancel(); // don't wait any longer (non-blocking mode)
 			});
 			call.on('end', function() {
-				console.log('CloseChannel End');
+				logger.debug('CloseChannel End');
 			});
 			call.on('error', function(err) {
-				console.log('CloseChannel Error', err);
+				logger.debug('CloseChannel Error', err);
 				if (err.code != grpc.status.CANCELLED) {
 					err.error = err.message;
 					res.json(err);
 				}
 			});
 			call.on('status', function(status) {
-				console.log('CloseChannel Status', status);
+				logger.debug('CloseChannel Status', status);
 			});
 		}
 	});
@@ -223,11 +225,11 @@ module.exports = function(app, lightning) {
 		} else {
 			lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function(err, response) {
 				if (err) {
-					console.log('AddInvoice Error:', err);
+					logger.debug('AddInvoice Error:', err);
 					err.error = err.message;
 					res.send(err)
 				} else {
-					console.log('AddInvoice:', response);
+					logger.debug('AddInvoice:', response);
 					res.json(response);
 				}
 			});
@@ -240,14 +242,14 @@ module.exports = function(app, lightning) {
 			return res.sendStatus(403); // forbidden
 		} else {
 			var paymentRequest = { payment_request: req.body.payreq };
-			console.log("Sending payment", paymentRequest);
+			logger.debug("Sending payment", paymentRequest);
 			lightning.sendPaymentSync(paymentRequest, function(err, response) {
 				if (err) {
-					console.log('SendPayment Error:', err);
+					logger.debug('SendPayment Error:', err);
 					err.error = err.message;
 					res.send(err)
 				} else {
-					console.log('SendPayment:', response);
+					logger.debug('SendPayment:', response);
 					res.json(response);
 				}
 			});
@@ -258,11 +260,11 @@ module.exports = function(app, lightning) {
 	app.post('/api/decodepayreq', function(req, res) {
 		lightning.decodePayReq({ pay_req: req.body.payreq }, function(err, response) {
 			if (err) {
-				console.log('DecodePayReq Error:', err);
+				logger.debug('DecodePayReq Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('DecodePayReq:', response);
+				logger.debug('DecodePayReq:', response);
 				res.json(response);
 			}
 		});
@@ -272,11 +274,11 @@ module.exports = function(app, lightning) {
 	app.post('/api/queryroute', function(req, res) {
 		lightning.queryRoute({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
 			if (err) {
-				console.log('QueryRoute Error:', err);
+				logger.debug('QueryRoute Error:', err);
 				err.error = err.message;
 				res.send(err)
 			} else {
-				console.log('QueryRoute:', response);
+				logger.debug('QueryRoute:', response);
 				res.json(response);
 			}
 		});
