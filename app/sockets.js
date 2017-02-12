@@ -4,11 +4,14 @@ const debug = require('debug')('lncliweb:sockets')
 const logger = require('winston')
 
 // TODO
-module.exports = function(io, lightning) {
+module.exports = function(io, lightning, login, pass, limitlogin, limitpass) {
 
 	var clients = [];
 
 	var subscribeInvoicesCall = null;
+
+	var userToken = new Buffer(login + ":" + pass).toString('base64');
+	var limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
 
 	var initSubscribeInvoicesCall = function() {
 
@@ -43,10 +46,21 @@ module.exports = function(io, lightning) {
 
 		debug('socket.handshake', socket.handshake);
 
+		var authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
+
+		if (authorizationHeaderToken == userToken) {
+			socket._limituser = false;
+		} else if (authorizationHeaderToken == limitUserToken) {
+			socket._limituser = true;
+		} else {
+			socket.disconnect('unauthorized');
+			return;
+		}
+
 		/** printing out the client who joined */
 		logger.debug("New socket client connected (id=" + socket.id + ").");
 
-		socket.emit("hello");
+		socket.emit("hello", { limitUser: socket._limituser });
 
 		socket.broadcast.emit("hello", { remoteAddress: socket.handshake.address });
 
