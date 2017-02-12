@@ -268,6 +268,20 @@ module.exports = function(app, lightning) {
 		});
 	});
 
+	// queryroute
+	app.post('/api/queryroute', function(req, res) {
+		lightning.queryRoute({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
+			if (err) {
+				console.log('QueryRoute Error:', err);
+				err.error = err.message;
+				res.send(err)
+			} else {
+				console.log('QueryRoute:', response);
+				res.json(response);
+			}
+		});
+	});
+
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
 		res.sendFile(__dirname + '/../public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
