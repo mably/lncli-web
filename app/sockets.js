@@ -8,10 +8,18 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass) {
 
 	var clients = [];
 
-	var subscribeInvoicesCall = null;
+	var authRequired = (login && pass) || (limitlogin && limitpass);
 
-	var userToken = new Buffer(login + ":" + pass).toString('base64');
-	var limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
+	var userToken = null;
+	var limitUserToken = null;
+	if (login && pass) {
+		userToken = new Buffer(login + ":" + pass).toString('base64');
+	}
+	if (limitlogin && limitpass) {
+		limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
+	}
+
+	var subscribeInvoicesCall = null;
 
 	var initSubscribeInvoicesCall = function() {
 
@@ -46,15 +54,23 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass) {
 
 		debug('socket.handshake', socket.handshake);
 
-		var authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
-
-		if (authorizationHeaderToken == userToken) {
-			socket._limituser = false;
-		} else if (authorizationHeaderToken == limitUserToken) {
-			socket._limituser = true;
+		if (authRequired) {
+			try {
+				var authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
+				if (authorizationHeaderToken === userToken) {
+					socket._limituser = false;
+				} else if (authorizationHeaderToken === limitUserToken) {
+					socket._limituser = true;
+				} else {
+					socket.disconnect('unauthorized');
+					return;
+				}
+			} catch (err) { // probably because of missing authorization header
+				socket.disconnect('unauthorized');
+				return;
+			}
 		} else {
-			socket.disconnect('unauthorized');
-			return;
+			socket._limituser = false;
 		}
 
 		/** printing out the client who joined */
