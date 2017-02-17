@@ -16,7 +16,12 @@ program
 	.option('-f, --logfile [file path]', 'path to file where to store the application logs')
 	.option('-e, --loglevel [level]', 'level of logs to display (debug, info, warn, error)')
 	.option('-n, --lndlogfile <file path>', 'path to lnd log file to send to browser')
+	.option('-k, --le-email [email]', 'lets encrypt required contact email')
 	.parse(process.argv);
 
-// load server 
-const server = require('./app/server')(program);
+// load server
+if (program.serverhost && program.leEmail) {
+	require('./app/server-le')(program); // Let's Encrypt server version
+} else {
+	require('./app/server')(program); // Standard server version
+}
