@@ -5,5 +5,6 @@ module.exports = {
 	lndProto: './config/rpc.proto',
 	lndHost : 'localhost:10009',
 	loglevel: 'info',
-	logfile: 'lncliweb.log'
+	logfile: 'lncliweb.log',
+	lndLogFile: require('os').homedir() + '/.lnd/logs/testnet3/lnd.log'
 };

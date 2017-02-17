@@ -32,6 +32,10 @@
 				max-width: 15em;
 			}
 		}
+		#tail {
+			max-height: 30em;
+			overflow: scroll;
+		}
 	</style>
 
 	<script src="/components/jquery/dist/jquery.min.js"></script><!-- load jquery -->
@@ -104,6 +108,7 @@
 			  <li><a href="#peers">Peers</a></li>
 			  <li><a href="#channels">Channels</a></li>
 			  <li><a href="#payments">Payments</a></li>
+			  <li><a href="#logs">Logs</a></li>
 			  <li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
 				<ul class="dropdown-menu">
@@ -284,7 +289,7 @@
 			</div>
 		  </div>
 		</div><!-- /.col-sm-12 -->
-	</div>	
+	</div>
 	<div class="row">
 		<div class="col-sm-12">
 		  <div class="panel panel-info" ng-controller="ListInvoicesCtrl">
@@ -301,7 +306,23 @@
 			</div>
 		  </div>
 		</div><!-- /.col-sm-12 -->
-	  </div>
+	</div>
+	<div class="page-header">
+		<a name="logs"></a>
+		<h1>Logs</h1>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+		  <div class="panel panel-success">
+			<div class="panel-heading clearfix">
+			  <span class="panel-title">lnd log file <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			</div>
+			<div class="panel-body">
+			  <pre id="tail"></pre>
+			</div>
+		  </div>
+		</div><!-- /.col-sm-12 -->
+	</div>
 </div>
 </body>
 

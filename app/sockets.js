@@ -2,9 +2,10 @@
 
 const debug = require('debug')('lncliweb:sockets')
 const logger = require('winston')
+const spawn = require('child_process').spawn;
 
 // TODO
-module.exports = function(io, lightning, login, pass, limitlogin, limitpass) {
+module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lndLogfile) {
 
 	var clients = [];
 
@@ -47,6 +48,17 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass) {
 			subscribeInvoicesCall.on("status", function(status) {
 				logger.debug("SubscribeInvoices Status", status);
 			});
+
+			var tail = spawn("tail", ["-f", lndLogfile]);
+			tail.stdout.on("data", function (data) {
+				logger.debug("tail", data.toString('utf-8'))
+				for (var i = 0; i < clients.length; i++) {
+					if (!clients[i]._limituser) {
+						clients[i].emit("tail", { tail : data.toString('utf-8') });
+					}
+				}
+			}); 
+
 		}
 	}
 
