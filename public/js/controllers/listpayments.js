@@ -53,6 +53,7 @@
 
 			modalInstance.result.then(function (values) {
 				console.log("values", values);
+				$scope.refresh();
 			}, function () {
 				console.log('Modal dismissed at: ' + new Date());
 			});

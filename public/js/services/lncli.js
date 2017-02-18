@@ -1,63 +1,29 @@
 "use strict";
 (function () {
 
-	lnwebcli.service("lncli", ["$http", "$timeout", "$q", "ngToast", "localStorageService", "config", service]);
+	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "lnwebcliUtils", service]);
 
-	function service($http, $timeout, $q, ngToast, localStorageService, config) {
+	function service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, utils) {
 
 		var _this = this;
 
 		var API = {
 			GETINFO: "/api/getinfo",
+			GETNETWORKINFO: "/api/getnetworkinfo",
+			WALLETBALANCE: "/api/walletbalance",
+			CHANNELBALANCE: "/api/channelbalance",
 			LISTPEERS: "/api/listpeers",
 			LISTCHANNELS: "/api/listchannels",
-			OPENCHANNEL: "/api/openchannel",
-			CLOSECHANNEL: "/api/closechannel"
+			PENDINGCHANNELS: "/api/pendingchannels",
+			LISTPAYMENTS: "/api/listpayments",
+			LISTINVOICES: "/api/listinvoices",
+			CONNECTPEER: "/api/connectpeer",
+			ADDINVOICE: "/api/addinvoice",
+			SENDPAYMENT: "/api/sendpayment",
+			DECODEPAYREQ: "/api/decodepayreq",
+			QUERYROUTE: "/api/queryroute",
+			NEWADDRESS: "/api/newaddress"
 		};
-
-		var socket = io.connect("/", { secure: "https" === location.protocol });
-
-		socket.on("invoice", function(data) {
-			console.log("Invoice received:", data);
-			$timeout(function() {
-				ngToast.success({
-					content: "Payment received: " + data.value + ", " + data.memo
-				});
-			});
-		});
-
-		socket.on("hello", function(data) {
-			console.log("Hello event received:", data);
-			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!"
-			$timeout(function() {
-				ngToast.success({
-					content: helloMsg
-				});
-			});
-		});
-
-		var lines = 0;
-		socket.on("tail", function(message) {
-			console.log("Tail message:", message);
-			if (message.tail) {
-				var index = -1;
-				while ((index = message.tail.indexOf("\n", index + 1)) > -1) {
-					lines++;
-				}
-				var tailObj = $("#tail");
-				var logs = tailObj.html();
-				index = -1;
-				var maxLogBuffer = _this.getConfigValue(
-					config.keys.MAX_LOG_BUFFER, config.defaults.MAX_LOG_BUFFER);
-				while (lines > maxLogBuffer) {
-					index = logs.indexOf("\n", index + 1);
-					lines--;
-				}
-				logs = logs.substring(index + 1);
-				tailObj.html(logs + message.tail);
-				tailObj.scrollTop(tailObj[0].scrollHeight);
-			}
-		});
 
 		var infoCache = null;
 		var peersCache = null;
@@ -65,6 +31,192 @@
 		var knownPeersCache = null;
 		var configCache = null;
 		var addressesCache = null;
+		var wsRequestListeners = {};
+
+		var socket = io.connect("/", { secure: "https" === location.protocol });
+
+		socket.on(config.events.INVOICE_WS, function(data) {
+			console.log("Invoice received:", data);
+			_this.notify(config.notif.SUCCESS, "Payment received: " + data.value + ", " + data.memo);
+		});
+
+		socket.on(config.events.HELLO_WS, function(data) {
+			console.log("Hello event received:", data);
+			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!"
+			_this.notify(config.notif.SUCCESS, helloMsg);
+		});
+
+		var logLines = 0;
+		socket.on(config.events.TAIL_WS, function(message) {
+			console.log("Tail message:", message);
+			if (message.tail) {
+				var index = -1;
+				while ((index = message.tail.indexOf("\n", index + 1)) > -1) {
+					logLines++;
+				}
+				var tailObj = $("#tail");
+				var logs = tailObj.html();
+				index = -1;
+				var maxLogBuffer = _this.getConfigValue(
+					config.keys.MAX_LOG_BUFFER, config.defaults.MAX_LOG_BUFFER);
+				while (logLines > maxLogBuffer) {
+					index = logs.indexOf("\n", index + 1);
+					logLines--;
+				}
+				logs = logs.substring(index + 1);
+				tailObj.html(logs + message.tail);
+				tailObj.scrollTop(tailObj[0].scrollHeight);
+			}
+		});
+
+		socket.on(config.events.OPENCHANNEL_WS, function(response) {
+			console.log("OpenChannel WS event", response);
+			$timeout(function() {
+				if (response.evt && response.rid) { // valid event
+					if (wsRequestListenersFilter(response)) {
+						if ((response.evt === "error") && response.data.error) {
+							var errMsg = response.data.error;
+							_this.notify(config.notif.WARNING, errMsg);
+						} else if ((response.evt === "status")) {
+							var statusMsg = response.data.details;
+							_this.notify(config.notif.INFO, statusMsg);
+						} else if ((response.evt === "data") && response.data.update) {
+							var dataMsg;
+							var update = response.data.update; // TODO
+							if (update === "chan_pending") {
+								var txId = response.data.chan_pending.txid;
+								dataMsg = "Channel opening pending... (txid = " + utils.buffer2hexa(txId, true) + ")";
+								$rootScope.$broadcast(config.events.CHANNEL_REFRESH, response);
+							} else if (update === "confirmation") {
+								var blockHeight = response.data.confirmation.block_height;
+								var numConfsLeft = response.data.confirmation.num_confs_left;
+								dataMsg = "Channel opening, " + numConfsLeft + " confirmations left... (block height " + blockHeight + ")";
+							} else if (update === "chan_open") {
+								var fundingTxId = response.data.chan_open.channel_point.funding_txid;
+								dataMsg = "Channel is opened... (funding txid = " + utils.buffer2hexa(fundingTxId, true) + ")";
+								$rootScope.$broadcast(config.events.CHANNEL_REFRESH, response);
+							} else {
+								dataMsg = update;
+							}
+							_this.notify(config.notif.INFO, dataMsg);
+						}
+					}
+				}
+			});
+		});
+
+		socket.on(config.events.CLOSECHANNEL_WS, function(response) {
+			console.log("CloseChannel WS event", response);
+			$timeout(function() {
+				if (response.evt && response.rid) { // valid event
+					if (wsRequestListenersFilter(response)) {
+						if ((response.evt === "error") && response.data.error) {
+							var errMsg = response.data.error;
+							_this.notify(config.notif.WARNING, errMsg);
+						} else if ((response.evt === "status")) {
+							var statusMsg = response.data.details;
+							_this.notify(config.notif.INFO, statusMsg);
+						} else if ((response.evt === "data") && response.data.update) {
+							var dataMsg;
+							var update = response.data.update; // TODO
+							if (update === "close_pending") {
+								var txId = response.data.close_pending.txid;
+								dataMsg = "Channel close pending... (txid = " + utils.buffer2hexa(txId, true) + ")";
+								$rootScope.$broadcast(config.events.CHANNEL_REFRESH, response);
+							} else if (update === "chan_close") {
+								var closingTxId = response.data.chan_close.closing_txid;
+								dataMsg = "Channel has been closed... (closing txid = " + utils.buffer2hexa(closingTxId, true) + ")";
+								$rootScope.$broadcast(config.events.CHANNEL_REFRESH, response);
+							} else {
+								dataMsg = update;
+							}
+							_this.notify(config.notif.INFO, dataMsg);
+						}
+					}
+				}
+			});
+		});
+
+		var wsRequestListenersFilter = function (response) {
+			if (wsRequestListeners.hasOwnProperty(response.rid)) {
+				return wsRequestListeners[response.rid].callback(response);
+			} else {
+				return true;
+			}
+		}
+
+		this.registerWSRequestListener = function (requestId, callback, expires) {
+			var deferred = $q.defer();
+			expires = expires || new Date().getTime() + 5 * 60 * 1000; // defaults to five minutes
+			wsRequestListeners[requestId] = {
+				expires: expires,
+				callback: callback,
+				deferred: deferred
+			};
+			return deferred.promise;
+		}
+
+		this.unregisterWSRequestListener = function (requestId) {
+			if (wsRequestListeners.hasOwnProperty(requestId)) {
+				var requestListener = wsRequestListeners[requestId];
+				requestListener.deferred.resolve();
+				delete wsRequestListeners[requestId];
+			}
+		}
+
+		var wsListenersCleaner = $interval(function() {
+			var count = 0;
+			var now = new Date().getTime();
+			for (var requestId in wsRequestListeners) {
+				_this.unregisterWSRequestListener()
+				if (wsRequestListeners.hasOwnProperty(requestId)) {
+					var requestListener = wsRequestListeners[requestId];
+					if (requestListener.expires < now) {
+						_this.unregisterWSRequestListener(requestId);
+					}
+				}
+			}
+			console.log(count + " websocket listeners cleaned");
+		}, 60 * 1000); // every 60 seconds
+
+		var notifLines = 0;
+		this.notify = function (type, message) {
+			console.log("Notification (" + type + ") :", message);
+			if (message) {
+				$timeout(function() {
+					if (type === config.notif.INFO) {
+						ngToast.info({
+							content: message
+						});
+					} else if (type === config.notif.SUCCESS) {
+						ngToast.success({
+							content: message
+						});
+					} else if (type === config.notif.WARNING) {
+						ngToast.success({
+							content: message
+						});
+					}
+				});
+				var index = -1;
+				while ((index = message.indexOf("\n", index + 1)) > -1) {
+					notifLines++;
+				}
+				var notifObj = $("#notifications");
+				var notifHtml = notifObj.html();
+				index = -1;
+				var maxLogBuffer = _this.getConfigValue(
+					config.keys.MAX_NOTIF_BUFFER, config.defaults.MAX_NOTIF_BUFFER);
+				while (notifLines > maxLogBuffer) {
+					index = notifHtml.indexOf("\n", index + 1);
+					notifLines--;
+				}
+				notifHtml = notifHtml.substring(index + 1);
+				var now = $filter('date')(new Date(),'yyyy-MM-dd HH:mm:ss Z');
+				notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
+				notifObj.scrollTop(notifObj[0].scrollHeight);
+			}
+		};
 
 		var fetchConfig = function () {
 			configCache = localStorageService.get("config"); // update cache
@@ -137,15 +289,15 @@
 		};
 
 		this.getNetworkInfo = function() {
-			return $http.get('/api/getnetworkinfo');
+			return $http.get(API.GETNETWORKINFO);
 		};
 
 		this.walletBalance = function() {
-			return $http.get('/api/walletbalance');
+			return $http.get(API.WALLETBALANCE);
 		};
 
 		this.channelBalance = function() {
-			return $http.get('/api/channelbalance');
+			return $http.get(API.CHANNELBALANCE);
 		};
 
 		this.getConfigValue = function(name, defaultValue) {
@@ -300,55 +452,71 @@
 		};
 
 		this.pendingChannels = function() {
-			return $http.get('/api/pendingchannels');
+			return $http.get(API.PENDINGCHANNELS);
 		};
 
 		this.listPayments = function() {
-			return $http.get('/api/listpayments');
+			return $http.get(API.LISTPAYMENTS);
 		};
 
 		this.listInvoices = function() {
-			return $http.get('/api/listinvoices');
+			return $http.get(API.LISTINVOICES);
 		};
 
 		this.connectPeer = function(pubkey, host) {
 			var data = { pubkey: pubkey, host: host };
-			return $http.post('/api/connectpeer', data);
+			return $http.post(API.CONNECTPEER, data);
 		};
 
 		this.openChannel = function(pubkey, localamt, pushamt, numconf) {
-			var data = { pubkey: pubkey, localamt: localamt, pushamt: pushamt, numconf: numconf };
-			return $http.post(API.OPENCHANNEL, data);
+			var deferred = $q.defer();
+			var data = { rid: uuid.v4(), pubkey: pubkey, localamt: localamt, pushamt: pushamt, numconf: numconf };
+			socket.emit(config.events.OPENCHANNEL_WS, data, function (response) {
+				if (response.error) {
+					deferred.reject(response.error);
+				} else {
+					deferred.resolve(response);
+				}
+			});
+			return deferred.promise;
 		};
 
 		this.closeChannel = function(funding_txid, output_index, force) {
-			var data = { funding_txid: funding_txid, output_index: output_index, force: force };
-			return $http.post(API.CLOSECHANNEL, data);
+			var deferred = $q.defer();
+			var data = { rid: uuid.v4(), funding_txid: funding_txid, output_index: output_index, force: force };
+			socket.emit(config.events.CLOSECHANNEL_WS, data, function (response) {
+				if (response.error) {
+					deferred.reject(response.error);
+				} else {
+					deferred.resolve(response);
+				}
+			});
+			return deferred.promise;
 		};
 
 		this.addInvoice = function(memo, value) {
 			var data = { memo: memo, value: value };
-			return $http.post('/api/addinvoice', data);
+			return $http.post(API.ADDINVOICE, data);
 		};
 
 		this.sendPayment = function(payreq) {
 			var data = { payreq: payreq };
-			return $http.post('/api/sendpayment', data);
+			return $http.post(API.SENDPAYMENT, data);
 		};
 
 		this.decodePayReq = function(payreq) {
 			var data = { payreq: payreq };
-			return $http.post('/api/decodepayreq', data);
+			return $http.post(API.DECODEPAYREQ, data);
 		};
 
 		this.queryRoute = function(pubkey, amount) {
 			var data = { pubkey: pubkey, amt: amount };
-			return $http.post('/api/queryroute', data);
+			return $http.post(API.QUERYROUTE, data);
 		};
 
 		this.newAddress = function(type) {
 			var data = { type: type };
-			return $http.post('/api/newaddress', data);
+			return $http.post(API.NEWADDRESS, data);
 		};
 
 		Object.seal(this);

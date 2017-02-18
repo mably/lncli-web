@@ -2,9 +2,6 @@
 
 const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
-const grpc = require('grpc');
-const bitcore = require('bitcore-lib');
-const BufferUtil = bitcore.util.buffer;
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
@@ -151,69 +148,6 @@ module.exports = function(app, lightning) {
 					logger.debug('ConnectPeer:', response);
 					res.json(response);
 				}
-			});
-		}
-	});
-
-	// openchannel
-	app.post('/api/openchannel', function(req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var openChannelRequest = {
-				node_pubkey_string: req.body.pubkey,
-				local_funding_amount: Number(req.body.localamt),
-				push_sat: Number(req.body.pushamt),
-				num_confs: Number(req.body.numconf)
-			};
-			debug('openChannelRequest', openChannelRequest);
-			lightning.openChannelSync(openChannelRequest, function(err, response) {
-				if (err) {
-					logger.debug('OpenChannel Error:', err);
-					err.error = err.message;
-					res.send(err)
-				} else {
-					logger.debug('OpenChannel:', response);
-					res.json(response);
-				}
-			});
-		}
-	});
-
-	// closechannel
-	app.post('/api/closechannel', function(req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var fundingTxIdBuffer = BufferUtil.hexToBuffer(req.body.funding_txid);
-			var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
-			var closeChannelRequest = {
-				channel_point: {
-					funding_txid: revFundingTxIdBuffer,
-					output_index: Number(req.body.output_index)
-				},
-				force: !!req.body.force
-			};
-			debug('closeChannelRequest', closeChannelRequest);
-
-			var call = lightning.closeChannel(closeChannelRequest);
-			call.on('data', function(data) {
-				logger.debug('CloseChannel Data', data);
-				res.json(data);
-				call.cancel(); // don't wait any longer (non-blocking mode)
-			});
-			call.on('end', function() {
-				logger.debug('CloseChannel End');
-			});
-			call.on('error', function(err) {
-				logger.debug('CloseChannel Error', err);
-				if (err.code != grpc.status.CANCELLED) {
-					err.error = err.message;
-					res.json(err);
-				}
-			});
-			call.on('status', function(status) {
-				logger.debug('CloseChannel Status', status);
 			});
 		}
 	});

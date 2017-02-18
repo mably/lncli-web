@@ -32,7 +32,7 @@
 				max-width: 15em;
 			}
 		}
-		#tail {
+		#tail, #notifications {
 			max-height: 30em;
 			overflow: scroll;
 		}
@@ -44,13 +44,14 @@
 	<script src="/components/angular-sanitize/angular-sanitize.min.js"></script><!-- load angular-sanitize -->
 	<script src="/components/angular-local-storage/dist/angular-local-storage.min.js"></script><!-- load angular-local-storage -->
 	<script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- load bootstrap -->
-	<script src="/components/angular-bootstrap/ui-bootstrap.min.js"></script><!-- load bootstrap for angular -->	
+	<script src="/components/angular-bootstrap/ui-bootstrap.min.js"></script><!-- load bootstrap for angular -->
 	<script src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script><!-- load bootstrap tpls for angular -->
 	<script src="/components/bootbox.js/bootbox.js"></script><!-- load bootbox -->
 	<script src="/components/clipboard/dist/clipboard.min.js"></script><!-- load clipboard -->
 	<script src="/components/ngclipboard/dist/ngclipboard.min.js"></script><!-- load ngclipboard -->
 	<script src="/components/socket.io-client/dist/socket.io.min.js"></script><!-- load socket.io -->
 	<script src="/components/ngToast/dist/ngToast.min.js"></script><!-- load ngToast -->
+	<script src="/components/angular-uuids/angular-uuid.js"></script><!-- load angular-uuids -->
 
 	<script src="js/core.js"></script>
 	<script src="js/services/lncli.js"></script>
@@ -86,6 +87,7 @@
 	<script src="js/directives/listpayments.js"></script>
 	<script src="js/directives/listinvoices.js"></script>
 	<script src="js/filters/firstlast.js"></script>
+	<script src="js/factories/utils.js"></script>
 </head>
 
 <body>
@@ -312,7 +314,7 @@
 	</div>
 	<div class="page-header">
 		<a name="logs"></a>
-		<h1>Logs</h1>
+		<h1>Logs & Notifications</h1>
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
@@ -326,6 +328,19 @@
 		  </div>
 		</div><!-- /.col-sm-12 -->
 	</div>
+	<div class="row">
+		<div class="col-sm-12">
+		  <div class="panel panel-info">
+			<div class="panel-heading clearfix">
+			  <span class="panel-title">Notifications <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			</div>
+			<div class="panel-body">
+			  <pre id="notifications"></pre>
+			</div>
+		  </div>
+		</div><!-- /.col-sm-12 -->
+	</div>
+
 </div>
 </body>
 
