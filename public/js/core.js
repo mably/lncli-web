@@ -24,5 +24,21 @@ lnwebcli.constant("config", {
 	defaults: {
 		AUTO_REFRESH: 60000, // 1 minute
 		MAX_LOG_BUFFER: 500 // 500 lines of logs max
+	},
+	modals: {
+		NEW_ADDRESS: {
+			animation: true,
+			ariaLabelledBy: "newaddress-modal-title",
+			ariaDescribedBy: "newaddress-modal-body",
+			templateUrl: "templates/partials/newaddress.html",
+			controller: "ModalNewAddressCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+					type: 0 // Witness
+				}
+			}
+		}
 	}
 });
