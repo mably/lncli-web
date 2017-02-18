@@ -17,6 +17,7 @@ program
   .option('-w, --limitpwd [password]', 'basic authentication password for readonly account')
   .option('-f, --logfile [file path]', 'path to file where to store the application logs')
   .option('-e, --loglevel [level]', 'level of logs to display (debug, info, warn, error)')
+  .option('-n, --lndlogfile <file path>', 'path to lnd log file to send to browser')
   .parse(process.argv);
   
 // load app default configuration data
@@ -64,7 +65,8 @@ if (program.usetls) {
 const io = require('socket.io')(server);
 
 // setup sockets =================
-require("./app/sockets")(io, lightning, program.user, program.pwd, program.limituser, program.limitpwd);
+var lndLogfile = program.lndlogfile || defaults.lndLogFile;
+require("./app/sockets")(io, lightning, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
 
 // listen (start app with node server.js) ======================================
 const serverPort = program.serverport || defaults.serverPort;

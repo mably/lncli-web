@@ -1,10 +1,12 @@
 "use strict";
 (function () {
 
-	lnwebcli.service("lncli", ["$http", "$timeout", "$q", "ngToast", "localStorageService", service]);
+	lnwebcli.service("lncli", ["$http", "$timeout", "$q", "ngToast", "localStorageService", "config", service]);
 
-	function service($http, $timeout, $q, ngToast, localStorageService) {
-		
+	function service($http, $timeout, $q, ngToast, localStorageService, config) {
+
+		var _this = this;
+
 		var API = {
 			GETINFO: "/api/getinfo",
 			LISTPEERS: "/api/listpeers",
@@ -32,6 +34,29 @@
 					content: helloMsg
 				});
 			});
+		});
+
+		var lines = 0;
+		socket.on("tail", function(message) {
+			console.log("Tail message:", message);
+			if (message.tail) {
+				var index = -1;
+				while ((index = message.tail.indexOf("\n", index + 1)) > -1) {
+					lines++;
+				}
+				var tailObj = $("#tail");
+				var logs = tailObj.html();
+				index = -1;
+				var maxLogBuffer = _this.getConfigValue(
+					config.keys.MAX_LOG_BUFFER, config.defaults.MAX_LOG_BUFFER);
+				while (lines > maxLogBuffer) {
+					index = logs.indexOf("\n", index + 1);
+					lines--;
+				}
+				logs = logs.substring(index + 1);
+				tailObj.html(logs + message.tail);
+				tailObj.scrollTop(tailObj[0].scrollHeight);
+			}
 		});
 
 		var infoCache = null;
