@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("WalletBalanceCtrl", ["$scope", "$timeout", "lncli", "config", controller]);
+	lnwebcli.controller("WalletBalanceCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
 
-	function controller($scope, $timeout, lncli, config) {
+	function controller($scope, $timeout, $uibModal, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -27,6 +27,22 @@
 			$scope.nextRefresh = $timeout($scope.refresh,
 				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
 		}
+
+		$scope.newAddress = function() {
+
+			var modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);
+
+			modalInstance.rendered.then(function() {
+				$("#newaddress-type").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log('Modal dismissed at: ' + new Date());
+			});
+
+		};
 
 		$scope.refresh();
 

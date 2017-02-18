@@ -1,0 +1,26 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="newaddress-modal-title">New address</h3>
+	</div>
+	<div class="modal-body" id="newaddress-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissWarning()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<div class="alert alert-success" role="alert" ng-show="$ctrl.success">
+			<button type="button" class="close" ng-click="$ctrl.dismissSuccess()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.success }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="newaddress-type">Type</label>
+				<select class="form-control" id="newaddress-type" placeholder="address type" ng-options="selectedItem.id as selectedItem.name for selectedItem in $ctrl.addressTypes" ng-model="$ctrl.values.type">
+				</select>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Create new address</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.close()">Close</button>
+	</div>
+<div>

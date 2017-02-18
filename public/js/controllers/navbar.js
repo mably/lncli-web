@@ -35,6 +35,22 @@
 
 		};
 
+		$scope.newAddress = function() {
+
+			var modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);
+
+			modalInstance.rendered.then(function() {
+				$("#newaddress-type").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log('Modal dismissed at: ' + new Date());
+			});
+
+		};
+
 		$scope.editSettings = function() {
 
 			var modalInstance = $uibModal.open({

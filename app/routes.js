@@ -284,6 +284,20 @@ module.exports = function(app, lightning) {
 		});
 	});
 
+	// newaddress
+	app.post('/api/newaddress', function(req, res) {
+		lightning.newAddress({ type: req.body.type }, function(err, response) {
+			if (err) {
+				logger.debug('NewAddress Error:', err);
+				err.error = err.message;
+				res.send(err)
+			} else {
+				logger.debug('NewAddress:', response);
+				res.json(response);
+			}
+		});
+	});
+
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
 		res.sendFile(__dirname + '/../public/index.html'); // load the single view file (angular will handle the page changes on the front-end)

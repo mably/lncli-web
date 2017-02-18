@@ -64,8 +64,9 @@
 		var channelsCache = null;
 		var knownPeersCache = null;
 		var configCache = null;
+		var addressesCache = null;
 
-		var fetchConfig= function () {
+		var fetchConfig = function () {
 			configCache = localStorageService.get("config"); // update cache
 			if (!configCache) { configCache = {}; }
 			return configCache;
@@ -74,6 +75,17 @@
 		var writeConfig = function (config) {
 			localStorageService.set("config", config);
 			configCache = config; // update cache
+		}
+
+		var fetchAddresses = function () {
+			addressesCache = localStorageService.get("addresses"); // update cache
+			if (!addressesCache) { addressesCache = {}; }
+			return addressesCache;
+		}
+
+		var writeAddresses = function (addresses) {
+			localStorageService.set("addresses", addresses);
+			addressesCache = addresses; // update cache
 		}
 
 		var updateKnownPeers = function (peers) {
@@ -168,7 +180,38 @@
 							config[name] = values[name];
 						}
 					}
-					writeConfig(config);				
+					writeConfig(config);
+				}
+				deferred.resolve(true);
+			} catch (err) {
+				deferred.reject(err);
+			}
+			return deferred.promise;
+		}
+
+		this.getAddresses = function() {
+			var addresses = addressesCache ? addressesCache : fetchAddresses();
+			return angular.copy(addresses);
+		}
+
+		this.addAddress = function(name, address) {
+			var addresses = addressesCache ? addressesCache : fetchAddresses();
+			addresses[name] = address;
+			writeAddresses(addresses);
+			return true;
+		}
+
+		this.addAddresses = function(newAddresses) {
+			var deferred = $q.defer();
+			try {
+				if (values) {
+					var addresses = addressesCache ? addressesCache : fetchAddresses();
+					for (var name in newAddresses) {
+						if (newAddresses.hasOwnProperty(name)) {
+							addresses[name] = newAddresses[name];
+						}
+					}
+					writeAddresses(addresses);
 				}
 				deferred.resolve(true);
 			} catch (err) {
@@ -301,6 +344,11 @@
 		this.queryRoute = function(pubkey, amount) {
 			var data = { pubkey: pubkey, amt: amount };
 			return $http.post('/api/queryroute', data);
+		};
+
+		this.newAddress = function(type) {
+			var data = { type: type };
+			return $http.post('/api/newaddress', data);
 		};
 
 		Object.seal(this);
