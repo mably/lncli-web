@@ -50,6 +50,9 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 			});
 
 			var tail = spawn("tail", ["-f", lndLogfile]);
+			tail.on("error", function (err) {
+				logger.warn("Couldn't launch tail command!", err.message);
+			});
 			tail.stdout.on("data", function (data) {
 				logger.debug("tail", data.toString('utf-8'))
 				for (var i = 0; i < clients.length; i++) {
