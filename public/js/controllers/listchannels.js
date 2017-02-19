@@ -135,6 +135,11 @@
 			}
 		}
 
+		$scope.$on(config.events.CHANNEL_REFRESH, function(event, args) {
+			console.log("Received event CHANNEL_REFRESH", event, args);
+			$scope.refresh();
+		});
+
 		$scope.refresh();
 
 	}

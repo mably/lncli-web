@@ -1,5 +1,5 @@
 // public/core.js
-var lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast"]);
+var lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid"]);
 
 lnwebcli.config(["localStorageServiceProvider", function (localStorageServiceProvider) {
 	localStorageServiceProvider
@@ -19,11 +19,26 @@ lnwebcli.config(['ngToastProvider', function(ngToast) {
 lnwebcli.constant("config", {
 	keys: {
 		AUTO_REFRESH: "autorefresh",
-		MAX_LOG_BUFFER: "maxlogbuffer"
+		MAX_LOG_BUFFER: "maxlogbuffer",
+		MAX_NOTIF_BUFFER: "maxnotifbuffer"
 	},
 	defaults: {
 		AUTO_REFRESH: 60000, // 1 minute
-		MAX_LOG_BUFFER: 500 // 500 lines of logs max
+		MAX_LOG_BUFFER: 500, // 500 lines of logs max
+		MAX_NOTIF_BUFFER: 500 // 500 lines of notifications max
+	},
+	notif: {
+		SUCCESS: "SUCCESS",
+		INFO: "INFO",
+		WARNING: "WARNING"
+	},
+	events: {
+		CHANNEL_REFRESH: "channel.refresh",
+		HELLO_WS: "hello",
+		TAIL_WS: "tail",
+		INVOICE_WS: "invoice",
+		OPENCHANNEL_WS: "openchannel",
+		CLOSECHANNEL_WS: "closechannel",
 	},
 	modals: {
 		NEW_ADDRESS: {

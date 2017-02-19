@@ -35,6 +35,7 @@
     "components-font-awesome": "^4.7.0",
     "socket.io-client": "^1.7.2",
     "ngToast": "ngtoast#^2.0.0",
-    "angular-animate": "^1.6.2"
+    "angular-animate": "^1.6.2",
+    "angular-uuids": "^0.0.4"
   }
 }

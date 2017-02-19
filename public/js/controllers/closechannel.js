@@ -1,10 +1,12 @@
 (function () {
 
-	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$uibModalInstance", "channel", "lncli", controller]);
+	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "channel", "lncli", controller]);
 
-	function controller ($scope, $uibModalInstance, channel, lncli) {
+	function controller ($scope, $timeout, $uibModalInstance, channel, lncli) {
 
 		var $ctrl = this;
+
+		var listenersIds = [];
 
 		$ctrl.spinner = 0;
 
@@ -15,18 +17,36 @@
 			var force = $ctrl.channel.forceclose;
 			$ctrl.spinner++;
 			lncli.closeChannel(channelPoint[0], channelPoint[1], force).then(function(response) {
-				$ctrl.spinner--;
 				console.log("CloseChannel", response);
-				if (response.data.error) {
-					if ($ctrl.isClosed) {
-						bootbox.alert(response.data.error);
-					} else {
-						$ctrl.warning = response.data.error;
-					}
-				} else {
-					$ctrl.warning = null;
+				var requestId = response.rid;
+				// timer to not wait indefinitely for first websocket event
+				var waitTimer = $timeout(function() {
+					$ctrl.spinner--;
+					listenersIds.splice(listenersIds.indexOf(requestId), 1);
+					lncli.unregisterWSRequestListener(requestId);
 					$uibModalInstance.close($ctrl.values);
-				}
+				}, 15000); // Wait 5 seconds maximmum for socket response
+				listenersIds.push(requestId);
+				// We wait for first websocket event to check for errors
+				lncli.registerWSRequestListener(requestId, function(response) {
+					$ctrl.spinner--;
+					$timeout.cancel(waitTimer);
+					listenersIds.splice(listenersIds.indexOf(requestId), 1);
+					lncli.unregisterWSRequestListener(requestId);
+					if ($ctrl.isClosed) {
+						return true;
+					} else {
+						if (response.evt === "error") {
+							$ctrl.warning = response.data.error;
+							return false;
+						} else {
+							$timeout(function () {
+								$uibModalInstance.close($ctrl.values);
+							});
+							return true;
+						}
+					}
+				});
 			}, function(err) {
 				$ctrl.spinner--;
 				console.log('Error', err);
@@ -47,9 +67,18 @@
 			$ctrl.warning = null;
 		}
 
+		var unregisterWSRequestListeners = function () {
+			for (var i = 0; i < listenersIds.length; i++) {
+				lncli.unregisterWSRequestListener(listenersIds[i]);
+			}
+			listenersIds.length = 0;
+		}
+
 		$scope.$on("modal.closing", function (event, reason, closed) {
 			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
 			$ctrl.isClosed = true;
+			$ctrl.warning = null;
+			unregisterWSRequestListeners();
 		});
 
 	}
