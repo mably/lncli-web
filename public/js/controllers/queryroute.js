@@ -19,7 +19,7 @@
 				if (response.data.error) {
 					$ctrl.route = null;
 					if ($ctrl.isClosed) {
-						bootbox.alert(response.data.error);
+						lncli.alert(response.data.error);
 					} else {
 						$ctrl.warning = response.data.error;
 					}
@@ -33,7 +33,7 @@
 				$ctrl.route = null;
 				var errmsg = err.message || err.statusText;
 				if ($ctrl.isClosed) {
-					bootbox.alert(errmsg);
+					lncli.alert(errmsg);
 				} else {
 					$ctrl.warning = errmsg;
 				}

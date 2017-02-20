@@ -33,7 +33,11 @@
 		var addressesCache = null;
 		var wsRequestListeners = {};
 
-		var socket = io.connect("/", { secure: "https" === location.protocol });
+		var serverUrl = function (path) {
+			return window.serverRootPath ? window.serverRootPath + path : path;
+		};
+
+		var socket = io.connect(serverUrl("/"), { secure: "https" === location.protocol });
 
 		socket.on(config.events.INVOICE_WS, function(data) {
 			console.log("Invoice received:", data);
@@ -218,6 +222,12 @@
 			}
 		};
 
+		this.alert = function (message) {
+			if (message && message.length > 0) {
+				bootbox.alert(message);
+			}
+		}
+
 		var fetchConfig = function () {
 			configCache = localStorageService.get("config"); // update cache
 			if (!configCache) { configCache = {}; }
@@ -278,7 +288,7 @@
 			if (useCache && infoCache) {
 				deferred.resolve(infoCache);
 			} else {
-				$http.get(API.GETINFO).then(function (response) {
+				$http.get(serverUrl(API.GETINFO)).then(function (response) {
 					infoCache = response;
 					deferred.resolve(response);
 				}, function (err) {
@@ -289,15 +299,15 @@
 		};
 
 		this.getNetworkInfo = function() {
-			return $http.get(API.GETNETWORKINFO);
+			return $http.get(serverUrl(API.GETNETWORKINFO));
 		};
 
 		this.walletBalance = function() {
-			return $http.get(API.WALLETBALANCE);
+			return $http.get(serverUrl(API.WALLETBALANCE));
 		};
 
 		this.channelBalance = function() {
-			return $http.get(API.CHANNELBALANCE);
+			return $http.get(serverUrl(API.CHANNELBALANCE));
 		};
 
 		this.getConfigValue = function(name, defaultValue) {
@@ -377,7 +387,7 @@
 			if (useCache && peersCache) {
 				deferred.resolve(peersCache);
 			} else {
-				$http.get(API.LISTPEERS).then(function (response) {
+				$http.get(serverUrl(API.LISTPEERS)).then(function (response) {
 					if (response.data && response.data.peers) {
 						updateKnownPeers(response.data.peers);
 					}
@@ -441,7 +451,7 @@
 			if (useCache && channelsCache) {
 				deferred.resolve(channelsCache);
 			} else {
-				$http.get(API.LISTCHANNELS).then(function (response) {
+				$http.get(serverUrl(API.LISTCHANNELS)).then(function (response) {
 					channelsCache = response;
 					deferred.resolve(response);
 				}, function (err) {
@@ -452,20 +462,20 @@
 		};
 
 		this.pendingChannels = function() {
-			return $http.get(API.PENDINGCHANNELS);
+			return $http.get(serverUrl(API.PENDINGCHANNELS));
 		};
 
 		this.listPayments = function() {
-			return $http.get(API.LISTPAYMENTS);
+			return $http.get(serverUrl(API.LISTPAYMENTS));
 		};
 
 		this.listInvoices = function() {
-			return $http.get(API.LISTINVOICES);
+			return $http.get(serverUrl(API.LISTINVOICES));
 		};
 
 		this.connectPeer = function(pubkey, host) {
 			var data = { pubkey: pubkey, host: host };
-			return $http.post(API.CONNECTPEER, data);
+			return $http.post(serverUrl(API.CONNECTPEER), data);
 		};
 
 		this.openChannel = function(pubkey, localamt, pushamt, numconf) {
@@ -496,27 +506,27 @@
 
 		this.addInvoice = function(memo, value) {
 			var data = { memo: memo, value: value };
-			return $http.post(API.ADDINVOICE, data);
+			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
 		this.sendPayment = function(payreq) {
 			var data = { payreq: payreq };
-			return $http.post(API.SENDPAYMENT, data);
+			return $http.post(serverUrl(API.SENDPAYMENT), data);
 		};
 
 		this.decodePayReq = function(payreq) {
 			var data = { payreq: payreq };
-			return $http.post(API.DECODEPAYREQ, data);
+			return $http.post(serverUrl(API.DECODEPAYREQ), data);
 		};
 
 		this.queryRoute = function(pubkey, amount) {
 			var data = { pubkey: pubkey, amt: amount };
-			return $http.post(API.QUERYROUTE, data);
+			return $http.post(serverUrl(API.QUERYROUTE), data);
 		};
 
 		this.newAddress = function(type) {
 			var data = { type: type };
-			return $http.post(API.NEWADDRESS, data);
+			return $http.post(serverUrl(API.NEWADDRESS), data);
 		};
 
 		Object.seal(this);

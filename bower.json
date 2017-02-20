@@ -37,5 +37,8 @@
     "ngToast": "ngtoast#^2.0.0",
     "angular-animate": "^1.6.2",
     "angular-uuids": "^0.0.4"
+  },
+  "resolutions": {
+    "angular": "1.6.2"
   }
 }

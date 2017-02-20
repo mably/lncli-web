@@ -19,8 +19,8 @@
 					$scope.channels = response.data.channels;
 				}, function(err) {
 					$scope.spinner--;
-					console.log('Error: ' + err);
-					bootbox.alert(err.message || err.statusText);
+					console.log('Error:', err);
+					lncli.alert(err.message || err.statusText);
 				});
 			});
 		};
@@ -70,7 +70,7 @@
 
 				} else {
 
-					bootbox.alert("You cannot open a channel, you are not connected to any peers!");
+					lncli.alert("You cannot open a channel, you are not connected to any peers!");
 
 				}
 
