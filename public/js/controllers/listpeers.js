@@ -77,6 +77,11 @@
 			}, 500);
 		}
 
+		$scope.$on(config.events.PEER_REFRESH, function(event, args) {
+			console.log("Received event PEER_REFRESH", event, args);
+			$scope.refresh();
+		});
+
 		$scope.refresh();
 
 	}

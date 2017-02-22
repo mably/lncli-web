@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ModalEditKnownPeerCtrl", ["$uibModalInstance", "knownpeer", "lncli", controller]);
+	lnwebcli.controller("ModalEditKnownPeerCtrl", ["$rootScope", "$uibModalInstance", "knownpeer", "lncli", "config", controller]);
 
-	function controller ($uibModalInstance, knownpeer, lncli) {
+	function controller ($rootScope, $uibModalInstance, knownpeer, lncli, config) {
 
 		var $ctrl = this;
 
@@ -12,6 +12,7 @@
 			lncli.editKnownPeer($ctrl.values).then(function(response) {
 				console.log("EditKnownPeer", response);
 				$ctrl.warning = null;
+				$rootScope.$broadcast(config.events.PEER_REFRESH, response);
 				$uibModalInstance.close($ctrl.values);
 			}, function (err) {
 				$ctrl.warning = err;

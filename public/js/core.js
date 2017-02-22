@@ -33,6 +33,7 @@ lnwebcli.constant("config", {
 		WARNING: "WARNING"
 	},
 	events: {
+		PEER_REFRESH: "peer.refresh",
 		CHANNEL_REFRESH: "channel.refresh",
 		HELLO_WS: "hello",
 		TAIL_WS: "tail",

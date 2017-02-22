@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ListKnownPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
+	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
 
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	function controller($rootScope, $scope, $timeout, $uibModal, lncli, config) {
 
 		var $ctrl = this;
 
@@ -30,7 +30,7 @@
 				if (response.data.error) {
 					lncli.alert(response.data.error);
 				} else {
-					// TODO
+					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
 				}
 			}, function (err) {
 				$scope.spinner--;
@@ -122,6 +122,11 @@
 				peer.addressCopied = false;
 			}, 500);
 		}
+
+		$scope.$on(config.events.PEER_REFRESH, function(event, args) {
+			console.log("Received event PEER_REFRESH", event, args);
+			$scope.refresh();
+		});
 
 		$scope.refresh();
 
