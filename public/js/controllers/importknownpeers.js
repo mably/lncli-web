@@ -15,10 +15,10 @@
 					console.log("ImportKnownPeers", response);
 					$ctrl.warning = null;
 					$uibModalInstance.close($ctrl.values);
-					bootbox.alert("Peers successfully imported!");
+					lncli.alert("Peers successfully imported!");
 				}, function (err) {
 					console.log(err);
-					bootbox.alert(err.message);
+					lncli.alert(err.message);
 				});
 			} catch (err) {
 				$ctrl.warning = err.message;

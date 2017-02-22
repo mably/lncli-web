@@ -1,8 +1,12 @@
 {
-  "name": "lncli-web",
+  "name": "lncliweb",
   "version": "1.0.0",
-  "description": "Lnd Web Client",
-  "main": "server.js",
+  "description": "lnd web client",
+  "productName": "lncliweb",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mably/lncli-web.git"
@@ -38,6 +42,10 @@
     "winston-daily-rotate-file": "^1.4.4"
   },
   "devDependencies": {
-    "bower": "^1.8.0"
+    "bower": "^1.8.0",
+    "electron": "^1.4.1",
+    "electron-packager": "^8.5.2",
+    "electron-rebuild": "^1.5.7",
+    "electron-winstaller": "^2.5.2"
   }
 }

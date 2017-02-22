@@ -38,3 +38,5 @@ jspm_packages
 /public/components
 /*.log
 /*.pem
+/lncliweb-win32-x64
+/dist

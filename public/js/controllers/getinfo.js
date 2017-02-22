@@ -17,8 +17,8 @@
 				$scope.info = response.data;
 			}, function(err) {
 				$scope.spinner--;
-				console.log('Error: ' + err);
-				bootbox.alert(err.message || err.statusText);
+				console.log('Error:', err);
+				lncli.alert(err.message || err.statusText);
 			});
 		}
 

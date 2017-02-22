@@ -17,7 +17,8 @@
 				$scope.peers = response;
 			}, function(err) {
 				$scope.spinner--;
-				console.log('Error: ' + err);
+				console.log('Error:', err);
+				lncli.alert(err.message || err.statusText);
 			});
 		};
 
@@ -27,14 +28,14 @@
 				$scope.spinner--;
 				console.log("ConnectKnownPeer", response);
 				if (response.data.error) {
-					bootbox.alert(response.data.error);
+					lncli.alert(response.data.error);
 				} else {
 					// TODO
 				}
 			}, function (err) {
 				$scope.spinner--;
 				console.log(err);
-				bootbox.alert(err.message || err.statusText);
+				lncli.alert(err.message || err.statusText);
 			});
 		};
 
@@ -75,7 +76,7 @@
 					$scope.refresh();
 				}, function (err) {
 					console.log(err);
-					bootbox.alert(err.message);
+					lncli.alert(err.message);
 				});
 			});
 		};

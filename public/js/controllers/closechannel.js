@@ -52,7 +52,7 @@
 				console.log('Error', err);
 				var errmsg = err.message || err.statusText;
 				if ($ctrl.isClosed) {
-					bootbox.alert(errmsg);
+					lncli.alert(errmsg);
 				} else {
 					$ctrl.warning = errmsg;
 				}

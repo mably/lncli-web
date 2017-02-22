@@ -5,7 +5,7 @@
 	function controller ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
-		
+
 		$ctrl.spinner = 0;
 
 		$ctrl.values = defaults;
@@ -18,7 +18,7 @@
 				console.log("SendPayment", response);
 				if (response.data.error) {
 					if ($ctrl.isClosed) {
-						bootbox.alert(response.data.error);
+						lncli.alert(response.data.error);
 					} else {
 						$ctrl.warning = response.data.error;
 					}
@@ -31,7 +31,7 @@
 				console.log(err);
 				var errmsg = err.message || err.statusText;
 				if ($ctrl.isClosed) {
-					bootbox.alert(errmsg);
+					lncli.alert(errmsg);
 				} else {
 					$ctrl.warning = errmsg;
 				}
@@ -46,7 +46,7 @@
 				if (response.data.error) {
 					$ctrl.decodedPayment = null;
 					if ($ctrl.isClosed) {
-						bootbox.alert(response.data.error);
+						lncli.alert(response.data.error);
 					} else {
 						$ctrl.warning = response.data.error;
 					}
@@ -60,7 +60,7 @@
 				$ctrl.decodedPayment = null;
 				var errmsg = err.message || err.statusText;
 				if ($ctrl.isClosed) {
-					bootbox.alert(errmsg);
+					lncli.alert(errmsg);
 				} else {
 					$ctrl.warning = errmsg;
 				}

@@ -7,9 +7,9 @@
 
 	<title>Lnd Web Client</title>
 
-	<link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.min.css"><!-- load bootstrap -->
-	<link rel="stylesheet" href="/components/components-font-awesome/css/font-awesome.min.css"><!-- load font-awesome -->
-	<link rel="stylesheet" href="/components/ngToast/dist/ngToast.min.css"><!-- load ngToast -->
+	<link rel="stylesheet" href="./components/bootstrap/dist/css/bootstrap.min.css"><!-- load bootstrap -->
+	<link rel="stylesheet" href="./components/components-font-awesome/css/font-awesome.min.css"><!-- load font-awesome -->
+	<link rel="stylesheet" href="./components/ngToast/dist/ngToast.min.css"><!-- load ngToast -->
 	<style>
 		html { overflow-y: scroll; }
 		body { padding-top: 50px; }
@@ -38,56 +38,56 @@
 		}
 	</style>
 
-	<script src="/components/jquery/dist/jquery.min.js"></script><!-- load jquery -->
-	<script src="/components/angular/angular.min.js"></script><!-- load angular -->
-	<script src="/components/angular-animate/angular-animate.min.js"></script><!-- load angular-animate -->
-	<script src="/components/angular-sanitize/angular-sanitize.min.js"></script><!-- load angular-sanitize -->
-	<script src="/components/angular-local-storage/dist/angular-local-storage.min.js"></script><!-- load angular-local-storage -->
-	<script src="/components/bootstrap/dist/js/bootstrap.min.js"></script><!-- load bootstrap -->
-	<script src="/components/angular-bootstrap/ui-bootstrap.min.js"></script><!-- load bootstrap for angular -->
-	<script src="/components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script><!-- load bootstrap tpls for angular -->
-	<script src="/components/bootbox.js/bootbox.js"></script><!-- load bootbox -->
-	<script src="/components/clipboard/dist/clipboard.min.js"></script><!-- load clipboard -->
-	<script src="/components/ngclipboard/dist/ngclipboard.min.js"></script><!-- load ngclipboard -->
-	<script src="/components/socket.io-client/dist/socket.io.min.js"></script><!-- load socket.io -->
-	<script src="/components/ngToast/dist/ngToast.min.js"></script><!-- load ngToast -->
-	<script src="/components/angular-uuids/angular-uuid.js"></script><!-- load angular-uuids -->
+	<script src="./components/jquery/dist/jquery.min.js"></script><!-- load jquery -->
+	<script src="./components/angular/angular.min.js"></script><!-- load angular -->
+	<script src="./components/angular-animate/angular-animate.min.js"></script><!-- load angular-animate -->
+	<script src="./components/angular-sanitize/angular-sanitize.min.js"></script><!-- load angular-sanitize -->
+	<script src="./components/angular-local-storage/dist/angular-local-storage.min.js"></script><!-- load angular-local-storage -->
+	<script src="./components/bootstrap/dist/js/bootstrap.min.js"></script><!-- load bootstrap -->
+	<script src="./components/angular-bootstrap/ui-bootstrap.min.js"></script><!-- load bootstrap for angular -->
+	<script src="./components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script><!-- load bootstrap tpls for angular -->
+	<script src="./components/bootbox.js/bootbox.js"></script><!-- load bootbox -->
+	<script src="./components/clipboard/dist/clipboard.min.js"></script><!-- load clipboard -->
+	<script src="./components/ngclipboard/dist/ngclipboard.min.js"></script><!-- load ngclipboard -->
+	<script src="./components/socket.io-client/dist/socket.io.min.js"></script><!-- load socket.io -->
+	<script src="./components/ngToast/dist/ngToast.min.js"></script><!-- load ngToast -->
+	<script src="./components/angular-uuids/angular-uuid.js"></script><!-- load angular-uuids -->
 
-	<script src="js/core.js"></script>
-	<script src="js/services/lncli.js"></script>
-	<script src="js/controllers/getinfo.js"></script>
-	<script src="js/controllers/getnetworkinfo.js"></script>
-	<script src="js/controllers/walletbalance.js"></script>
-	<script src="js/controllers/channelbalance.js"></script>
-	<script src="js/controllers/listpeers.js"></script>
-	<script src="js/controllers/listknownpeers.js"></script>
-	<script src="js/controllers/addpeer.js"></script>
-	<script src="js/controllers/importknownpeers.js"></script>
-	<script src="js/controllers/editknownpeer.js"></script>
-	<script src="js/controllers/listchannels.js"></script>
-	<script src="js/controllers/pendingchannels.js"></script>
-	<script src="js/controllers/openchannel.js"></script>
-	<script src="js/controllers/closechannel.js"></script>
-	<script src="js/controllers/listpayments.js"></script>
-	<script src="js/controllers/sendpayment.js"></script>
-	<script src="js/controllers/listinvoices.js"></script>
-	<script src="js/controllers/addinvoice.js"></script>
-	<script src="js/controllers/navbar.js"></script>
-	<script src="js/controllers/editsettings.js"></script>
-	<script src="js/controllers/newaddress.js"></script>
-	<script src="js/controllers/queryroute.js"></script>
-	<script src="js/directives/getinfo.js"></script>
-	<script src="js/directives/getnetworkinfo.js"></script>
-	<script src="js/directives/walletbalance.js"></script>
-	<script src="js/directives/channelbalance.js"></script>
-	<script src="js/directives/listpeers.js"></script>
-	<script src="js/directives/listknownpeers.js"></script>
-	<script src="js/directives/listchannels.js"></script>
-	<script src="js/directives/pendingchannels.js"></script>
-	<script src="js/directives/listpayments.js"></script>
-	<script src="js/directives/listinvoices.js"></script>
-	<script src="js/filters/firstlast.js"></script>
-	<script src="js/factories/utils.js"></script>
+	<script src="./js/core.js"></script>
+	<script src="./js/services/lncli.js"></script>
+	<script src="./js/controllers/getinfo.js"></script>
+	<script src="./js/controllers/getnetworkinfo.js"></script>
+	<script src="./js/controllers/walletbalance.js"></script>
+	<script src="./js/controllers/channelbalance.js"></script>
+	<script src="./js/controllers/listpeers.js"></script>
+	<script src="./js/controllers/listknownpeers.js"></script>
+	<script src="./js/controllers/addpeer.js"></script>
+	<script src="./js/controllers/importknownpeers.js"></script>
+	<script src="./js/controllers/editknownpeer.js"></script>
+	<script src="./js/controllers/listchannels.js"></script>
+	<script src="./js/controllers/pendingchannels.js"></script>
+	<script src="./js/controllers/openchannel.js"></script>
+	<script src="./js/controllers/closechannel.js"></script>
+	<script src="./js/controllers/listpayments.js"></script>
+	<script src="./js/controllers/sendpayment.js"></script>
+	<script src="./js/controllers/listinvoices.js"></script>
+	<script src="./js/controllers/addinvoice.js"></script>
+	<script src="./js/controllers/navbar.js"></script>
+	<script src="./js/controllers/editsettings.js"></script>
+	<script src="./js/controllers/newaddress.js"></script>
+	<script src="./js/controllers/queryroute.js"></script>
+	<script src="./js/directives/getinfo.js"></script>
+	<script src="./js/directives/getnetworkinfo.js"></script>
+	<script src="./js/directives/walletbalance.js"></script>
+	<script src="./js/directives/channelbalance.js"></script>
+	<script src="./js/directives/listpeers.js"></script>
+	<script src="./js/directives/listknownpeers.js"></script>
+	<script src="./js/directives/listchannels.js"></script>
+	<script src="./js/directives/pendingchannels.js"></script>
+	<script src="./js/directives/listpayments.js"></script>
+	<script src="./js/directives/listinvoices.js"></script>
+	<script src="./js/filters/firstlast.js"></script>
+	<script src="./js/factories/utils.js"></script>
 </head>
 
 <body>
@@ -117,9 +117,9 @@
 				<ul class="dropdown-menu">
 				  <li><a ng-click="newAddress()">New address</a></li>
 				  <li><a ng-click="queryRoute()">Query route</a></li>
+				  <li><a ng-click="editSettings()">Settings</a></li>
 				</ul>
 			  </li> 
-			  <li><a ng-click="editSettings()">Settings</a></li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 		  </ul>
@@ -314,19 +314,7 @@
 	</div>
 	<div class="page-header">
 		<a name="logs"></a>
-		<h1>Logs & Notifications</h1>
-	</div>
-	<div class="row">
-		<div class="col-sm-12">
-		  <div class="panel panel-success">
-			<div class="panel-heading clearfix">
-			  <span class="panel-title">lnd log file <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
-			</div>
-			<div class="panel-body">
-			  <pre id="tail"></pre>
-			</div>
-		  </div>
-		</div><!-- /.col-sm-12 -->
+		<h1>Logs</h1>
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
@@ -336,6 +324,18 @@
 			</div>
 			<div class="panel-body">
 			  <pre id="notifications"></pre>
+			</div>
+		  </div>
+		</div><!-- /.col-sm-12 -->
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+		  <div class="panel panel-success">
+			<div class="panel-heading clearfix">
+			  <span class="panel-title">lnd log file <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			</div>
+			<div class="panel-body">
+			  <pre id="tail"></pre>
 			</div>
 		  </div>
 		</div><!-- /.col-sm-12 -->
