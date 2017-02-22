@@ -1,8 +1,8 @@
 (function () {
 
-	lnwebcli.controller("ModalAddPeerCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
+	lnwebcli.controller("ModalAddPeerCtrl", ["$rootScope", "$scope", "$uibModalInstance", "defaults", "lncli", "config", controller]);
 
-	function controller ($scope, $uibModalInstance, defaults, lncli) {
+	function controller ($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
 
 		var $ctrl = this;
 
@@ -23,6 +23,7 @@
 					}
 				} else {
 					$ctrl.warning = null;
+					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
 					$uibModalInstance.close($ctrl.values);
 				}
 			}, function (err) {
