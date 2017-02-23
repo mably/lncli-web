@@ -1,9 +1,9 @@
 "use strict";
 (function () {
 
-	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "lnwebcliUtils", service]);
+	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", "lnwebcliUtils", service]);
 
-	function service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, utils) {
+	function service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification, utils) {
 
 		var _this = this;
 
@@ -201,6 +201,21 @@
 							content: message
 						});
 					}
+					webNotification.showNotification("Lnd Web Client notification", {
+						body: message,
+						icon: "favicon.ico",
+						onClick: function (event) {
+							console.log("Web notification clicked");
+							event.currentTarget.close();
+						},
+						autoClose: 4000 // 4 seconds
+					}, function onShow(error, hide) {
+						if (error) {
+							_this.alert("Unable to show web notification: " + error.message);
+						} else {
+							console.log("Web notification shown");
+						}
+					});
 				});
 				var index = -1;
 				while ((index = message.indexOf("\n", index + 1)) > -1) {
