@@ -4,6 +4,8 @@ resultPromise = electronInstaller.createWindowsInstaller({
     appDirectory: './lncliweb-win32-x64',
     outputDirectory: './dist',
     authors: 'Mably',
+    noMsi: true,
+    setupIcon: './public/favicon.ico',
     exe: 'lncliweb.exe'
   });
 
