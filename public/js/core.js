@@ -1,5 +1,5 @@
 // public/core.js
-var lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid"]);
+var lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification"]);
 
 lnwebcli.config(["localStorageServiceProvider", function (localStorageServiceProvider) {
 	localStorageServiceProvider
