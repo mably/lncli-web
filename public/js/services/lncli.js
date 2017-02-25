@@ -54,8 +54,22 @@
 		socket.on(config.events.TAIL_WS, function(message) {
 			console.log("Tail message:", message);
 			if (message.tail) {
+				var logNotifyPattern = _this.getConfigValue(
+					config.keys.LOG_NOTIFY_PATTERN, config.defaults.LOG_NOTIFY_PATTERN);
+				var logPatternRE = null;
+				if (logNotifyPattern) {
+					logPatternRE = new RegExp(logNotifyPattern);
+				}
 				var index = -1;
+				var previndex = 0;
 				while ((index = message.tail.indexOf("\n", index + 1)) > -1) {
+					if (logPatternRE) {
+						var logLine = message.tail.substr(previndex, (index - previndex));
+						if (logLine.match(logPatternRE)) {
+							_this.notify(config.notif.WARNING, logLine);
+						}
+					}
+					previndex = index;
 					logLines++;
 				}
 				var tailObj = $("#tail");
@@ -197,7 +211,7 @@
 							content: message
 						});
 					} else if (type === config.notif.WARNING) {
-						ngToast.success({
+						ngToast.warning({
 							content: message
 						});
 					}
