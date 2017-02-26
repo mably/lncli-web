@@ -69,7 +69,7 @@
 							_this.notify(config.notif.WARNING, logLine);
 						}
 					}
-					previndex = index;
+					previndex = index + 1;
 					logLines++;
 				}
 				var tailObj = $("#tail");
