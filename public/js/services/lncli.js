@@ -279,13 +279,27 @@
 			addressesCache = addresses; // update cache
 		}
 
-		var updateKnownPeers = function (peers) {
+		var updateKnownPeers = function (peers, fromPeers) {
 			var knownPeers = fetchKnownPeers();
 			for (var i = 0; i < peers.length; i++) {
 				var peer = peers[i];
 				var knownPeer = knownPeers[peer.pub_key];
-				if (knownPeer && knownPeer.alias && !peer.alias) {
-					peer.alias = knownPeer.alias; // to keep peer alias around
+				if (knownPeer) {
+					try {
+						if (knownPeer.alias && !peer.alias) {
+							peer.alias = knownPeer.alias; // to keep peer alias around
+						}
+						if (fromPeers && (knownPeer.address != peer.address)) {
+							var peerHostPort = peer.address.split(":");
+							var knownPeerHostPort = knownPeer.address.split(":");
+							peer.address = peerHostPort[0] + ":" + knownPeerHostPort[1]; // keep overriden port
+						}
+					} catch (err) {
+						console.log(err);
+					}
+				}
+				if (fromPeers) {
+					peer.lastseen = new Date().getTime();
 				}
 				knownPeers[peer.pub_key] = peer;
 			}
@@ -418,7 +432,7 @@
 			} else {
 				$http.get(serverUrl(API.LISTPEERS)).then(function (response) {
 					if (response.data && response.data.peers) {
-						updateKnownPeers(response.data.peers);
+						updateKnownPeers(response.data.peers, true);
 					}
 					peersCache = response;
 					deferred.resolve(response);
@@ -451,13 +465,13 @@
 
 		this.importKnownPeers = function (knownPeers) {
 			var deferred = $q.defer();
-			deferred.resolve(updateKnownPeers(knownPeers));
+			deferred.resolve(updateKnownPeers(knownPeers, false));
 			return deferred.promise;
 		};
 
 		this.editKnownPeer = function(knownPeer) {
 			var deferred = $q.defer();
-			updateKnownPeers([knownPeer]);
+			updateKnownPeers([knownPeer], false);
 			deferred.resolve(knownPeer);
 			return deferred.promise;
 		};
