@@ -50,17 +50,20 @@ node server --help
 
   Options:
 
-    -h, --help                 output usage information
-    -V, --version              output the version number
-    -s, --serverport [port]    web server listening port (defaults to 8280)
-    -l, --lndhost [host:port]  RPC lnd host (defaults to localhost:10009)
-    -t, --usetls [path]        path to a directory containing key.pem and cert.pem files
-    -u, --user [login]         basic authentication login
-    -p, --pwd [password]       basic authentication password
-    -r, --limituser [login]    basic authentication login for readonly account
-    -w, --limitpwd [password]  basic authentication password for readonly account
-    -f, --logfile [file path]  path to file where to store the application logs
-    -e, --loglevel [level]     level of logs to display (debug, info, warn, error)
+    -h, --help                    output usage information
+    -V, --version                 output the version number
+    -s, --serverport [port]       web server listening port (defaults to 8280)
+    -h, --serverhost [host]       web server listening host (defaults to localhost)
+    -l, --lndhost [host:port]     RPC lnd host (defaults to localhost:10009)
+    -t, --usetls [path]           path to a directory containing key.pem and cert.pem files
+    -u, --user [login]            basic authentication login
+    -p, --pwd [password]          basic authentication password
+    -r, --limituser [login]       basic authentication login for readonly account
+    -w, --limitpwd [password]     basic authentication password for readonly account
+    -f, --logfile [file path]     path to file where to store the application logs
+    -e, --loglevel [level]        level of logs to display (debug, info, warn, error)
+    -n, --lndlogfile <file path>  path to lnd log file to send to browser
+    -k, --le-email [email]        lets encrypt required contact email
 
 ```
 
