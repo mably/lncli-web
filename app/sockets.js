@@ -2,10 +2,10 @@
 
 const debug = require('debug')('lncliweb:sockets')
 const logger = require('winston')
-const spawn = require('child_process').spawn;
+const spawn = require('child_process').spawn
 const grpc = require('grpc');
-const bitcore = require('bitcore-lib');
-const BufferUtil = bitcore.util.buffer;
+const bitcore = require('bitcore-lib')
+const BufferUtil = bitcore.util.buffer
 
 // TODO
 module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lndLogfile) {
@@ -23,40 +23,52 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 		limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
 	}
 
-	var subscribeInvoicesCall = null;
+	var lndInvoicesStream = null;
+	var tailProcess = null;
 
-	var initSubscribeInvoicesCall = function() {
-
-		if (!subscribeInvoicesCall) {
-
-			logger.debug("Registering to lnd SubscribeInvoices stream");
-
-			subscribeInvoicesCall = lightning.subscribeInvoices({});
-
-			subscribeInvoicesCall.on("data", function(data) {
+	var openLndInvoicesStream = function() {
+		if (lndInvoicesStream) {
+			logger.debug("Lnd invoices subscription stream already opened.");
+		} else {
+			logger.debug("Opening lnd invoices subscription stream...");
+			lndInvoicesStream = lightning.subscribeInvoices({});
+			logger.debug("Lnd invoices subscription stream opened.");
+			lndInvoicesStream.on("data", function(data) {
 				logger.debug("SubscribeInvoices Data", data);
 				for (var i = 0; i < clients.length; i++) {
 					clients[i].emit("invoice", data);
 				}
 			});
-
-			subscribeInvoicesCall.on("end", function() {
+			lndInvoicesStream.on("end", function() {
 				logger.debug("SubscribeInvoices End");
+				lndInvoicesStream = null;
+				openLndInvoicesStream(); // try opening stream again
 			});
-
-			subscribeInvoicesCall.on("error", function(err) {
+			lndInvoicesStream.on("error", function(err) {
 				logger.debug("SubscribeInvoices Error", err);
 			});
-
-			subscribeInvoicesCall.on("status", function(status) {
+			lndInvoicesStream.on("status", function(status) {
 				logger.debug("SubscribeInvoices Status", status);
+				if (status.code == 14) { // Unavailable
+					lndInvoicesStream = null;
+					openLndInvoicesStream(); // try opening stream again
+				}
 			});
+		}
+	}
 
-			var tail = spawn("tail", ["-f", lndLogfile]);
-			tail.on("error", function (err) {
+	var registerGlobalListeners = function() {
+
+		if (!lndInvoicesStream) {
+			openLndInvoicesStream();
+		}
+
+		if (!tailProcess) {
+			var tailProcess = spawn("tail", ["-f", lndLogfile]);
+			tailProcess.on("error", function (err) {
 				logger.warn("Couldn't launch tail command!", err.message);
 			});
-			tail.stdout.on("data", function (data) {
+			tailProcess.stdout.on("data", function (data) {
 				logger.debug("tail", data.toString('utf-8'))
 				for (var i = 0; i < clients.length; i++) {
 					if (!clients[i]._limituser) {
@@ -64,7 +76,6 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 					}
 				}
 			}); 
-
 		}
 	}
 
@@ -101,7 +112,7 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 		/** pushing new client to client array*/
 		clients.push(socket);
 
-		initSubscribeInvoicesCall();
+		registerGlobalListeners();
 		
 		registerEventListeners(socket);
 
