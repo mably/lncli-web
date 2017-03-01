@@ -64,7 +64,7 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 		}
 
 		if (!tailProcess) {
-			var tailProcess = spawn("tail", ["-f", lndLogfile]);
+			tailProcess = spawn("tail", ["-f", lndLogfile]);
 			tailProcess.on("error", function (err) {
 				logger.warn("Couldn't launch tail command!", err.message);
 			});
