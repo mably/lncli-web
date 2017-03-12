@@ -22,9 +22,10 @@ module.exports = function (program) {
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
 
 	// app creation =================
-	const app = express();                                            // create our app w/ express
+	const app = express();                                          // create our app w/ express
 
 	// app configuration =================
+	app.use(require("./cors"));                                     // enable CORS headers
 	app.use(auth);                                                  // enable authentication
 	app.use(express.static(__dirname + '/../public'));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
