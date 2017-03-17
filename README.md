@@ -1,4 +1,4 @@
-# Lnd Web Client
+# Slack tipping bot using LN for payments
 
 ## Installation
 
