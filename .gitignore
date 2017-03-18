@@ -40,3 +40,4 @@ jspm_packages
 /*.pem
 /lncliweb-win32-x64
 /dist
+/config/grant-config.js

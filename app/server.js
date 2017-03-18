@@ -1,8 +1,11 @@
 // set up ========================
 const debug = require('debug')('lncliweb:server')
-const express  = require('express');
-const bodyParser = require('body-parser');         // pull information from HTML POST (express4)
-const methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
+const express  = require('express')
+const session = require('express-session')
+const Grant = require('grant-express')
+const grant = new Grant(require('../config/grant-config.js'))
+const bodyParser = require('body-parser')         // pull information from HTML POST (express4)
+const methodOverride = require('method-override') // simulate DELETE and PUT (express4)
 
 // expose the server to our app with module.exports
 module.exports = function (program) {
@@ -23,10 +26,12 @@ module.exports = function (program) {
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
+	app.use(session({ secret: 'dvv4gj4MfVWJRrFwlwNs', cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }))
 
 	// app configuration =================
 	app.use(require("./cors"));                                     // enable CORS headers
-	app.use([/^\/$/, '/lnd.html', '/api/lnd/'], basicauth);         // enable authentication
+	app.use(grant);                                                 // mount grant
+	app.use(['/lnd.html', '/api/lnd/'], basicauth);                 // enable basic authentication for lnd apis
 	app.use(express.static(__dirname + '/../public'));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json

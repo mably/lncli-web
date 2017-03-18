@@ -3,6 +3,7 @@
 const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
 const path = require('path')
+const request = require('request')
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
@@ -233,9 +234,27 @@ module.exports = function(app, lightning) {
 		});
 	});
 
+	app.get('/oauth/slack/callback', function(req, res) {
+		//https://slack.com/api/users.identity?token=xoxp-156430406180-156430406212-156430963396-fe524ed477bbc9ce3800349a3ad61a64&scope=identity.basic
+		var accessToken = req.query.access_token;
+		request.post({ url: 'https://slack.com/api/users.identity', form: { token: accessToken }}, function (err, httpResponse, body) {
+			debug(httpResponse.body);
+			var user = JSON.parse(httpResponse.body).user;
+			debug(user);
+			req.session.user = user;
+			res.redirect('/');
+		});
+	});
+
+	// get slack user info
+	app.get('/api/slacktip/getuser', function(req, res) {
+		debug(req.session.user);
+		res.json(req.session.user);
+	});
+
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
-		res.sendFile(path.resolve('public/lnd.html')); // load the single view file (angular will handle the page changes on the front-end)
+		res.sendFile(path.resolve('public/index.html')); // load the single view file (angular will handle the page changes on the front-end)
 	});
 
 }
