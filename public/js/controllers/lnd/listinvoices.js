@@ -34,7 +34,7 @@
 				animation: true,
 				ariaLabelledBy: "addinvoice-modal-title",
 				ariaDescribedBy: "addinvoice-modal-body",
-				templateUrl: "templates/partials/addinvoice.html",
+				templateUrl: "templates/partials/lnd/addinvoice.html",
 				controller: "ModalAddInvoiceCtrl",
 				controllerAs: "$ctrl",
 				size: "lg",

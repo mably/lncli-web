@@ -3,6 +3,6 @@ lnwebcli.directive("getInfo", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/getinfo.html",
+		templateUrl: "templates/partials/lnd/getinfo.html",
 	};
 }]);

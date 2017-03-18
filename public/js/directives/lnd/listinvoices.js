@@ -3,6 +3,6 @@ lnwebcli.directive("listInvoices", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/listinvoices.html",
+		templateUrl: "templates/partials/lnd/listinvoices.html",
 	};
 }]);

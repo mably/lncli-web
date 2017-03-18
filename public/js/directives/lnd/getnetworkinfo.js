@@ -3,6 +3,6 @@ lnwebcli.directive("getNetworkInfo", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/getnetworkinfo.html",
+		templateUrl: "templates/partials/lnd/getnetworkinfo.html",
 	};
 }]);

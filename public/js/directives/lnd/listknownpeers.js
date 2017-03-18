@@ -3,6 +3,6 @@ lnwebcli.directive("listKnownPeers", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/listknownpeers.html",
+		templateUrl: "templates/partials/lnd/listknownpeers.html",
 	};
 }]);
