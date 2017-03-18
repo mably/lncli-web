@@ -9,7 +9,7 @@ module.exports = function(app, lightning) {
 	// api ---------------------------------------------------------------------
 
 	// get lnd network info
-	app.get('/api/getnetworkinfo', function(req, res) {
+	app.get('/api/lnd/getnetworkinfo', function(req, res) {
 		lightning.getNetworkInfo({}, function(err, response) {
 			if (err) {
 				logger.debug('GetNetworkInfo Error:', err);
@@ -23,7 +23,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node info
-	app.get('/api/getinfo', function(req, res) {
+	app.get('/api/lnd/getinfo', function(req, res) {
 		lightning.getInfo({}, function(err, response) {
 			if (err) {
 				logger.debug('GetInfo Error:', err);
@@ -37,7 +37,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node active channels list
-	app.get('/api/listpeers', function(req, res) {
+	app.get('/api/lnd/listpeers', function(req, res) {
 		lightning.listPeers({}, function(err, response) {
 			if (err) {
 				logger.debug('ListPeers Error:', err);
@@ -51,7 +51,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node active channels list
-	app.get('/api/listchannels', function(req, res) {
+	app.get('/api/lnd/listchannels', function(req, res) {
 		lightning.listChannels({}, function(err, response) {
 			if (err) {
 				logger.debug('ListChannels Error:', err);
@@ -65,7 +65,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node pending channels list
-	app.get('/api/pendingchannels', function(req, res) {
+	app.get('/api/lnd/pendingchannels', function(req, res) {
 		lightning.pendingChannels({}, function(err, response) {
 			if (err) {
 				logger.debug('PendingChannels Error:', err);
@@ -79,7 +79,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node payments list
-	app.get('/api/listpayments', function(req, res) {
+	app.get('/api/lnd/listpayments', function(req, res) {
 		lightning.listPayments({}, function(err, response) {
 			if (err) {
 				logger.debug('ListPayments Error:', err);
@@ -93,7 +93,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get lnd node invoices list
-	app.get('/api/listinvoices', function(req, res) {
+	app.get('/api/lnd/listinvoices', function(req, res) {
 		lightning.listInvoices({}, function(err, response) {
 			if (err) {
 				logger.debug('ListInvoices Error:', err);
@@ -107,7 +107,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get the lnd node wallet balance
-	app.get('/api/walletbalance', function(req, res) {
+	app.get('/api/lnd/walletbalance', function(req, res) {
 		lightning.walletBalance({}, function(err, response) {
 			if (err) {
 				logger.debug('WalletBalance Error:', err);
@@ -121,7 +121,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// get the lnd node channel balance
-	app.get('/api/channelbalance', function(req, res) {
+	app.get('/api/lnd/channelbalance', function(req, res) {
 		lightning.channelBalance({}, function(err, response) {
 			if (err) {
 				logger.debug('ChannelBalance Error:', err);
@@ -135,7 +135,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// connect peer to lnd node
-	app.post('/api/connectpeer', function(req, res) {
+	app.post('/api/lnd/connectpeer', function(req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
@@ -153,7 +153,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// addinvoice
-	app.post('/api/addinvoice', function(req, res) {
+	app.post('/api/lnd/addinvoice', function(req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
@@ -171,7 +171,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// sendpayment
-	app.post('/api/sendpayment', function(req, res) {
+	app.post('/api/lnd/sendpayment', function(req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
@@ -191,7 +191,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// decodepayreq
-	app.post('/api/decodepayreq', function(req, res) {
+	app.post('/api/lnd/decodepayreq', function(req, res) {
 		lightning.decodePayReq({ pay_req: req.body.payreq }, function(err, response) {
 			if (err) {
 				logger.debug('DecodePayReq Error:', err);
@@ -205,7 +205,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// queryroute
-	app.post('/api/queryroute', function(req, res) {
+	app.post('/api/lnd/queryroute', function(req, res) {
 		lightning.queryRoute({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
 			if (err) {
 				logger.debug('QueryRoute Error:', err);
@@ -219,7 +219,7 @@ module.exports = function(app, lightning) {
 	});
 
 	// newaddress
-	app.post('/api/newaddress', function(req, res) {
+	app.post('/api/lnd/newaddress', function(req, res) {
 		lightning.newAddress({ type: req.body.type }, function(err, response) {
 			if (err) {
 				logger.debug('NewAddress Error:', err);
