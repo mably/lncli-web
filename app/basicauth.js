@@ -1,5 +1,6 @@
 // app/basicauth.js
-var basicAuth = require('basic-auth');
+const basicAuth = require('basic-auth');
+const debug = require('debug')('lncliweb:basicauth')
 
 // expose the routes to our app with module.exports
 module.exports = function(login, pass, limitlogin, limitpass) {
@@ -8,6 +9,7 @@ module.exports = function(login, pass, limitlogin, limitpass) {
 
 	// configure basic authentification for express
 	module.filter = function (req, res, next) {
+		debug("url: " + req.originalUrl);
 		function unauthorized(res) {
 			res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
 			return res.sendStatus(401);
