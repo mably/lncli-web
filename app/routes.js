@@ -4,6 +4,7 @@ const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
 const path = require('path')
 const request = require('request')
+const slackConfig = require('../config/slack-config')
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
@@ -239,17 +240,39 @@ module.exports = function(app, lightning) {
 		var accessToken = req.query.access_token;
 		request.post({ url: 'https://slack.com/api/users.identity', form: { token: accessToken }}, function (err, httpResponse, body) {
 			debug(httpResponse.body);
-			var user = JSON.parse(httpResponse.body).user;
-			debug(user);
-			req.session.user = user;
+			var profile = JSON.parse(httpResponse.body);
+			delete profile.ok;
+			req.session.profile = profile;
 			res.redirect('/');
 		});
 	});
 
 	// get slack user info
 	app.get('/api/slacktip/getuser', function(req, res) {
-		debug(req.session.user);
-		res.json(req.session.user);
+		debug(req.session.profile);
+		res.json(req.session.profile);
+	});
+
+	// handle slack lntip command
+	app.post('/api/slacktip/tip', function(req, res) {
+		var tipped;
+		if (req.body.token === slackConfig.verificationToken) {
+			tipped = {
+				"response_type": "in_channel",
+				"text": "The tip has been delivered to ????.",
+				"attachments": [
+					{
+						"text": "lorem ipsum bla bla bla"
+					}
+				]
+			};
+		} else {
+			tipped = {
+			  "response_type": "ephemeral",
+			  "text": "Sorry, that didn't work (invalid token). Please contact your adminstrator."
+			}
+		}
+		res.json(tipped);
 	});
 
 	// application -------------------------------------------------------------
