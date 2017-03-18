@@ -3,6 +3,6 @@ lnwebcli.directive("listChannels", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/listchannels.html",
+		templateUrl: "templates/partials/lnd/listchannels.html",
 	};
 }]);

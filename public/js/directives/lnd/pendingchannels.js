@@ -3,6 +3,6 @@ lnwebcli.directive("pendingChannels", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/pendingchannels.html",
+		templateUrl: "templates/partials/lnd/pendingchannels.html",
 	};
 }]);

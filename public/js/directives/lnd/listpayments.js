@@ -3,6 +3,6 @@ lnwebcli.directive("listPayments", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/listpayments.html",
+		templateUrl: "templates/partials/lnd/listpayments.html",
 	};
 }]);

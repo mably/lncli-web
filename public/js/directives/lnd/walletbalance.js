@@ -3,6 +3,6 @@ lnwebcli.directive("walletBalance", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/walletbalance.html",
+		templateUrl: "templates/partials/lnd/walletbalance.html",
 	};
 }]);

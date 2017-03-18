@@ -34,7 +34,7 @@
 				animation: true,
 				ariaLabelledBy: "sendpayment-modal-title",
 				ariaDescribedBy: "sendpayment-modal-body",
-				templateUrl: "templates/partials/sendpayment.html",
+				templateUrl: "templates/partials/lnd/sendpayment.html",
 				controller: "ModalSendPaymentCtrl",
 				controllerAs: "$ctrl",
 				size: "lg",
