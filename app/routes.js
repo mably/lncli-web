@@ -2,6 +2,7 @@
 
 const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
+const path = require('path')
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning) {
@@ -234,7 +235,7 @@ module.exports = function(app, lightning) {
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
-		res.sendFile(__dirname + '/../public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+		res.sendFile(path.resolve('public/lnd.html')); // load the single view file (angular will handle the page changes on the front-end)
 	});
 
 }
