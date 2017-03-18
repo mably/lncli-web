@@ -36,7 +36,7 @@
 				animation: true,
 				ariaLabelledBy: "addpeer-modal-title",
 				ariaDescribedBy: "addpeer-modal-body",
-				templateUrl: "templates/partials/addpeer.html",
+				templateUrl: "templates/partials/lnd/addpeer.html",
 				controller: "ModalAddPeerCtrl",
 				controllerAs: "$ctrl",
 				size: "lg",

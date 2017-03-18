@@ -3,6 +3,6 @@ lnwebcli.directive("channelBalance", [function () {
 		restrict: "E",
 		replace: true,
 		transclude: false,
-		templateUrl: "templates/partials/channelbalance.html",
+		templateUrl: "templates/partials/lnd/channelbalance.html",
 	};
 }]);

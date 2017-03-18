@@ -48,7 +48,7 @@ lnwebcli.constant("config", {
 			animation: true,
 			ariaLabelledBy: "newaddress-modal-title",
 			ariaDescribedBy: "newaddress-modal-body",
-			templateUrl: "templates/partials/newaddress.html",
+			templateUrl: "templates/partials/lnd/newaddress.html",
 			controller: "ModalNewAddressCtrl",
 			controllerAs: "$ctrl",
 			size: "lg",
