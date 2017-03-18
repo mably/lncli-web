@@ -8,21 +8,21 @@
 		var _this = this;
 
 		var API = {
-			GETINFO: "/api/getinfo",
-			GETNETWORKINFO: "/api/getnetworkinfo",
-			WALLETBALANCE: "/api/walletbalance",
-			CHANNELBALANCE: "/api/channelbalance",
-			LISTPEERS: "/api/listpeers",
-			LISTCHANNELS: "/api/listchannels",
-			PENDINGCHANNELS: "/api/pendingchannels",
-			LISTPAYMENTS: "/api/listpayments",
-			LISTINVOICES: "/api/listinvoices",
-			CONNECTPEER: "/api/connectpeer",
-			ADDINVOICE: "/api/addinvoice",
-			SENDPAYMENT: "/api/sendpayment",
-			DECODEPAYREQ: "/api/decodepayreq",
-			QUERYROUTE: "/api/queryroute",
-			NEWADDRESS: "/api/newaddress"
+			GETINFO: "/api/lnd/getinfo",
+			GETNETWORKINFO: "/api/lnd/getnetworkinfo",
+			WALLETBALANCE: "/api/lnd/walletbalance",
+			CHANNELBALANCE: "/api/lnd/channelbalance",
+			LISTPEERS: "/api/lnd/listpeers",
+			LISTCHANNELS: "/api/lnd/listchannels",
+			PENDINGCHANNELS: "/api/lnd/pendingchannels",
+			LISTPAYMENTS: "/api/lnd/listpayments",
+			LISTINVOICES: "/api/lnd/listinvoices",
+			CONNECTPEER: "/api/lnd/connectpeer",
+			ADDINVOICE: "/api/lnd/addinvoice",
+			SENDPAYMENT: "/api/lnd/sendpayment",
+			DECODEPAYREQ: "/api/lnd/decodepayreq",
+			QUERYROUTE: "/api/lnd/queryroute",
+			NEWADDRESS: "/api/lnd/newaddress"
 		};
 
 		var infoCache = null;
