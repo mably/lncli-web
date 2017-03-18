@@ -19,7 +19,7 @@ module.exports = function (program) {
 	const logger = require("../config/log")((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel)); 
 
 	// setup authentication =================
-	const auth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
+	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
@@ -84,7 +84,7 @@ module.exports = function (program) {
 	// app configuration =================
 	app.use("/", le.middleware());                                  // letsencrypt middleware for express
 	app.use(require("./cors"));                                     // enable CORS headers
-	app.use(auth);                                                  // enable authentication
+	app.use([/^\/$/, '/lnd.html', '/api/lnd/'], basicauth);         // enable authentication
 	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({ "extended": "true" }));         // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
