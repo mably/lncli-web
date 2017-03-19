@@ -131,7 +131,7 @@ module.exports = function (program) {
 	require("./sockets")(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
 
 	// setup routes =================
-	require("./routes")(app, lightning, db);
+	require("./routes")(app, lightning, slacktip, db);
 
 	// define useful global variables ======================================
 	module.useTLS = !program.serverport;

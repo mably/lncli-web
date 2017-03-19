@@ -6,7 +6,7 @@ const request = require('request')
 const slackConfig = require('../config/slack-config')
 
 // expose the routes to our app with module.exports
-module.exports = function(app, lightning, db) {
+module.exports = function(app, lightning, slacktip, db) {
 
 	// api ---------------------------------------------------------------------
 
@@ -238,7 +238,7 @@ module.exports = function(app, lightning, db) {
 	app.get('/oauth/slack/callback', require('./routes/slacktip/slack-callback.js')(db));
 
 	// get slack user info
-	app.get('/api/slacktip/getuser', require('./routes/slacktip/getuser.js')(db));
+	app.get('/api/slacktip/getuser', require('./routes/slacktip/getuser.js')(slacktip));
 
 	// handle slack lntip command
 	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slackConfig, db));
