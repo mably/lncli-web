@@ -235,45 +235,14 @@ module.exports = function(app, lightning, db) {
 		});
 	});
 
-	app.get('/oauth/slack/callback', function(req, res) {
-		//https://slack.com/api/users.identity?token=xoxp-156430406180-156430406212-156430963396-fe524ed477bbc9ce3800349a3ad61a64&scope=identity.basic
-		var accessToken = req.query.access_token;
-		request.post({ url: 'https://slack.com/api/users.identity', form: { token: accessToken }}, function (err, httpResponse, body) {
-			debug(httpResponse.body);
-			var profile = JSON.parse(httpResponse.body);
-			delete profile.ok;
-			req.session.profile = profile;
-			res.redirect('/');
-		});
-	});
+	// slack oauth callback handler
+	app.get('/oauth/slack/callback', require('./routes/slacktip/slack-callback.js')(db));
 
 	// get slack user info
-	app.get('/api/slacktip/getuser', function(req, res) {
-		debug(req.session.profile);
-		res.json(req.session.profile);
-	});
+	app.get('/api/slacktip/getuser', require('./routes/slacktip/getuser.js')(db));
 
 	// handle slack lntip command
-	app.post('/api/slacktip/tip', function(req, res) {
-		var tipped;
-		if (req.body.token === slackConfig.verificationToken) {
-			tipped = {
-				"response_type": "in_channel",
-				"text": "The tip has been delivered to ????.",
-				"attachments": [
-					{
-						"text": "lorem ipsum bla bla bla"
-					}
-				]
-			};
-		} else {
-			tipped = {
-			  "response_type": "ephemeral",
-			  "text": "Sorry, that didn't work (invalid token). Please contact your adminstrator."
-			}
-		}
-		res.json(tipped);
-	});
+	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slackConfig, db));
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
