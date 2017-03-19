@@ -33,6 +33,9 @@ module.exports = function (program) {
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
 
+	// init slacktip module =================
+	const slacktip = require("./slacktip")(lightning, lnd, db);
+
 	// Storage Backend
 	var leStore = require("le-store-certbot").create({
 		configDir: lePath + "/etc",
