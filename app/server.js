@@ -21,6 +21,9 @@ module.exports = function (program) {
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
 
+	// init lnd module =================
+	const lnd = require("./lnd")(lightning);
+
 	// app creation =================
 	const app = express();                                          // create our app w/ express
 
@@ -39,9 +42,6 @@ module.exports = function (program) {
 	  res.status(500).send({status:500, message: 'internal error', type:'internal'}); 
 	});
 
-	// setup routes =================
-	require("./routes")(app, lightning);
-
 	// init server =================
 	var server;
 	if (program.usetls) {
@@ -56,7 +56,10 @@ module.exports = function (program) {
 
 	// setup sockets =================
 	var lndLogfile = program.lndlogfile || defaults.lndLogFile;
-	require("./sockets")(io, lightning, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
+	require("./sockets")(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
+
+	// setup routes =================
+	require("./routes")(app, lightning, db);
 
 	// define useful global variables ======================================
 	module.useTLS = program.usetls;
