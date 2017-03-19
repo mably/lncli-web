@@ -2,7 +2,6 @@
 
 const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
-const path = require('path')
 const request = require('request')
 const slackConfig = require('../config/slack-config')
 
@@ -246,7 +245,7 @@ module.exports = function(app, lightning, db) {
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
-		res.sendFile(path.resolve('public/index.html')); // load the single view file (angular will handle the page changes on the front-end)
+		res.sendFile('index.html', { root: __dirname + '/../public/' }); // load the single view file (angular will handle the page changes on the front-end)
 	});
 
 }
