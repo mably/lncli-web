@@ -7,7 +7,7 @@ const request = require('request')
 const slackConfig = require('../config/slack-config')
 
 // expose the routes to our app with module.exports
-module.exports = function(app, lightning) {
+module.exports = function(app, lightning, db) {
 
 	// api ---------------------------------------------------------------------
 

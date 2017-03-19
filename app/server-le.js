@@ -24,6 +24,9 @@ module.exports = function (program) {
 	// setup authentication =================
 	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
+	// db init =================
+	const db = require('./database')(defaults.dataPath);
+
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
 
@@ -103,7 +106,7 @@ module.exports = function (program) {
 	});
 
 	// setup routes =================
-	require("./routes")(app, lightning);
+	require("./routes")(app, lightning, db);
 
 	// init server =================
 	var server;
