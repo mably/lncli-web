@@ -21,6 +21,9 @@ module.exports = function (program) {
 	// setup authentication =================
 	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
+	// db init =================
+	const db = null;
+
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
 
