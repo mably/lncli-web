@@ -9,6 +9,7 @@
 
 		var API = {
 			GETUSER: "/api/slacktip/getuser",
+			ADDINVOICE: "/api/slacktip/addinvoice",
 		};
 
 		var configCache = null;
@@ -132,6 +133,17 @@
 			}
 		}
 
+		var fetchConfig = function () {
+			configCache = localStorageService.get("config"); // update cache
+			if (!configCache) { configCache = {}; }
+			return configCache;
+		}
+
+		var writeConfig = function (config) {
+			localStorageService.set("config", config);
+			configCache = config; // update cache
+		}
+
 		this.getConfigValue = function(name, defaultValue) {
 			var config = configCache ? configCache : fetchConfig();
 			var value = config[name];
@@ -186,6 +198,11 @@
 				});
 			}
 			return deferred.promise;
+		};
+
+		this.addInvoice = function(memo, value) {
+			var data = { memo: memo, value: value };
+			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
 		Object.seal(this);

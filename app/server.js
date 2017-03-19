@@ -35,7 +35,7 @@ module.exports = function (program) {
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
-	app.use(session({ secret: 'dvv4gj4MfVWJRrFwlwNs', cookie: { maxAge: 60000 }, resave: true, saveUninitialized: true }))
+	app.use(session({ secret: 'dvv4gj4MfVWJRrFwlwNs', cookie: { maxAge: 300000 }, resave: true, saveUninitialized: true }))
 
 	// app configuration =================
 	app.use(require("./cors"));                                     // enable CORS headers

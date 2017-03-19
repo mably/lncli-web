@@ -243,6 +243,9 @@ module.exports = function(app, lightning, db) {
 	// handle slack lntip command
 	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slackConfig, db));
 
+	// addinvoice
+	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(lightning, db));
+
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {
 		res.sendFile('index.html', { root: __dirname + '/../public/' }); // load the single view file (angular will handle the page changes on the front-end)

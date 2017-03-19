@@ -18,8 +18,10 @@ slacktipapp.config(['ngToastProvider', function(ngToast) {
 
 slacktipapp.constant("config", {
 	keys: {
+		AUTO_REFRESH: "autorefresh"
 	},
 	defaults: {
+		AUTO_REFRESH: 60000 // 1 minute
 	},
 	notif: {
 		SUCCESS: "SUCCESS",
