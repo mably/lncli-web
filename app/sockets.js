@@ -8,7 +8,7 @@ const bitcore = require('bitcore-lib')
 const BufferUtil = bitcore.util.buffer
 
 // TODO
-module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lndLogfile) {
+module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile) {
 
 	var clients = [];
 
@@ -23,46 +23,9 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 		limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
 	}
 
-	var lndInvoicesStream = null;
 	var tailProcess = null;
 
-	var openLndInvoicesStream = function() {
-		if (lndInvoicesStream) {
-			logger.debug("Lnd invoices subscription stream already opened.");
-		} else {
-			logger.debug("Opening lnd invoices subscription stream...");
-			lndInvoicesStream = lightning.subscribeInvoices({});
-			logger.debug("Lnd invoices subscription stream opened.");
-			lndInvoicesStream.on("data", function(data) {
-				logger.debug("SubscribeInvoices Data", data);
-				for (var i = 0; i < clients.length; i++) {
-					clients[i].emit("invoice", data);
-				}
-			});
-			lndInvoicesStream.on("end", function() {
-				logger.debug("SubscribeInvoices End");
-				lndInvoicesStream = null;
-				openLndInvoicesStream(); // try opening stream again
-			});
-			lndInvoicesStream.on("error", function(err) {
-				logger.debug("SubscribeInvoices Error", err);
-			});
-			lndInvoicesStream.on("status", function(status) {
-				logger.debug("SubscribeInvoices Status", status);
-				if (status.code == 14) { // Unavailable
-					lndInvoicesStream = null;
-					openLndInvoicesStream(); // try opening stream again
-				}
-			});
-		}
-	}
-
 	var registerGlobalListeners = function() {
-
-		if (!lndInvoicesStream) {
-			openLndInvoicesStream();
-		}
-
 		if (!tailProcess) {
 			tailProcess = spawn("tail", ["-f", lndLogfile]);
 			tailProcess.on("error", function (err) {
@@ -78,6 +41,8 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 			}); 
 		}
 	}
+
+	registerGlobalListeners();
 
 	io.on("connection", function(socket) {
 
@@ -122,22 +87,44 @@ module.exports = function(io, lightning, login, pass, limitlogin, limitpass, lnd
 		clients.push(socket);
 
 		registerGlobalListeners();
-		
-		registerEventListeners(socket);
+
+		registerSocketListeners(socket);
 
 		/** listening if client has disconnected */
 		socket.on("disconnect", function() {
 			clients.splice(clients.indexOf(socket), 1);
+			unregisterSocketListeners(socket);
 			logger.debug("client disconnected (id=" + socket.id + ").");
 		});
 
 	});
 
 	// register the socket listeners
-	var registerEventListeners = function (socket) {
+	var registerSocketListeners = function (socket) {
+		registerLndInvoiceListener(socket);
 		registerCloseChannelListener(socket);
 		registerOpenChannelListener(socket);
 	}
+
+	// unregister the socket listeners
+	var unregisterSocketListeners = function (socket) {
+		unregisterLndInvoiceListener(socket);
+		//unregisterCloseChannelListener(socket);
+		//unregisterOpenChannelListener(socket);
+	}
+
+	// register the lnd invoices listener
+	var registerLndInvoiceListener = function(socket) {
+		socket._invoiceListener = { dataReceived: function(data) {
+			socket.emit("invoice", data);
+		}};
+		lnd.registerInvoiceListener(socket._invoiceListener);
+	};
+
+	// unregister the lnd invoices listener
+	var unregisterLndInvoiceListener = function(socket) {
+		lnd.unregisterInvoiceListener(socket._invoiceListener);
+	};
 
 	// openchannel
 	var OPENCHANNEL_EVENT = "openchannel";
