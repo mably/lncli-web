@@ -93,8 +93,8 @@
 			</div>
 			<div class="panel-body">
 				<p><a href="/connect/slack">Login via Slack</a></p>
-				<p ng-show="info.profile" ng-cloak><get-user info="info" /></p>
-				<button class="btn btn-default" type="button" ng-click="generateInvoice()" ng-show="info.profile" ng-cloak>Deposit funds</button>
+				<p ng-show="info.slackid" ng-cloak><get-user info="info" /></p>
+				<button class="btn btn-default" type="button" ng-click="generateInvoice()" ng-show="info.slackid" ng-cloak>Deposit funds</button>
 			</div>
 		  </div>
 		</div><!-- /.col-sm-12 -->

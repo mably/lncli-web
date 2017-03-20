@@ -34,7 +34,7 @@ module.exports = function (program) {
 	const lnd = require("./lnd")(lightning);
 
 	// init slacktip module =================
-	const slacktip = require("./slacktip")(lightning, lnd, db);
+	const slacktip = require("./slacktip")(lightning, lnd, db, require('../config/slack-config'));
 
 	// Storage Backend
 	var leStore = require("le-store-certbot").create({

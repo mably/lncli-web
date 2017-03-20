@@ -3,7 +3,6 @@
 const debug = require('debug')('lncliweb:routes')
 const logger = require('winston')
 const request = require('request')
-const slackConfig = require('../config/slack-config')
 
 // expose the routes to our app with module.exports
 module.exports = function(app, lightning, slacktip, db) {
@@ -235,16 +234,16 @@ module.exports = function(app, lightning, slacktip, db) {
 	});
 
 	// slack oauth callback handler
-	app.get('/oauth/slack/callback', require('./routes/slacktip/slack-callback.js')(db));
+	app.get('/oauth/slack/callback', require('./routes/slacktip/slack-callback.js')(slacktip));
 
 	// get slack user info
 	app.get('/api/slacktip/getuser', require('./routes/slacktip/getuser.js')(slacktip));
 
 	// handle slack lntip command
-	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slackConfig, db));
+	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slacktip));
 
 	// addinvoice
-	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(lightning, db));
+	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(slacktip));
 
 	// application -------------------------------------------------------------
 	app.get('*', function(req, res) {

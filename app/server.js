@@ -31,7 +31,7 @@ module.exports = function (program) {
 	const lnd = require("./lnd")(lightning);
 
 	// init slacktip module =================
-	const slacktip = require("./slacktip")(lightning, lnd, db);
+	const slacktip = require("./slacktip")(lightning, lnd, db, require('../config/slack-config'));
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
