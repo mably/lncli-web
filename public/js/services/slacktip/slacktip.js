@@ -10,6 +10,7 @@
 		var API = {
 			GETUSER: "/api/slacktip/getuser",
 			ADDINVOICE: "/api/slacktip/addinvoice",
+			SENDTIP: "/api/slacktip/sendtip"
 		};
 
 		var configCache = null;
@@ -203,6 +204,11 @@
 		this.addInvoice = function(memo, value) {
 			var data = { memo: memo, value: value };
 			return $http.post(serverUrl(API.ADDINVOICE), data);
+		};
+
+		this.sendTip = function(userid, amount) {
+			var data = { userid: userid, amount: amount };
+			return $http.post(serverUrl(API.SENDTIP), data);
 		};
 
 		Object.seal(this);

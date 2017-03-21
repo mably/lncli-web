@@ -14,6 +14,9 @@ module.exports = function(lightning, lnd, db, slackConfig) {
 	accountsCol.createIndex( { "slackid": 1 }, { unique: true } );
 	var invoicesCol = db.collection("slacktip-invoices");
 	var paymentsCol = db.collection("slacktip-payments");
+	var transactionsCol = db.collection("slacktip-transactions");
+
+	const txprocessor = require("./txprocessor")(db, accountsCol, transactionsCol);
 
 	var invoiceListener = null;
 
@@ -145,13 +148,12 @@ module.exports = function(lightning, lnd, db, slackConfig) {
 				var array = tipRequest.text.match(re);
 				debug(array);
 				if (array.length >= 4) {
-					var tipAmount = parseInt(array[1]);
 					var sourceIdentity = { "user": { "id": tipRequest.user_id }, "team": { "id": tipRequest.team_id }};
 					var sourceSlackId = buildSlackId(sourceIdentity);
 					module.dbGetUser(sourceSlackId).then(function (sourceUser) {
 						debug('dbGetUser', sourceUser);
-						if (sourceUser == null) { // user not found
-							module.dbCreateUser(sourceSlackId, sourceIdentity, tipAmount).then(function (createdUsers) {
+						if (sourceUser == null) { // Missing source user
+							module.dbCreateUser(sourceSlackId, sourceIdentity, 0).then(function (createdUsers) {
 								resolve({
 									"response_type": "ephemeral",
 									"text": "Couldn't send tip, you need to deposit some funds on your account first."
@@ -164,56 +166,52 @@ module.exports = function(lightning, lnd, db, slackConfig) {
 								});
 							});
 						} else {
+							var tipAmount = parseInt(array[1]);
 							if (sourceUser.balance >= tipAmount) {
-								var update = { $inc: { balance:  -1 * tipAmount } };
-								module.dbUpdateUser(sourceSlackId, update).then(function (response) {
-									var targetIdentity = { user: { id: array[2] }, team: { id: tipRequest.team_id }};
-									var targetSlackId = buildSlackId(targetIdentity);
-									module.dbGetUser(targetSlackId).then(function (targetUser) {
-										debug('dbGetUser', targetUser);
-										var tipResponse = {
-											"response_type": "in_channel",
-											"text": "A tip of " + array[1] + " satoshis has been delivered to @" + array[3],
-											"attachments": [
-												{
-													"text": "Thanx for supporting the Slack LN tipping bot!"
+								var targetIdentity = { user: { id: array[2] }, team: { id: tipRequest.team_id } };
+								var targetSlackId = buildSlackId(targetIdentity);
+								module.dbGetUser(targetSlackId).then(function (targetUser) {
+									debug('targetUser', targetUser);
+									var tipResponse = {
+										"response_type": "in_channel",
+										"text": "A tip of " + array[1] + " satoshis has been delivered to @" + array[3],
+										"attachments": [
+											{
+												"text": "Thanx for supporting the Slack LN tipping bot!"
+											}
+										]
+									};
+									if (targetUser == null) { // user not found
+										module.dbCreateUser(targetSlackId, targetIdentity, 0).then(function (result) {
+											// TODO check result
+											txprocessor.dbExecuteTransaction(sourceSlackId, targetSlackId, tipAmount).then(
+												result => {
+													resolve(tipResponse);
+												}, reason => {
+													reject(reason);
 												}
-											]
-										};
-										if (targetUser == null) { // user not found
-											module.dbCreateUser(targetSlackId, targetIdentity, tipAmount).then(function (createdUsers) {
-												resolve(tipResponse);
-											}, function (err) {
-												debug(err);
-												resolve({
-													"response_type": "ephemeral",
-													"text": err
-												});
+											);
+										}, function (err) {
+											debug(err);
+											resolve({
+												"response_type": "ephemeral",
+												"text": err
 											});
-										} else {
-											var update = { $inc: { balance: tipAmount } };
-											module.dbUpdateUser(targetSlackId, update).then(function (response) {
-												resolve(tipResponse);
-											}, function (err) {
-												debug(err);
-												resolve({
-													"response_type": "ephemeral",
-													"text": err
-												});
-											});
-										}
-									}, function (err) {
-										debug(err);
-										resolve({
-											"response_type": "ephemeral",
-											"text": err
 										});
-									});
+									} else {
+										txprocessor.dbExecuteTransaction(sourceSlackId, targetSlackId, tipAmount).then(
+											result => {
+												resolve(tipResponse);
+											}, reason => {
+												reject(reason);
+											}
+										);
+									}
 								}, function (err) {
 									debug(err);
 									resolve({
-									  "response_type": "ephemeral",
-									  "text": err
+										"response_type": "ephemeral",
+										"text": err
 									});
 								});
 							} else {
@@ -245,6 +243,42 @@ module.exports = function(lightning, lnd, db, slackConfig) {
 		});
 		return promise;
 	}
+
+	module.sendTip = function (user, targetUserId, tipAmount) {
+		var promise = new Promise(function (resolve, reject) {
+			var sourceSlackId = buildSlackId(user.identity);
+			module.dbGetUser(sourceSlackId).then(function (sourceUser) {
+				if (sourceUser.balance >= tipAmount) {
+					var targetIdentity = { user: { id: targetUserId }, team: { id: user.identity.team.id } };
+					var targetSlackId = buildSlackId(targetIdentity);
+					if (targetSlackId == sourceSlackId) {
+						reject("You can't send a tip to yourself, sorry.");
+					} else {
+						module.dbGetUser(targetSlackId).then(function (targetUser) {
+							if (targetUser) {
+								txprocessor.dbExecuteTransaction(sourceSlackId, targetSlackId, tipAmount).then(
+									result => {
+										resolve(result);
+									}, reason => {
+										reject(reason);
+									}
+								);
+							} else {
+								reject("Couldn't send tip, recipient hasn't created an account yet.");
+							}
+						}, function (reason) {
+							reject(reason);
+						});
+					}
+				} else {
+					reject("Couldn't send tip, there are not enough funds available on your account.");
+				}
+			}, function (reason) {
+				reject(reason);
+			});
+		});
+		return promise;
+	};
 
 	var buildSlackId = function (identity) {
 		return identity.user.id + "," + identity.team.id;
@@ -318,7 +352,8 @@ module.exports = function(lightning, lnd, db, slackConfig) {
 
 	module.dbCreateUser = function (slackId, identity, balance) {
 		var promise = new Promise(function (resolve, reject) {
-			accountsCol.insert({ slackid: slackId, identity: identity, balance: balance }, { w: 1 }, function (err, result) {
+			var user = { slackid: slackId, identity: identity, balance: balance, pendingTransactions: [] };
+			accountsCol.insert(user, { w: 1 }, function (err, result) {
 				if (err) {
 					reject(err);
 				} else {
