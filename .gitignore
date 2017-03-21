@@ -43,3 +43,5 @@ jspm_packages
 /config/grant-config.js
 /config/slack-config.js
 /data/*
+/config/config.js
+/config/defaults.js

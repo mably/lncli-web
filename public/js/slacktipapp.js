@@ -29,6 +29,7 @@ slacktipapp.constant("config", {
 		WARNING: "WARNING"
 	},
 	events: {
+		USER_REFRESH: "user.refresh"
 	},
 	modals: {
 	}

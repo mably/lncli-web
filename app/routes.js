@@ -245,6 +245,9 @@ module.exports = function(app, lightning, slacktip, db) {
 	// addinvoice
 	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(slacktip));
 
+	// withdraw funds
+	app.post('/api/slacktip/withdrawfunds', require('./routes/slacktip/withdrawfunds.js')(slacktip));
+
 	// web app send tip
 	app.post('/api/slacktip/sendtip', require('./routes/slacktip/sendtip.js')(slacktip));
 

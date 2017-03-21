@@ -11,20 +11,24 @@ module.exports = function(db, accountsCol, transactionsCol) {
 
 	module.dbExecuteTransaction = function (sourceSlackId, targetSlackId, tipAmount) {
 		var promise = new Promise(function (resolve, reject) {
-			var transaction = { source: sourceSlackId, destination: targetSlackId, value: tipAmount, state: "initial", lastModified: new Date() };
-			transactionsCol.insert(transaction, { w: 1 }, function (err, result) {
-				if (err) {
-					reject(err);
-				} else {
-					logger.debug('Transaction DB insert:', result);
-					module.dbProcessTransactionsInInitialState().then(function (result) {
-						// TODO check result
-						resolve(result);
-					}, function (err) {
+			if (Number.isInteger(tipAmount)) {
+				var transaction = { source: sourceSlackId, destination: targetSlackId, value: tipAmount, state: "initial", lastModified: new Date() };
+				transactionsCol.insert(transaction, { w: 1 }, function (err, result) {
+					if (err) {
 						reject(err);
-					});
-				}
-			});
+					} else {
+						logger.debug('Transaction DB insert:', result);
+						module.dbProcessTransactionsInInitialState().then(function (result) {
+							// TODO check result
+							resolve(result);
+						}, function (err) {
+							reject(err);
+						});
+					}
+				});
+			} else {
+				reject("Amount is not an integer value.");
+			}
 		});
 		return promise;
 	};
