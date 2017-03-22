@@ -18,8 +18,6 @@ request("https://api.coinmarketcap.com/v1/ticker/Bitcoin/?convert=EUR", function
   }
   console.log("Status code: " + response.statusCode);
 
-  var html = cheerio.load(body);
-
   var valeurs = JSON.parse(body);
   var btcusd = valeurs[0].price_usd;
   var btceur = valeurs[0].price_eur;
