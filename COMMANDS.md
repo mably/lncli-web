@@ -17,7 +17,7 @@ Tipping is to thank a user for his help or post
 To tip a user:
 
 ```
-/lntip integer_amount_to_tip @slack_user_id
+/lntip integer_amount_to_tip @Username
 ```
 
 View history of tips:
