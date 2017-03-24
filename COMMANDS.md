@@ -4,11 +4,11 @@
 
 ### What is it ?
 
-lntip is a tipping slack application using LN for crediting the user tipping's account
+lntip is a tipping slack application using LN for crediting the user's tipping account
 
 ### Purpose
 
-Tipping is to thank a user for his help or post
+Tipping is to thank for one's help or post
 
 
 ## Command lines
@@ -26,7 +26,7 @@ View history of tips:
 /lntip history
 ```
 
-view balance:
+View balance:
 
 ```
 /lntip balance
