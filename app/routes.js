@@ -206,7 +206,7 @@ module.exports = function(app, lightning) {
 
 	// queryroute
 	app.post('/api/lnd/queryroute', function(req, res) {
-		lightning.queryRoute({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
+		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
 			if (err) {
 				logger.debug('QueryRoute Error:', err);
 				err.error = err.message;
