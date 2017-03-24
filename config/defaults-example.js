@@ -1,4 +1,4 @@
-// config/config.js
+// config/defaults.js
 
 module.exports = {
 	serverPort: 8280,

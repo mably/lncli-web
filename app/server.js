@@ -13,10 +13,21 @@ module.exports = function (program) {
 	var module = {};
 
 	// load app default configuration data
-	const defaults = require('../config/config');
+	const defaults = require('../config/defaults');
+
+	// load other configuration data
+	const config = require('../config/config');
+
+	// define useful global variables ======================================
+	module.useTLS = program.usetls;
+	module.serverPort = program.serverport || defaults.serverPort;
+	module.serverHost = program.serverhost || defaults.serverHost;
 
 	// setup winston logging ==========
 	const logger = require('../config/log')((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel)); 
+
+	// utilities functions =================
+	const utils = require('./server-utils')(module);
 
 	// setup authentication =================
 	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
@@ -31,11 +42,11 @@ module.exports = function (program) {
 	const lnd = require("./lnd")(lightning);
 
 	// init slacktip module =================
-	const slacktip = require("./slacktip")(lightning, lnd, db, require('../config/slack-config'));
+	const slacktip = require("./slacktip")(lightning, lnd, db, module, require('../config/slack-config'));
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
-	app.use(session({ secret: 'dvv4gj4MfVWJRrFwlwNs', cookie: { maxAge: 300000 }, resave: true, saveUninitialized: true }))
+	app.use(session({ secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, saveUninitialized: true }))
 
 	// app configuration =================
 	app.use(require("./cors"));                                     // enable CORS headers
@@ -71,11 +82,6 @@ module.exports = function (program) {
 
 	// setup routes =================
 	require("./routes")(app, lightning, slacktip, db);
-
-	// define useful global variables ======================================
-	module.useTLS = program.usetls;
-	module.serverPort = program.serverport || defaults.serverPort;
-	module.serverHost = program.serverhost || defaults.serverHost;
 
 	// listen (start app with node server.js) ======================================
 	server.listen(module.serverPort, module.serverHost);

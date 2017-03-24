@@ -8,7 +8,7 @@
 	  <dt>Team Id</dt>
 	  <dd>{{ info.identity.team.id }}</dd>
 	  <dt>Balance</dt>
-	  <dd>{{ info.balance }}</dd>
+	  <dd><ng-pluralize count="info.balance" when="{'0': '0 satoshi', 'one': '1 satoshi', 'other': '{} satoshis'}"></ng-pluralize></dd>
 	</dl>
 
 	<div id="getinfo-data" class="collapse">

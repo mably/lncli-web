@@ -43,7 +43,6 @@
 				resolve: {
 					defaults: function () {
 						return {
-							memo: "test",
 							value: "1000"
 						};
 					}
@@ -51,7 +50,7 @@
 			});
 
 			modalInstance.rendered.then(function() {
-				$("#addinvoice-memo").focus();
+				$("#addinvoice-value").focus();
 			});
 
 			modalInstance.result.then(function (values) {
@@ -62,6 +61,43 @@
 			});
 
 		};
+
+		$scope.withdrawFunds = function() {
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "withdrawfunds-modal-title",
+				ariaDescribedBy: "withdrawfunds-modal-body",
+				templateUrl: "templates/partials/slacktip/withdrawfunds.html",
+				controller: "ModalWithdrawFundsCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					defaults: function () {
+						return {
+							payreq: ""
+						};
+					}
+				}
+			});
+
+			modalInstance.rendered.then(function() {
+				$("#withdrawfunds-payreq").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+				$scope.refresh();
+			}, function () {
+				console.log('Modal dismissed at: ' + new Date());
+			});
+
+		};
+
+		$scope.$on(config.events.USER_REFRESH, function(event, args) {
+			console.log("Received event USER_REFRESH", event, args);
+			$scope.refresh();
+		});
 
 		$scope.refresh();
 	}

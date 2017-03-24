@@ -207,7 +207,7 @@ module.exports = function(app, lightning, slacktip, db) {
 
 	// queryroute
 	app.post('/api/lnd/queryroute', function(req, res) {
-		lightning.queryRoute({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
+		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
 			if (err) {
 				logger.debug('QueryRoute Error:', err);
 				err.error = err.message;
@@ -244,6 +244,9 @@ module.exports = function(app, lightning, slacktip, db) {
 
 	// addinvoice
 	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(slacktip));
+
+	// withdraw funds
+	app.post('/api/slacktip/withdrawfunds', require('./routes/slacktip/withdrawfunds.js')(slacktip));
 
 	// web app send tip
 	app.post('/api/slacktip/sendtip', require('./routes/slacktip/sendtip.js')(slacktip));

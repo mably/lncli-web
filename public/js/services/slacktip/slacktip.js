@@ -10,6 +10,7 @@
 		var API = {
 			GETUSER: "/api/slacktip/getuser",
 			ADDINVOICE: "/api/slacktip/addinvoice",
+			WITHDRAWFUNDS: "/api/slacktip/withdrawfunds",
 			SENDTIP: "/api/slacktip/sendtip"
 		};
 
@@ -201,13 +202,18 @@
 			return deferred.promise;
 		};
 
-		this.addInvoice = function(memo, value) {
+		this.addInvoice = function (memo, value) {
 			var data = { memo: memo, value: value };
 			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
-		this.sendTip = function(userid, amount) {
-			var data = { userid: userid, amount: amount };
+		this.withdrawFunds = function (payreq) {
+			var data = { payreq: payreq };
+			return $http.post(serverUrl(API.WITHDRAWFUNDS), data);
+		};
+
+		this.sendTip = function (userid, teamid, amount) {
+			var data = { userid: userid, teamid: teamid, amount: amount };
 			return $http.post(serverUrl(API.SENDTIP), data);
 		};
 

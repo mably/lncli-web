@@ -6,7 +6,7 @@ module.exports = function (slacktip) {
 	return function(req, res) {
 		debug(req.body);
 		if (req.session.user) {
-			slacktip.sendTip(req.session.user, req.body.userid, req.body.amount).then(function (response) {
+			slacktip.sendTip(req.session.user, req.body.userid, req.body.teamid, req.body.amount).then(function (response) {
 				res.json(response);
 			}, function (err) {
 				debug("sendtip error", err);
