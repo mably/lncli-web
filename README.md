@@ -10,10 +10,10 @@
 
 ### Procedure
 
-Fetch sources from the Lnd Web Client git repository:
+Fetch sources from the git repository:
 
 ```
-git clone https://github.com/mably/lncli-web.git
+git clone https://github.com/CryptoFR/ln-tip-slack.git
 ```
 Move into the newly created directory:
 
