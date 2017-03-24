@@ -1,17 +1,17 @@
 # Slack tipping bot functional specifications
 
-##Application Definition
+## Application Definition
 
-###What is it ?
+### What is it ?
 
 lntip is a tipping slack application using LN for crediting the user tipping's account
 
-###Purpose
+### Purpose
 
 Tipping is to thank a user for his help or post
 
 
-##Command lines
+## Command lines
 
 to tip a user           /lntip integer_amount_to_tip @slack_user_id
 
