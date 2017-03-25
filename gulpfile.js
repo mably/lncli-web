@@ -1,11 +1,18 @@
 const gulp = require("gulp");
 const jscs = require("gulp-jscs");
-var jshint = require("gulp-jshint");
+const jshint = require("gulp-jshint");
 
 gulp.task("jscs", () => {
-	return gulp.src(["app/**/*.js","config/**/*.js","public/js/**/*.js"])
+	return gulp.src(["app/**/*.js","config/**/*.js","public/js/**/*.js"], { base: "." })
 		.pipe(jscs())
 		.pipe(jscs.reporter());
+});
+
+gulp.task("jscs-fix", () => {
+	return gulp.src(["app/**/*.js","config/**/*.js","public/js/**/*.js"], { base: "." })
+		.pipe(jscs({ fix: true }))
+		.pipe(jscs.reporter())
+		.pipe(gulp.dest("."));
 });
 
 gulp.task("lint", function() {
