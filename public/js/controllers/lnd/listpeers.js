@@ -9,17 +9,17 @@
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
 
-		$scope.refresh = function() {
+		$scope.refresh = function () {
 			$scope.spinner++;
 			$scope.updateNextRefresh();
-			lncli.listPeers().then(function(response) {
+			lncli.listPeers().then(function (response) {
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.peers = response.data.peers;
-			}, function(err) {
+			}, function (err) {
 				$scope.spinner--;
-				console.log('Error:', err);
+				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
 		};
@@ -28,9 +28,9 @@
 			$timeout.cancel($scope.nextRefresh);
 			$scope.nextRefresh = $timeout($scope.refresh,
 				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
-		}
+		};
 
-		$scope.add = function() {
+		$scope.add = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -50,7 +50,7 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#addpeer-pubkey").focus();
 			});
 
@@ -58,26 +58,26 @@
 				console.log("values", values);
 				$scope.refresh();
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.pubkeyCopied = function(peer) {
+		$scope.pubkeyCopied = function (peer) {
 			peer.pubkeyCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				peer.pubkeyCopied = false;
 			}, 500);
-		}
+		};
 
-		$scope.addressCopied = function(peer) {
+		$scope.addressCopied = function (peer) {
 			peer.addressCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				peer.addressCopied = false;
 			}, 500);
-		}
+		};
 
-		$scope.$on(config.events.PEER_REFRESH, function(event, args) {
+		$scope.$on(config.events.PEER_REFRESH, function (event, args) {
 			console.log("Received event PEER_REFRESH", event, args);
 			$scope.refresh();
 		});

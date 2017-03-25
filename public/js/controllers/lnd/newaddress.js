@@ -2,19 +2,19 @@
 
 	lnwebcli.controller("ModalNewAddressCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($uibModalInstance, defaults, lncli) {
+	function controller($uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
 		$ctrl.values = defaults;
 		$ctrl.addressTypes = [
-			{name : "WITNESS_PUBKEY_HASH", id : 0},
-			{name : "NESTED_PUBKEY_HASH", id : 1},
-			{name : "PUBKEY_HASH", id : 2},
+			{ name: "WITNESS_PUBKEY_HASH", id: 0 },
+			{ name: "NESTED_PUBKEY_HASH", id: 1 },
+			{ name: "PUBKEY_HASH", id: 2 },
 		];
 
 		$ctrl.ok = function () {
-			lncli.newAddress($ctrl.values.type).then(function(response) {
+			lncli.newAddress($ctrl.values.type).then(function (response) {
 				console.log("NewAddress", response);
 				$ctrl.warning = null;
 				$ctrl.success = JSON.stringify(response.data, null, "\t");
@@ -32,13 +32,13 @@
 			$uibModalInstance.close($ctrl.values);
 		};
 
-		$ctrl.dismissWarning = function() {
+		$ctrl.dismissWarning = function () {
 			$ctrl.warning = null;
-		}
+		};
 
-		$ctrl.dismissSuccess = function() {
+		$ctrl.dismissSuccess = function () {
 			$ctrl.success = null;
-		}
+		};
 
 	}
 

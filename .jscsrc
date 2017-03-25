@@ -12,5 +12,8 @@
 		"do",
 		"try",
 		"catch"
-	]
+	],
+	"requirePaddingNewLinesAfterBlocks": false,
+	requirePaddingNewLinesBeforeLineComments: false,
+	"safeContextKeyword": ["_this", "$ctrl"]
 }
