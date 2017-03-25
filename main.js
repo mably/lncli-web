@@ -20,7 +20,7 @@ program
 // First start the back-end server
 const server = require("./app/server")(program);
 
-const serverRootPath = (server.useTLS ? "https" : "http") + "://" + server.serverHost + ":" + server.serverPort;
+const serverRootPath = server.getURL();
 
 // Module to control application life.
 const app = electron.app;
@@ -49,7 +49,7 @@ function createWindow () {
 
 	// and load the index.html of the app.
 	mainWindow.loadURL(url.format({
-		pathname: path.join(__dirname, "public/index.html"),
+		pathname: path.join(__dirname, "public/lnd.html"),
 		protocol: "file:",
 		slashes: true
 	}));
