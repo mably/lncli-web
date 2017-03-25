@@ -6,7 +6,7 @@
 
 		var $ctrl = this;
 
-		$scope.queryRoute = function() {
+		$scope.queryRoute = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -23,35 +23,35 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#queryroute-pubkey").focus();
 			});
 
 			modalInstance.result.then(function (values) {
 				console.log("values", values);
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.newAddress = function() {
+		$scope.newAddress = function () {
 
 			var modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#newaddress-type").focus();
 			});
 
 			modalInstance.result.then(function (values) {
 				console.log("values", values);
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.editSettings = function() {
+		$scope.editSettings = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -63,19 +63,19 @@
 				size: "lg",
 				resolve: {
 					settings: function () {
-						return lncli.getConfigValues()
+						return lncli.getConfigValues();
 					}
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#editsettings-autorefresh").focus();
 			});
 
 			modalInstance.result.then(function (values) {
 				console.log("values", values);
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};

@@ -3,7 +3,7 @@
 	lnwebcli.filter("firstlast", [filter]);
 
 	function filter($scope, $uibModal, lncli) {
-		return function(input, first, last, separator) {
+		return function (input, first, last, separator) {
 			var filtered;
 			last = last || first;
 			if (input.length > (first + last)) {

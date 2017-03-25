@@ -35,13 +35,16 @@
     "commander": "^2.9.0",
     "debug": "^2.6.1",
     "express": "^4.14.1",
+    "express-session": "^1.15.1",
     "greenlock": "^2.1.12",
     "grpc": "^1.1.1",
     "le-acme-core": "^2.0.9",
     "le-challenge-fs": "^2.0.8",
     "le-store-certbot": "^2.0.3",
     "method-override": "^2.3.7",
+    "promise": "^7.1.1",
     "socket.io": "^1.7.2",
+    "tingodb": "^0.5.1",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.4"
   },
@@ -50,6 +53,10 @@
     "electron": "^1.4.1",
     "electron-packager": "^8.5.2",
     "electron-rebuild": "^1.5.7",
-    "electron-winstaller": "^2.5.2"
+    "electron-winstaller": "^2.5.2",
+    "gulp": "^3.9.1",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.4",
+    "jshint": "^2.9.4"
   }
 }

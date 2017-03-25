@@ -1,6 +1,7 @@
 // set up ========================
-const debug = require("debug")("lncliweb:server")
+const debug = require("debug")("lncliweb:server");
 const express  = require("express");
+const session = require("express-session");
 const bodyParser = require("body-parser");         // pull information from HTML POST (express4)
 const methodOverride = require("method-override"); // simulate DELETE and PUT (express4)
 const LE = require("greenlock");
@@ -13,16 +14,27 @@ module.exports = function (program) {
 	var lePath = require("os").homedir() + "/letsencrypt";
 
 	// load app default configuration data
-	const defaults = require("../config/config");
+	const defaults = require("../config/defaults");
+
+	// load other configuration data
+	const config = require("../config/config");
+
+	// define useful global variables ======================================
+	module.useTLS = !program.serverport;
+	module.serverPort = program.serverport || "443";
+	module.serverHost = program.serverhost;
 
 	// setup winston logging ==========
-	const logger = require("../config/log")((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel)); 
+	const logger = require("../config/log")((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel));
+
+	// utilities functions =================
+	const utils = require("./server-utils")(module);
 
 	// setup authentication =================
 	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
 	// db init =================
-	const db = null;
+	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
@@ -39,16 +51,16 @@ module.exports = function (program) {
 	// ACME Challenge Handlers
 	var leChallenge = require("le-challenge-fs").create({
 		webrootPath: lePath + "/var/",                     // or template string such as
-		debug: true                                        // '/srv/www/:hostname/.well-known/acme-challenge'
+		debug: true                                        // "/srv/www/:hostname/.well-known/acme-challenge"
 	});
 
 	function leAgree(opts, agreeCb) {
-		var opts = {
-			domains: [ program.serverhost ],
+		var myopts = {
+			domains: [program.serverhost],
 			email: program.leEmail,
 			tosUrl: true
 		};
-		agreeCb(null, opts.tosUrl);
+		agreeCb(null, myopts.tosUrl);
 	}
 
 	var le = LE.create({
@@ -62,7 +74,7 @@ module.exports = function (program) {
 	});
 
 	// Check in-memory cache of certificates for the named domain
-	le.check({ domains: [ program.serverhost ] }).then(function (results) {
+	le.check({ domains: [program.serverhost] }).then(function (results) {
 
 		if (results) {
 			// we already have certificates
@@ -71,7 +83,7 @@ module.exports = function (program) {
 
 		// Register Certificate manually
 		le.register({
-			domains: [ program.serverhost ],
+			domains: [program.serverhost],
 			email: program.leEmail,
 			agreeTos: true,
 			rsaKeySize: 2048,
@@ -86,21 +98,22 @@ module.exports = function (program) {
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
+	app.use(session({ secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, saveUninitialized: true }));
 
 	// app configuration =================
 	app.use("/", le.middleware());                                  // letsencrypt middleware for express
 	app.use(require("./cors"));                                     // enable CORS headers
-	app.use([/^\/$/, '/lnd.html', '/api/lnd/'], basicauth);         // enable authentication
+	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
 	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
-	app.use(bodyParser.urlencoded({ "extended": "true" }));         // parse application/x-www-form-urlencoded
+	app.use(bodyParser.urlencoded({ extended: "true" }));           // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
 	app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
 	app.use(methodOverride());
 	// error handler
-	app.use(function(err, req, res, next) {
-	  // Do logging and user-friendly error message display
-	  winston.error(err);
-	  res.status(500).send({ status: 500, message: "internal error", type: "internal" }); 
+	app.use(function (err, req, res, next) {
+		// Do logging and user-friendly error message display
+		winston.error(err);
+		res.status(500).send({ status: 500, message: "internal error", type: "internal" });
 	});
 
 	// init server =================
@@ -125,11 +138,6 @@ module.exports = function (program) {
 	// setup routes =================
 	require("./routes")(app, lightning, db);
 
-	// define useful global variables ======================================
-	module.useTLS = !program.serverport;
-	module.serverPort = program.serverport || "443";
-	module.serverHost = program.serverhost;
-
 	// listen (start app with node server.js) ======================================
 	server.listen(module.serverPort, module.serverHost);
 
@@ -138,4 +146,4 @@ module.exports = function (program) {
 	module.server = server;
 
 	return module;
-}
+};

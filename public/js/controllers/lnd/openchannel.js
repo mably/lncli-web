@@ -2,7 +2,7 @@
 
 	lnwebcli.controller("ModalOpenChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($scope, $timeout, $uibModalInstance, defaults, lncli) {
+	function controller($scope, $timeout, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -14,11 +14,11 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.openChannel($ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt, $ctrl.values.numconf).then(function(response) {
+			lncli.openChannel($ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt, $ctrl.values.numconf).then(function (response) {
 				console.log("OpenChannel", response);
 				var requestId = response.rid;
 				// timer to not wait indefinitely for first websocket event
-				var waitTimer = $timeout(function() {
+				var waitTimer = $timeout(function () {
 					$ctrl.spinner--;
 					listenersIds.splice(listenersIds.indexOf(requestId), 1);
 					lncli.unregisterWSRequestListener(requestId);
@@ -26,7 +26,7 @@
 				}, 15000); // Wait 5 seconds maximmum for socket response
 				listenersIds.push(requestId);
 				// We wait for first websocket event to check for errors
-				lncli.registerWSRequestListener(requestId, function(response) {
+				lncli.registerWSRequestListener(requestId, function (response) {
 					$ctrl.spinner--;
 					$timeout.cancel(waitTimer);
 					listenersIds.splice(listenersIds.indexOf(requestId), 1);
@@ -58,19 +58,19 @@
 		};
 
 		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss("cancel");
 		};
 
-		$ctrl.dismissAlert = function() {
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
-		}
+		};
 
 		var unregisterWSRequestListeners = function () {
 			for (var i = 0; i < listenersIds.length; i++) {
 				lncli.unregisterWSRequestListener(listenersIds[i]);
 			}
 			listenersIds.length = 0;
-		}
+		};
 
 		$scope.$on("modal.closing", function (event, reason, closed) {
 			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");

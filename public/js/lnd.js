@@ -8,11 +8,11 @@ lnwebcli.config(["localStorageServiceProvider", function (localStorageServicePro
 		.setNotify(true, true);
 }]);
 
-lnwebcli.config(['ngToastProvider', function(ngToast) {
+lnwebcli.config(["ngToastProvider", function (ngToast) {
 	ngToast.configure({
-		// verticalPosition: 'bottom',
-		// horizontalPosition: 'center'
-		animation: 'fade'
+		// verticalPosition: "bottom",
+		// horizontalPosition: "center"
+		animation: "fade"
 	});
 }]);
 

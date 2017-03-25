@@ -40,3 +40,6 @@ jspm_packages
 /*.pem
 /lncliweb-win32-x64
 /dist
+/data/*
+/config/config.js
+/config/defaults.js
