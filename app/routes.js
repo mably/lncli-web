@@ -1,152 +1,152 @@
 // app/routes.js
 
-const debug = require('debug')('lncliweb:routes')
-const logger = require('winston')
-const request = require('request')
+const debug = require("debug")("lncliweb:routes");
+const logger = require("winston");
+const request = require("request");
 
 // expose the routes to our app with module.exports
-module.exports = function(app, lightning, slacktip, db) {
+module.exports = function (app, lightning, slacktip, db) {
 
 	// api ---------------------------------------------------------------------
 
 	// get lnd network info
-	app.get('/api/lnd/getnetworkinfo', function(req, res) {
-		lightning.getNetworkInfo({}, function(err, response) {
+	app.get("/api/lnd/getnetworkinfo", function (req, res) {
+		lightning.getNetworkInfo({}, function (err, response) {
 			if (err) {
-				logger.debug('GetNetworkInfo Error:', err);
+				logger.debug("GetNetworkInfo Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('GetNetworkInfo:', response);
+				logger.debug("GetNetworkInfo:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node info
-	app.get('/api/lnd/getinfo', function(req, res) {
-		lightning.getInfo({}, function(err, response) {
+	app.get("/api/lnd/getinfo", function (req, res) {
+		lightning.getInfo({}, function (err, response) {
 			if (err) {
-				logger.debug('GetInfo Error:', err);
+				logger.debug("GetInfo Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('GetInfo:', response);
+				logger.debug("GetInfo:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node active channels list
-	app.get('/api/lnd/listpeers', function(req, res) {
-		lightning.listPeers({}, function(err, response) {
+	app.get("/api/lnd/listpeers", function (req, res) {
+		lightning.listPeers({}, function (err, response) {
 			if (err) {
-				logger.debug('ListPeers Error:', err);
+				logger.debug("ListPeers Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('ListPeers:', response);
+				logger.debug("ListPeers:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node active channels list
-	app.get('/api/lnd/listchannels', function(req, res) {
-		lightning.listChannels({}, function(err, response) {
+	app.get("/api/lnd/listchannels", function (req, res) {
+		lightning.listChannels({}, function (err, response) {
 			if (err) {
-				logger.debug('ListChannels Error:', err);
+				logger.debug("ListChannels Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('ListChannels:', response);
+				logger.debug("ListChannels:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node pending channels list
-	app.get('/api/lnd/pendingchannels', function(req, res) {
-		lightning.pendingChannels({}, function(err, response) {
+	app.get("/api/lnd/pendingchannels", function (req, res) {
+		lightning.pendingChannels({}, function (err, response) {
 			if (err) {
-				logger.debug('PendingChannels Error:', err);
+				logger.debug("PendingChannels Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('PendingChannels:', response);
+				logger.debug("PendingChannels:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node payments list
-	app.get('/api/lnd/listpayments', function(req, res) {
-		lightning.listPayments({}, function(err, response) {
+	app.get("/api/lnd/listpayments", function (req, res) {
+		lightning.listPayments({}, function (err, response) {
 			if (err) {
-				logger.debug('ListPayments Error:', err);
+				logger.debug("ListPayments Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('ListPayments:', response);
+				logger.debug("ListPayments:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get lnd node invoices list
-	app.get('/api/lnd/listinvoices', function(req, res) {
-		lightning.listInvoices({}, function(err, response) {
+	app.get("/api/lnd/listinvoices", function (req, res) {
+		lightning.listInvoices({}, function (err, response) {
 			if (err) {
-				logger.debug('ListInvoices Error:', err);
+				logger.debug("ListInvoices Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('ListInvoices:', response);
+				logger.debug("ListInvoices:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get the lnd node wallet balance
-	app.get('/api/lnd/walletbalance', function(req, res) {
-		lightning.walletBalance({}, function(err, response) {
+	app.get("/api/lnd/walletbalance", function (req, res) {
+		lightning.walletBalance({}, function (err, response) {
 			if (err) {
-				logger.debug('WalletBalance Error:', err);
+				logger.debug("WalletBalance Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('WalletBalance:', response);
+				logger.debug("WalletBalance:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// get the lnd node channel balance
-	app.get('/api/lnd/channelbalance', function(req, res) {
-		lightning.channelBalance({}, function(err, response) {
+	app.get("/api/lnd/channelbalance", function (req, res) {
+		lightning.channelBalance({}, function (err, response) {
 			if (err) {
-				logger.debug('ChannelBalance Error:', err);
+				logger.debug("ChannelBalance Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('ChannelBalance:', response);
+				logger.debug("ChannelBalance:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// connect peer to lnd node
-	app.post('/api/lnd/connectpeer', function(req, res) {
+	app.post("/api/lnd/connectpeer", function (req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function(err, response) {
+			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function (err, response) {
 				if (err) {
-					logger.debug('ConnectPeer Error:', err);
+					logger.debug("ConnectPeer Error:", err);
 					err.error = err.message;
-					res.send(err)
+					res.send(err);
 				} else {
-					logger.debug('ConnectPeer:', response);
+					logger.debug("ConnectPeer:", response);
 					res.json(response);
 				}
 			});
@@ -154,17 +154,17 @@ module.exports = function(app, lightning, slacktip, db) {
 	});
 
 	// addinvoice
-	app.post('/api/lnd/addinvoice', function(req, res) {
+	app.post("/api/lnd/addinvoice", function (req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function(err, response) {
+			lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function (err, response) {
 				if (err) {
-					logger.debug('AddInvoice Error:', err);
+					logger.debug("AddInvoice Error:", err);
 					err.error = err.message;
-					res.send(err)
+					res.send(err);
 				} else {
-					logger.debug('AddInvoice:', response);
+					logger.debug("AddInvoice:", response);
 					res.json(response);
 				}
 			});
@@ -172,19 +172,19 @@ module.exports = function(app, lightning, slacktip, db) {
 	});
 
 	// sendpayment
-	app.post('/api/lnd/sendpayment', function(req, res) {
+	app.post("/api/lnd/sendpayment", function (req, res) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
 			var paymentRequest = { payment_request: req.body.payreq };
 			logger.debug("Sending payment", paymentRequest);
-			lightning.sendPaymentSync(paymentRequest, function(err, response) {
+			lightning.sendPaymentSync(paymentRequest, function (err, response) {
 				if (err) {
-					logger.debug('SendPayment Error:', err);
+					logger.debug("SendPayment Error:", err);
 					err.error = err.message;
-					res.send(err)
+					res.send(err);
 				} else {
-					logger.debug('SendPayment:', response);
+					logger.debug("SendPayment:", response);
 					res.json(response);
 				}
 			});
@@ -192,68 +192,68 @@ module.exports = function(app, lightning, slacktip, db) {
 	});
 
 	// decodepayreq
-	app.post('/api/lnd/decodepayreq', function(req, res) {
-		lightning.decodePayReq({ pay_req: req.body.payreq }, function(err, response) {
+	app.post("/api/lnd/decodepayreq", function (req, res) {
+		lightning.decodePayReq({ pay_req: req.body.payreq }, function (err, response) {
 			if (err) {
-				logger.debug('DecodePayReq Error:', err);
+				logger.debug("DecodePayReq Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('DecodePayReq:', response);
+				logger.debug("DecodePayReq:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// queryroute
-	app.post('/api/lnd/queryroute', function(req, res) {
-		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt }, function(err, response) {
+	app.post("/api/lnd/queryroute", function (req, res) {
+		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt }, function (err, response) {
 			if (err) {
-				logger.debug('QueryRoute Error:', err);
+				logger.debug("QueryRoute Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('QueryRoute:', response);
+				logger.debug("QueryRoute:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// newaddress
-	app.post('/api/lnd/newaddress', function(req, res) {
-		lightning.newAddress({ type: req.body.type }, function(err, response) {
+	app.post("/api/lnd/newaddress", function (req, res) {
+		lightning.newAddress({ type: req.body.type }, function (err, response) {
 			if (err) {
-				logger.debug('NewAddress Error:', err);
+				logger.debug("NewAddress Error:", err);
 				err.error = err.message;
-				res.send(err)
+				res.send(err);
 			} else {
-				logger.debug('NewAddress:', response);
+				logger.debug("NewAddress:", response);
 				res.json(response);
 			}
 		});
 	});
 
 	// slack oauth callback handler
-	app.get('/oauth/slack/callback', require('./routes/slacktip/slack-callback.js')(slacktip));
+	app.get("/oauth/slack/callback", require("./routes/slacktip/slack-callback.js")(slacktip));
 
 	// get slack user info
-	app.get('/api/slacktip/getuser', require('./routes/slacktip/getuser.js')(slacktip));
+	app.get("/api/slacktip/getuser", require("./routes/slacktip/getuser.js")(slacktip));
 
 	// handle slack lntip command
-	app.post('/api/slacktip/tip', require('./routes/slacktip/tip.js')(slacktip));
+	app.post("/api/slacktip/tip", require("./routes/slacktip/tip.js")(slacktip));
 
 	// addinvoice
-	app.post('/api/slacktip/addinvoice', require('./routes/slacktip/addinvoice.js')(slacktip));
+	app.post("/api/slacktip/addinvoice", require("./routes/slacktip/addinvoice.js")(slacktip));
 
 	// withdraw funds
-	app.post('/api/slacktip/withdrawfunds', require('./routes/slacktip/withdrawfunds.js')(slacktip));
+	app.post("/api/slacktip/withdrawfunds", require("./routes/slacktip/withdrawfunds.js")(slacktip));
 
 	// web app send tip
-	app.post('/api/slacktip/sendtip', require('./routes/slacktip/sendtip.js')(slacktip));
+	app.post("/api/slacktip/sendtip", require("./routes/slacktip/sendtip.js")(slacktip));
 
 	// application -------------------------------------------------------------
-	app.get('*', function(req, res) {
-		res.sendFile('index.html', { root: __dirname + '/../public/' }); // load the single view file (angular will handle the page changes on the front-end)
+	app.get("*", function (req, res) {
+		res.sendFile("index.html", { root: __dirname + "/../public/" }); // load the single view file (angular will handle the page changes on the front-end)
 	});
 
-}
+};

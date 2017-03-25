@@ -2,7 +2,7 @@
 
 	slacktipapp.controller("ModalSendTipCtrl", ["$scope", "$uibModalInstance", "defaults", "slacktip", controller]);
 
-	function controller ($scope, $uibModalInstance, defaults, slacktip) {
+	function controller($scope, $uibModalInstance, defaults, slacktip) {
 
 		var $ctrl = this;
 
@@ -12,7 +12,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			slacktip.sendTip($ctrl.values.userid, $ctrl.values.teamid, $ctrl.values.amount).then(function(response) {
+			slacktip.sendTip($ctrl.values.userid, $ctrl.values.teamid, $ctrl.values.amount).then(function (response) {
 				$ctrl.spinner--;
 				console.log("SendTip", response);
 				if (response.data.error) {

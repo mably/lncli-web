@@ -8,23 +8,23 @@
 
 		$scope.spinner = 0;
 
-		$scope.refresh = function() {
+		$scope.refresh = function () {
 			$scope.spinner++;
-			lncli.listKnownPeers().then(function(response) {
+			lncli.listKnownPeers().then(function (response) {
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response, null, "\t");
 				$scope.peers = response;
-			}, function(err) {
+			}, function (err) {
 				$scope.spinner--;
-				console.log('Error:', err);
+				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
 		};
 
-		$scope.connect = function(peer) {
+		$scope.connect = function (peer) {
 			$scope.spinner++;
-			lncli.connectPeer(peer.pub_key, peer.address).then(function(response) {
+			lncli.connectPeer(peer.pub_key, peer.address).then(function (response) {
 				$scope.spinner--;
 				console.log("ConnectKnownPeer", response);
 				if (response.data.error) {
@@ -39,7 +39,7 @@
 			});
 		};
 
-		$scope.edit = function(peer) {
+		$scope.edit = function (peer) {
 			var modalInstance = $uibModal.open({
 				animation: true,
 				ariaLabelledBy: "editknownpeer-modal-title",
@@ -57,7 +57,7 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#editknownpeer-alias").focus();
 			});
 
@@ -65,13 +65,13 @@
 				console.log("EditKnownPeer updated values", values);
 				$scope.refresh();
 			}, function () {
-				console.log('Modal EditKnownPeer dismissed at: ' + new Date());
+				console.log("Modal EditKnownPeer dismissed at: " + new Date());
 			});
 		};
 
-		$scope.remove = function(peer) {
+		$scope.remove = function (peer) {
 			bootbox.confirm("Do you really want to remove that peer?", function () {
-				lncli.removeKnownPeer(peer.pub_key).then(function(response) {
+				lncli.removeKnownPeer(peer.pub_key).then(function (response) {
 					console.log("RemoveKnownPeer removed=", response);
 					$scope.refresh();
 				}, function (err) {
@@ -81,7 +81,7 @@
 			});
 		};
 
-		$scope.import = function() {
+		$scope.import = function () {
 			var modalInstance = $uibModal.open({
 				animation: true,
 				ariaLabelledBy: "importknownpeers-modal-title",
@@ -97,7 +97,7 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#importknownpeers-peersjson").focus();
 			});
 
@@ -105,25 +105,25 @@
 				console.log("ImportKnownPeers updated values", values);
 				$scope.refresh();
 			}, function () {
-				console.log('Modal ImportKnownPeers dismissed at: ' + new Date());
+				console.log("Modal ImportKnownPeers dismissed at: " + new Date());
 			});
 		};
 
-		$scope.pubkeyCopied = function(peer) {
+		$scope.pubkeyCopied = function (peer) {
 			peer.pubkeyCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				peer.pubkeyCopied = false;
 			}, 500);
-		}
+		};
 
-		$scope.addressCopied = function(peer) {
+		$scope.addressCopied = function (peer) {
 			peer.addressCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				peer.addressCopied = false;
 			}, 500);
-		}
+		};
 
-		$scope.$on(config.events.PEER_REFRESH, function(event, args) {
+		$scope.$on(config.events.PEER_REFRESH, function (event, args) {
 			console.log("Received event PEER_REFRESH", event, args);
 			$scope.refresh();
 		});

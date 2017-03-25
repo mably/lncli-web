@@ -1,11 +1,11 @@
 // app/txprocessor.js
 
-const debug = require('debug')('lncliweb:slacktip')
-const logger = require('winston')
-const Promise = require('promise')
+const debug = require("debug")("lncliweb:slacktip");
+const logger = require("winston");
+const Promise = require("promise");
 
 // TODO
-module.exports = function(db, accountsCol, transactionsCol) {
+module.exports = function (db, accountsCol, transactionsCol) {
 
 	var module = {};
 
@@ -17,7 +17,7 @@ module.exports = function(db, accountsCol, transactionsCol) {
 					if (err) {
 						reject(err);
 					} else {
-						logger.debug('Transaction DB insert:', result);
+						logger.debug("Transaction DB insert:", result);
 						module.dbProcessTransactionsInInitialState().then(function (result) {
 							// TODO check result
 							resolve(result);
@@ -139,7 +139,7 @@ module.exports = function(db, accountsCol, transactionsCol) {
 						resolve(result);
 					}
 				}
-			)
+			);
 		});
 		return promise;
 	};
@@ -147,13 +147,13 @@ module.exports = function(db, accountsCol, transactionsCol) {
 	module.dbUpdateAccountBalance = function (slackid, txid, value) {
 		var promise = new Promise(function (resolve, reject) {
 			accountsCol.update(
-				{ slackid: slackid, pendingTransactions: { $ne: (txid + '') } },
-				{ $inc: { balance: value }, $push: { pendingTransactions: (txid + '') } },
+				{ slackid: slackid, pendingTransactions: { $ne: (txid + "") } },
+				{ $inc: { balance: value }, $push: { pendingTransactions: (txid + "") } },
 				{ w: 1 }, function (err, result) {
 					if (err) {
 						reject(err);
 					} else {
-						logger.debug('dbUpdateAccountBalance DB update', result);
+						logger.debug("dbUpdateAccountBalance DB update", result);
 						// TODO check result
 						resolve(result);
 					}
@@ -193,13 +193,13 @@ module.exports = function(db, accountsCol, transactionsCol) {
 	module.dbRemovePendingTransaction = function (slackid, txid) {
 		var promise = new Promise(function (resolve, reject) {
 			accountsCol.update(
-				{ slackid: slackid, pendingTransactions: { $eq: (txid + '') } },
-				{ $pull: { pendingTransactions: (txid + '') } },
+				{ slackid: slackid, pendingTransactions: { $eq: (txid + "") } },
+				{ $pull: { pendingTransactions: (txid + "") } },
 				{ w: 1 }, function (err, result) {
 					if (err) {
 						reject(err);
 					} else {
-						logger.debug('dbRemovePendingTransaction DB update', result);
+						logger.debug("dbRemovePendingTransaction DB update", result);
 						// TODO check result
 						resolve(result);
 					}
@@ -252,13 +252,13 @@ module.exports = function(db, accountsCol, transactionsCol) {
 	module.dbRollbackAccountBalance = function (slackid, txid, value) {
 		var promise = new Promise(function (resolve, reject) {
 			accountsCol.update(
-				{ slackid: slackid, pendingTransactions: (txid + '') },
-				{ $inc: { balance: value }, $pull: { pendingTransactions: (txid + '') } },
+				{ slackid: slackid, pendingTransactions: (txid + "") },
+				{ $inc: { balance: value }, $pull: { pendingTransactions: (txid + "") } },
 				{ w: 1 }, function (err, result) {
 					if (err) {
 						reject(err);
 					} else {
-						logger.debug('dbUpdateAccountBalance DB update', result);
+						logger.debug("dbUpdateAccountBalance DB update", result);
 						// TODO check result
 						resolve(result);
 					}
@@ -289,11 +289,11 @@ module.exports = function(db, accountsCol, transactionsCol) {
 	};
 
 	// check every minute if there are some transactions to process
-	setInterval(function () { 
+	setInterval(function () {
 		module.dbProcessTransactionsInInitialState();
 		module.dbProcessTransactionsInPendingState();
 		module.dbProcessTransactionsInAppliedState();
 	}, 60 * 1000);
 
 	return module;
-}
+};

@@ -2,14 +2,14 @@
 
 	lnwebcli.controller("ModalEditSettingsCtrl", ["$uibModalInstance", "settings", "lncli", controller]);
 
-	function controller ($uibModalInstance, settings, lncli) {
+	function controller($uibModalInstance, settings, lncli) {
 
 		var $ctrl = this;
 
 		$ctrl.values = settings;
 
 		$ctrl.ok = function () {
-			lncli.setConfigValues($ctrl.values).then(function(response) {
+			lncli.setConfigValues($ctrl.values).then(function (response) {
 				console.log("EditConfig", response);
 				$ctrl.warning = null;
 				$uibModalInstance.close($ctrl.values);
@@ -19,12 +19,12 @@
 		};
 
 		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss("cancel");
 		};
-		
-		$ctrl.dismissAlert = function() {
+
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
-		}
+		};
 
 	}
 

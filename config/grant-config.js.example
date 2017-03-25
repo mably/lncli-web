@@ -1,12 +1,12 @@
 module.exports = {
-  server: {
-    protocol: "https",
-    host: "localhost:8280"
-  },
-  slack: {
-    key: "[APP KEY]",
-    secret: "[APP SECRET]",
-    scope: ["identity.basic"],
-    callback: "/oauth/slack/callback"
-  }
+	server: {
+		protocol: "https",
+		host: "localhost:8280"
+	},
+	slack: {
+		key: "[APP KEY]",
+		secret: "[APP SECRET]",
+		scope: ["identity.basic"],
+		callback: "/oauth/slack/callback"
+	}
 };

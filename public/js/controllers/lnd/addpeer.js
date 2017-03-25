@@ -2,7 +2,7 @@
 
 	lnwebcli.controller("ModalAddPeerCtrl", ["$rootScope", "$scope", "$uibModalInstance", "defaults", "lncli", "config", controller]);
 
-	function controller ($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
+	function controller($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
 
 		var $ctrl = this;
 
@@ -12,7 +12,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.connectPeer($ctrl.values.pubkey, $ctrl.values.host).then(function(response) {
+			lncli.connectPeer($ctrl.values.pubkey, $ctrl.values.host).then(function (response) {
 				$ctrl.spinner--;
 				console.log("AddPeer", response);
 				if (response.data.error) {
@@ -39,12 +39,12 @@
 		};
 
 		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss("cancel");
 		};
-		
-		$ctrl.dismissAlert = function() {
+
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
-		}
+		};
 
 		$scope.$on("modal.closing", function (event, reason, closed) {
 			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");

@@ -2,7 +2,7 @@
 
 	lnwebcli.controller("ModalSendPaymentCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($scope, $uibModalInstance, defaults, lncli) {
+	function controller($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -13,7 +13,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.sendPayment($ctrl.values.payreq).then(function(response) {
+			lncli.sendPayment($ctrl.values.payreq).then(function (response) {
 				$ctrl.spinner--;
 				console.log("SendPayment", response);
 				if (response.data.error) {
@@ -40,7 +40,7 @@
 
 		$ctrl.decode = function () {
 			$ctrl.spinner++;
-			lncli.decodePayReq($ctrl.values.payreq).then(function(response) {
+			lncli.decodePayReq($ctrl.values.payreq).then(function (response) {
 				$ctrl.spinner--;
 				console.log("DecodePayReq", response);
 				if (response.data.error) {

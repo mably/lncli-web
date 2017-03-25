@@ -2,7 +2,7 @@
 
 	slacktipapp.controller("ModalWithdrawFundsCtrl", ["$rootScope", "$scope", "$uibModalInstance", "defaults", "slacktip", "config", controller]);
 
-	function controller ($rootScope, $scope, $uibModalInstance, defaults, slacktip, config) {
+	function controller($rootScope, $scope, $uibModalInstance, defaults, slacktip, config) {
 
 		var $ctrl = this;
 
@@ -12,7 +12,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			slacktip.withdrawFunds($ctrl.values.payreq).then(function(response) {
+			slacktip.withdrawFunds($ctrl.values.payreq).then(function (response) {
 				$ctrl.spinner--;
 				console.log("WithdrawFunds", response);
 				if (response.data.error) {
@@ -39,12 +39,12 @@
 		};
 
 		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+			$uibModalInstance.dismiss("cancel");
 		};
-		
-		$ctrl.dismissAlert = function() {
+
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
-		}
+		};
 
 		$scope.$on("modal.closing", function (event, reason, closed) {
 			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");

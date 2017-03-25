@@ -12,25 +12,25 @@
 		$scope.refresh = function () {
 			$scope.spinner++;
 			$scope.updateNextRefresh();
-			slacktip.getUser(false).then(function(response) {
+			slacktip.getUser(false).then(function (response) {
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
-			}, function(err) {
+			}, function (err) {
 				$scope.spinner--;
-				console.log('Error:', err);
+				console.log("Error:", err);
 				slacktip.alert(err.message || err.statusText);
 			});
-		}
+		};
 
 		$scope.updateNextRefresh = function () {
 			$timeout.cancel($scope.nextRefresh);
 			$scope.nextRefresh = $timeout($scope.refresh,
 				slacktip.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
-		}
+		};
 
-		$scope.generateInvoice = function() {
+		$scope.generateInvoice = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -49,7 +49,7 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#addinvoice-value").focus();
 			});
 
@@ -57,12 +57,12 @@
 				console.log("values", values);
 				$scope.refresh();
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.withdrawFunds = function() {
+		$scope.withdrawFunds = function () {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -81,7 +81,7 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#withdrawfunds-payreq").focus();
 			});
 
@@ -89,12 +89,12 @@
 				console.log("values", values);
 				$scope.refresh();
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.$on(config.events.USER_REFRESH, function(event, args) {
+		$scope.$on(config.events.USER_REFRESH, function (event, args) {
 			console.log("Received event USER_REFRESH", event, args);
 			$scope.refresh();
 		});

@@ -1,11 +1,11 @@
 // set up ========================
-const debug = require('debug')('lncliweb:server')
-const express  = require('express')
-const session = require('express-session')
-const Grant = require('grant-express')
-const grant = new Grant(require('../config/grant-config.js'))
-const bodyParser = require('body-parser')         // pull information from HTML POST (express4)
-const methodOverride = require('method-override') // simulate DELETE and PUT (express4)
+const debug = require("debug")("lncliweb:server");
+const express  = require("express");
+const session = require("express-session");
+const Grant = require("grant-express");
+const grant = new Grant(require("../config/grant-config.js"));
+const bodyParser = require("body-parser");         // pull information from HTML POST (express4)
+const methodOverride = require("method-override"); // simulate DELETE and PUT (express4)
 
 // expose the server to our app with module.exports
 module.exports = function (program) {
@@ -13,10 +13,10 @@ module.exports = function (program) {
 	var module = {};
 
 	// load app default configuration data
-	const defaults = require('../config/defaults');
+	const defaults = require("../config/defaults");
 
 	// load other configuration data
-	const config = require('../config/config');
+	const config = require("../config/config");
 
 	// define useful global variables ======================================
 	module.useTLS = program.usetls;
@@ -24,16 +24,16 @@ module.exports = function (program) {
 	module.serverHost = program.serverhost || defaults.serverHost;
 
 	// setup winston logging ==========
-	const logger = require('../config/log')((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel)); 
+	const logger = require("../config/log")((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel));
 
 	// utilities functions =================
-	const utils = require('./server-utils')(module);
+	const utils = require("./server-utils")(module);
 
 	// setup authentication =================
 	const basicauth = require("./basicauth")(program.user, program.pwd, program.limituser, program.limitpwd).filter;
 
 	// db init =================
-	const db = require('./database')(defaults.dataPath);
+	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
 	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
@@ -42,39 +42,39 @@ module.exports = function (program) {
 	const lnd = require("./lnd")(lightning);
 
 	// init slacktip module =================
-	const slacktip = require("./slacktip")(lightning, lnd, db, module, require('../config/slack-config'));
+	const slacktip = require("./slacktip")(lightning, lnd, db, module, require("../config/slack-config"));
 
 	// app creation =================
 	const app = express();                                          // create our app w/ express
-	app.use(session({ secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, saveUninitialized: true }))
+	app.use(session({ secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, saveUninitialized: true }));
 
 	// app configuration =================
 	app.use(require("./cors"));                                     // enable CORS headers
 	app.use(grant);                                                 // mount grant
-	app.use(['/lnd.html', '/api/lnd/'], basicauth);                 // enable basic authentication for lnd apis
-	app.use(express.static(__dirname + '/../public'));              // set the static files location /public/img will be /img for users
-	app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
+	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
+	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
+	app.use(bodyParser.urlencoded({ extended: "true" }));           // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
-	app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
+	app.use(bodyParser.json({ type: "application/vnd.api+json" })); // parse application/vnd.api+json as json
 	app.use(methodOverride());
 	// error handler
-	app.use(function(err, req, res, next) {
-	  // Do logging and user-friendly error message display
-	  winston.error(err);
-	  res.status(500).send({status:500, message: 'internal error', type:'internal'}); 
+	app.use(function (err, req, res, next) {
+		// Do logging and user-friendly error message display
+		winston.error(err);
+		res.status(500).send({ status: 500, message: "internal error", type: "internal" });
 	});
 
 	// init server =================
 	var server;
 	if (program.usetls) {
-		server = require('https').createServer({
-			key: require('fs').readFileSync(program.usetls + '/key.pem'),
-			cert: require('fs').readFileSync(program.usetls + '/cert.pem')
+		server = require("https").createServer({
+			key: require("fs").readFileSync(program.usetls + "/key.pem"),
+			cert: require("fs").readFileSync(program.usetls + "/cert.pem")
 		}, app);
 	} else {
-		server = require('http').Server(app);
+		server = require("http").Server(app);
 	}
-	const io = require('socket.io')(server);
+	const io = require("socket.io")(server);
 
 	// setup sockets =================
 	var lndLogfile = program.lndlogfile || defaults.lndLogFile;
@@ -91,4 +91,4 @@ module.exports = function (program) {
 	module.server = server;
 
 	return module;
-}
+};
