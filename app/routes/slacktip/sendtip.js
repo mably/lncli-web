@@ -1,9 +1,9 @@
 // app/routes/slacktip/tip.js
 
-const debug = require('debug')('lncliweb:routes:slacktip')
+const debug = require("debug")("lncliweb:routes:slacktip");
 
 module.exports = function (slacktip) {
-	return function(req, res) {
+	return function (req, res) {
 		debug(req.body);
 		if (req.session.user) {
 			slacktip.sendTip(req.session.user, req.body.userid, req.body.teamid, req.body.amount).then(function (response) {

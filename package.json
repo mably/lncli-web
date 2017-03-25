@@ -54,6 +54,10 @@
     "electron": "^1.4.1",
     "electron-packager": "^8.5.2",
     "electron-rebuild": "^1.5.7",
-    "electron-winstaller": "^2.5.2"
+    "electron-winstaller": "^2.5.2",
+    "gulp": "^3.9.1",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.4",
+    "jshint": "^2.9.4"
   }
 }

@@ -6,7 +6,7 @@
 
 		var $ctrl = this;
 
-		$scope.sendTip = function() {
+		$scope.sendTip = function () {
 
 			slacktip.getUser(true).then(function (response) {
 
@@ -31,14 +31,14 @@
 						}
 					});
 
-					modalInstance.rendered.then(function() {
+					modalInstance.rendered.then(function () {
 						$("#sendtip-userid").focus();
 					});
 
 					modalInstance.result.then(function (values) {
 						console.log("values", values);
 					}, function () {
-						console.log('Modal dismissed at: ' + new Date());
+						console.log("Modal dismissed at: " + new Date());
 					});
 
 				} else {

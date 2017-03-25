@@ -7,19 +7,19 @@
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
 
-		$scope.refresh = function() {
-			lncli.getKnownPeers(true).then(function(knownPeers) {
+		$scope.refresh = function () {
+			lncli.getKnownPeers(true).then(function (knownPeers) {
 				$scope.knownPeers = knownPeers;
 				$scope.spinner++;
 				$scope.updateNextRefresh();
-				lncli.listChannels().then(function(response) {
+				lncli.listChannels().then(function (response) {
 					$scope.spinner--;
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
 					$scope.channels = response.data.channels;
-				}, function(err) {
+				}, function (err) {
 					$scope.spinner--;
-					console.log('Error:', err);
+					console.log("Error:", err);
 					lncli.alert(err.message || err.statusText);
 				});
 			});
@@ -29,11 +29,11 @@
 			$timeout.cancel($scope.nextRefresh);
 			$scope.nextRefresh = $timeout($scope.refresh,
 				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
-		}
+		};
 
-		$scope.add = function() {
+		$scope.add = function () {
 
-			lncli.listPeers(true).then(function(peersResponse) {
+			lncli.listPeers(true).then(function (peersResponse) {
 
 				if (peersResponse && peersResponse.data && peersResponse.data.peers && peersResponse.data.peers.length > 0) {
 
@@ -58,14 +58,14 @@
 						}
 					});
 
-					modalInstance.rendered.then(function() {
+					modalInstance.rendered.then(function () {
 						$("#openchannel-pubkey").focus();
 					});
 
 					modalInstance.result.then(function (values) {
 						console.log("values", values);
 					}, function () {
-						console.log('Modal dismissed at: ' + new Date());
+						console.log("Modal dismissed at: " + new Date());
 					});
 
 				} else {
@@ -78,7 +78,7 @@
 
 		};
 
-		$scope.close = function(channel) {
+		$scope.close = function (channel) {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -93,49 +93,49 @@
 				}
 			});
 
-			modalInstance.rendered.then(function() {
+			modalInstance.rendered.then(function () {
 				$("#closechannel-force").focus();
 			});
 
 			modalInstance.result.then(function (values) {
 				console.log("values", values);
 			}, function () {
-				console.log('Modal dismissed at: ' + new Date());
+				console.log("Modal dismissed at: " + new Date());
 			});
 
 		};
 
-		$scope.dismissWarning = function() {
+		$scope.dismissWarning = function () {
 			$scope.warning = null;
-		}
+		};
 
-		$scope.channelPeerAlias = function(channel) {
+		$scope.channelPeerAlias = function (channel) {
 			var knownPeer = $scope.knownPeers[channel.remote_pubkey];
 			return knownPeer ? knownPeer.alias : null;
-		}
+		};
 
-		$scope.pubkeyCopied = function(channel) {
+		$scope.pubkeyCopied = function (channel) {
 			channel.pubkeyCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				channel.pubkeyCopied = false;
 			}, 500);
-		}
+		};
 
-		$scope.chanpointCopied = function(channel) {
+		$scope.chanpointCopied = function (channel) {
 			channel.chanpointCopied = true;
-			$timeout(function() {
+			$timeout(function () {
 				channel.chanpointCopied = false;
 			}, 500);
-		}
+		};
 
 		$scope.openChannelPointInExplorer = function (channel) {
 			if (channel.channel_point) {
-				var txId = channel.channel_point.split(':')[0];
+				var txId = channel.channel_point.split(":")[0];
 				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
 			}
-		}
+		};
 
-		$scope.$on(config.events.CHANNEL_REFRESH, function(event, args) {
+		$scope.$on(config.events.CHANNEL_REFRESH, function (event, args) {
 			console.log("Received event CHANNEL_REFRESH", event, args);
 			$scope.refresh();
 		});

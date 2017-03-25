@@ -2,10 +2,10 @@
 
 	lnwebcli.controller("ModalQueryRouteCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
 
-	function controller ($scope, $uibModalInstance, defaults, lncli) {
+	function controller($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
-		
+
 		$ctrl.spinner = 0;
 
 		$ctrl.values = defaults;
@@ -13,7 +13,7 @@
 
 		$ctrl.queryRoute = function () {
 			$ctrl.spinner++;
-			lncli.queryRoute($ctrl.values.pubkey, $ctrl.values.amount).then(function(response) {
+			lncli.queryRoute($ctrl.values.pubkey, $ctrl.values.amount).then(function (response) {
 				$ctrl.spinner--;
 				console.log("QueryRoute", response);
 				if (response.data.error) {

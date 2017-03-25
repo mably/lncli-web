@@ -1,14 +1,14 @@
 // app/sockets.js
 
-const debug = require('debug')('lncliweb:sockets')
-const logger = require('winston')
-const spawn = require('child_process').spawn
-const grpc = require('grpc');
-const bitcore = require('bitcore-lib')
-const BufferUtil = bitcore.util.buffer
+const debug = require("debug")("lncliweb:sockets");
+const logger = require("winston");
+const spawn = require("child_process").spawn;
+const grpc = require("grpc");
+const bitcore = require("bitcore-lib");
+const BufferUtil = bitcore.util.buffer;
 
 // TODO
-module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile) {
+module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile) {
 
 	var clients = [];
 
@@ -17,36 +17,36 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 	var userToken = null;
 	var limitUserToken = null;
 	if (login && pass) {
-		userToken = new Buffer(login + ":" + pass).toString('base64');
+		userToken = new Buffer(login + ":" + pass).toString("base64");
 	}
 	if (limitlogin && limitpass) {
-		limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString('base64');
+		limitUserToken = new Buffer(limitlogin + ":" + limitpass).toString("base64");
 	}
 
 	var tailProcess = null;
 
-	var registerGlobalListeners = function() {
+	var registerGlobalListeners = function () {
 		if (!tailProcess) {
 			tailProcess = spawn("tail", ["-f", lndLogfile]);
 			tailProcess.on("error", function (err) {
 				logger.warn("Couldn't launch tail command!", err.message);
 			});
 			tailProcess.stdout.on("data", function (data) {
-				logger.debug("tail", data.toString('utf-8'))
+				logger.debug("tail", data.toString("utf-8"));
 				for (var i = 0; i < clients.length; i++) {
 					if (!clients[i]._limituser) {
-						clients[i].emit("tail", { tail : data.toString('utf-8') });
+						clients[i].emit("tail", { tail: data.toString("utf-8") });
 					}
 				}
-			}); 
+			});
 		}
-	}
+	};
 
 	registerGlobalListeners();
 
-	io.on("connection", function(socket) {
+	io.on("connection", function (socket) {
 
-		debug('socket.handshake', socket.handshake);
+		debug("socket.handshake", socket.handshake);
 
 		if (authRequired) {
 			try {
@@ -56,7 +56,7 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 				} else if (socket.handshake.headers.authorization) {
 					authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
 				} else {
-					socket.disconnect('unauthorized');
+					socket.disconnect("unauthorized");
 					return;
 				}
 				if (authorizationHeaderToken === userToken) {
@@ -64,12 +64,12 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 				} else if (authorizationHeaderToken === limitUserToken) {
 					socket._limituser = true;
 				} else {
-					socket.disconnect('unauthorized');
+					socket.disconnect("unauthorized");
 					return;
 				}
 			} catch (err) { // probably because of missing authorization header
 				debug(err);
-				socket.disconnect('unauthorized');
+				socket.disconnect("unauthorized");
 				return;
 			}
 		} else {
@@ -91,7 +91,7 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 		registerSocketListeners(socket);
 
 		/** listening if client has disconnected */
-		socket.on("disconnect", function() {
+		socket.on("disconnect", function () {
 			clients.splice(clients.indexOf(socket), 1);
 			unregisterSocketListeners(socket);
 			logger.debug("client disconnected (id=" + socket.id + ").");
@@ -104,32 +104,34 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 		registerLndInvoiceListener(socket);
 		registerCloseChannelListener(socket);
 		registerOpenChannelListener(socket);
-	}
+	};
 
 	// unregister the socket listeners
 	var unregisterSocketListeners = function (socket) {
 		unregisterLndInvoiceListener(socket);
 		//unregisterCloseChannelListener(socket);
 		//unregisterOpenChannelListener(socket);
-	}
+	};
 
 	// register the lnd invoices listener
-	var registerLndInvoiceListener = function(socket) {
-		socket._invoiceListener = { dataReceived: function(data) {
-			socket.emit("invoice", data);
-		}};
+	var registerLndInvoiceListener = function (socket) {
+		socket._invoiceListener = {
+			dataReceived: function (data) {
+				socket.emit("invoice", data);
+			}
+		};
 		lnd.registerInvoiceListener(socket._invoiceListener);
 	};
 
 	// unregister the lnd invoices listener
-	var unregisterLndInvoiceListener = function(socket) {
+	var unregisterLndInvoiceListener = function (socket) {
 		lnd.unregisterInvoiceListener(socket._invoiceListener);
 	};
 
 	// openchannel
 	var OPENCHANNEL_EVENT = "openchannel";
-	var registerOpenChannelListener = function(socket) {
-		socket.on(OPENCHANNEL_EVENT, function(data, callback) {
+	var registerOpenChannelListener = function (socket) {
+		socket.on(OPENCHANNEL_EVENT, function (data, callback) {
 			var rid = data.rid; // request ID
 			if (socket._limituser) {
 				callback({ rid: rid, error: "forbidden" });
@@ -142,26 +144,26 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 						push_sat: Number(data.pushamt),
 						num_confs: Number(data.numconf)
 					};
-					debug('openChannelRequest', openChannelRequest);
+					debug("openChannelRequest", openChannelRequest);
 
 					var call = lightning.openChannel(openChannelRequest);
-					call.on('data', function(data) {
-						logger.debug('OpenChannel Data', data);
-						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: 'data', data: data });
+					call.on("data", function (data) {
+						logger.debug("OpenChannel Data", data);
+						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: "data", data: data });
 					});
-					call.on('end', function() {
-						logger.debug('OpenChannel End');
-						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: 'end' });
+					call.on("end", function () {
+						logger.debug("OpenChannel End");
+						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: "end" });
 					});
-					call.on('error', function(err) {
-						logger.debug('OpenChannel Error', err.message);
-						debug('OpenChannel Error', err);
+					call.on("error", function (err) {
+						logger.debug("OpenChannel Error", err.message);
+						debug("OpenChannel Error", err);
 						err.error = err.message;
-						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: 'error', data: err });
+						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: "error", data: err });
 					});
-					call.on('status', function(status) {
-						logger.debug('OpenChannel Status', status);
-						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: 'status', data: status });
+					call.on("status", function (status) {
+						logger.debug("OpenChannel Status", status);
+						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: "status", data: status });
 					});
 					callback({ rid: rid, message: "open channel pending" });
 				} catch (err) {
@@ -174,8 +176,8 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 
 	// closechannel
 	var CLOSECHANNEL_EVENT = "closechannel";
-	var registerCloseChannelListener = function(socket) {
-		socket.on(CLOSECHANNEL_EVENT, function(data, callback) {
+	var registerCloseChannelListener = function (socket) {
+		socket.on(CLOSECHANNEL_EVENT, function (data, callback) {
 			var rid = data.rid; // request ID
 			if (socket._limituser) {
 				callback({ rid: rid, error: "forbidden" });
@@ -190,25 +192,25 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 						},
 						force: !!data.force
 					};
-					debug('closeChannelRequest', closeChannelRequest);
+					debug("closeChannelRequest", closeChannelRequest);
 
 					var call = lightning.closeChannel(closeChannelRequest);
-					call.on('data', function(data) {
-						logger.debug('CloseChannel Data', data);
-						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: 'data', data: data });
+					call.on("data", function (data) {
+						logger.debug("CloseChannel Data", data);
+						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: "data", data: data });
 					});
-					call.on('end', function() {
-						logger.debug('CloseChannel End');
-						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: 'end' });
+					call.on("end", function () {
+						logger.debug("CloseChannel End");
+						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: "end" });
 					});
-					call.on('error', function(err) {
-						logger.debug('CloseChannel Error', err);
+					call.on("error", function (err) {
+						logger.debug("CloseChannel Error", err);
 						err.error = err.message;
-						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: 'error', data: err });
+						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: "error", data: err });
 					});
-					call.on('status', function(status) {
-						logger.debug('CloseChannel Status', status);
-						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: 'status', data: status });
+					call.on("status", function (status) {
+						logger.debug("CloseChannel Status", status);
+						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: "status", data: status });
 					});
 					callback({ rid: rid, message: "close channel pending" });
 				} catch (err) {
@@ -219,4 +221,4 @@ module.exports = function(io, lightning, lnd, login, pass, limitlogin, limitpass
 		});
 	};
 
-}
+};

@@ -1,9 +1,9 @@
 // app/basicauth.js
-const basicAuth = require('basic-auth');
-const debug = require('debug')('lncliweb:basicauth')
+const basicAuth = require("basic-auth");
+const debug = require("debug")("lncliweb:basicauth");
 
 // expose the routes to our app with module.exports
-module.exports = function(login, pass, limitlogin, limitpass) {
+module.exports = function (login, pass, limitlogin, limitpass) {
 
 	var module = {};
 
@@ -11,14 +11,16 @@ module.exports = function(login, pass, limitlogin, limitpass) {
 	module.filter = function (req, res, next) {
 		debug("url: " + req.originalUrl);
 		function unauthorized(res) {
-			res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+			res.set("WWW-Authenticate", "Basic realm=Authorization Required");
 			return res.sendStatus(401);
-		};
+		}
+
 		if (login && pass) {
 			var user = basicAuth(req);
 			if (!user || !user.name || !user.pass) {
 				return unauthorized(res);
 			}
+
 			if (user.name === login && user.pass === pass) {
 				req.limituser = false;
 				return next();
@@ -35,4 +37,4 @@ module.exports = function(login, pass, limitlogin, limitpass) {
 	};
 
 	return module;
-}
+};

@@ -1,9 +1,9 @@
-"use strict";
 (function () {
+	"use strict";
 
-	slacktipapp.service("slacktip", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", service]);
+	slacktipapp.service("slacktip", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", Service]);
 
-	function service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification) {
+	function Service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification) {
 
 		var _this = this;
 
@@ -23,11 +23,11 @@
 			return window.serverRootPath ? window.serverRootPath + path : path;
 		};
 
-		var socket = io.connect(serverUrl("/"), { secure: "https" === location.protocol });
+		var socket = io.connect(serverUrl("/"), { secure: location.protocol === "https" });
 
-		socket.on(config.events.HELLO_WS, function(data) {
+		socket.on(config.events.HELLO_WS, function (data) {
 			console.log("Hello event received:", data);
-			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!"
+			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!";
 			_this.notify(config.notif.SUCCESS, helloMsg);
 		});
 
@@ -37,7 +37,7 @@
 			} else {
 				return true;
 			}
-		}
+		};
 
 		this.registerWSRequestListener = function (requestId, callback, expires) {
 			var deferred = $q.defer();
@@ -48,7 +48,7 @@
 				deferred: deferred
 			};
 			return deferred.promise;
-		}
+		};
 
 		this.unregisterWSRequestListener = function (requestId) {
 			if (wsRequestListeners.hasOwnProperty(requestId)) {
@@ -56,13 +56,13 @@
 				requestListener.deferred.resolve();
 				delete wsRequestListeners[requestId];
 			}
-		}
+		};
 
-		var wsListenersCleaner = $interval(function() {
+		var wsListenersCleaner = $interval(function () {
 			var count = 0;
 			var now = new Date().getTime();
 			for (var requestId in wsRequestListeners) {
-				_this.unregisterWSRequestListener()
+				_this.unregisterWSRequestListener();
 				if (wsRequestListeners.hasOwnProperty(requestId)) {
 					var requestListener = wsRequestListeners[requestId];
 					if (requestListener.expires < now) {
@@ -77,7 +77,7 @@
 		this.notify = function (type, message) {
 			console.log("Notification (" + type + ") :", message);
 			if (message) {
-				$timeout(function() {
+				$timeout(function () {
 					if (type === config.notif.INFO) {
 						ngToast.info({
 							content: message
@@ -111,9 +111,9 @@
 				while ((index = message.indexOf("\n", index + 1)) > -1) {
 					notifLines++;
 				}
-				var notifObj = $("#notifications");
-				if (notifObj) {
-					var notifHtml = notifObj.html();
+				var $notifObj = $("#notifications");
+				if ($notifObj) {
+					var notifHtml = $notifObj.html();
 					index = -1;
 					var maxLogBuffer = _this.getConfigValue(
 						config.keys.MAX_NOTIF_BUFFER, config.defaults.MAX_NOTIF_BUFFER);
@@ -122,9 +122,9 @@
 						notifLines--;
 					}
 					notifHtml = notifHtml.substring(index + 1);
-					var now = $filter('date')(new Date(),'yyyy-MM-dd HH:mm:ss Z');
-					notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
-					notifObj.scrollTop(notifObj[0].scrollHeight);
+					var now = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss Z");
+					$notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
+					$notifObj.scrollTop($notifObj[0].scrollHeight);
 				}
 			}
 		};
@@ -133,20 +133,20 @@
 			if (message && message.length > 0) {
 				bootbox.alert(message);
 			}
-		}
+		};
 
 		var fetchConfig = function () {
 			configCache = localStorageService.get("config"); // update cache
 			if (!configCache) { configCache = {}; }
 			return configCache;
-		}
+		};
 
 		var writeConfig = function (config) {
 			localStorageService.set("config", config);
 			configCache = config; // update cache
-		}
+		};
 
-		this.getConfigValue = function(name, defaultValue) {
+		this.getConfigValue = function (name, defaultValue) {
 			var config = configCache ? configCache : fetchConfig();
 			var value = config[name];
 			if (!value && defaultValue) {
@@ -154,21 +154,21 @@
 				writeConfig(config);
 			}
 			return value;
-		}
+		};
 
-		this.setConfigValue = function(name, value) {
+		this.setConfigValue = function (name, value) {
 			var config = configCache ? configCache : fetchConfig();
 			config[name] = value;
 			writeConfig(config);
 			return true;
-		}
+		};
 
-		this.getConfigValues = function() {
+		this.getConfigValues = function () {
 			var config = configCache ? configCache : fetchConfig();
 			return angular.copy(config);
-		}
+		};
 
-		this.setConfigValues = function(values) {
+		this.setConfigValues = function (values) {
 			var deferred = $q.defer();
 			try {
 				if (values) {
@@ -185,9 +185,9 @@
 				deferred.reject(err);
 			}
 			return deferred.promise;
-		}
+		};
 
-		this.getUser = function(useCache) {
+		this.getUser = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && userCache) {
 				deferred.resolve(userCache);

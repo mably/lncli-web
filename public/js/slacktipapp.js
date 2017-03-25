@@ -8,11 +8,11 @@ slacktipapp.config(["localStorageServiceProvider", function (localStorageService
 		.setNotify(true, true);
 }]);
 
-slacktipapp.config(['ngToastProvider', function(ngToast) {
+slacktipapp.config(["ngToastProvider", function (ngToast) {
 	ngToast.configure({
-		// verticalPosition: 'bottom',
-		// horizontalPosition: 'center'
-		animation: 'fade'
+		// verticalPosition: "bottom",
+		// horizontalPosition: "center"
+		animation: "fade"
 	});
 }]);
 

@@ -1,9 +1,9 @@
-"use strict";
 (function () {
+	"use strict";
 
-	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", "lnwebcliUtils", service]);
+	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", "lnwebcliUtils", Service]);
 
-	function service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification, utils) {
+	function Service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification, utils) {
 
 		var _this = this;
 
@@ -37,21 +37,21 @@
 			return window.serverRootPath ? window.serverRootPath + path : path;
 		};
 
-		var socket = io.connect(serverUrl("/"), { secure: "https" === location.protocol });
+		var socket = io.connect(serverUrl("/"), { secure: location.protocol === "https" });
 
-		socket.on(config.events.INVOICE_WS, function(data) {
+		socket.on(config.events.INVOICE_WS, function (data) {
 			console.log("Invoice received:", data);
 			_this.notify(config.notif.SUCCESS, "Payment received: " + data.value + ", " + data.memo);
 		});
 
-		socket.on(config.events.HELLO_WS, function(data) {
+		socket.on(config.events.HELLO_WS, function (data) {
 			console.log("Hello event received:", data);
-			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!"
+			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!";
 			_this.notify(config.notif.SUCCESS, helloMsg);
 		});
 
 		var logLines = 0;
-		socket.on(config.events.TAIL_WS, function(message) {
+		socket.on(config.events.TAIL_WS, function (message) {
 			console.log("Tail message:", message);
 			if (message.tail) {
 				var logNotifyPattern = _this.getConfigValue(
@@ -72,8 +72,8 @@
 					previndex = index + 1;
 					logLines++;
 				}
-				var tailObj = $("#tail");
-				var logs = tailObj.html();
+				var $tailObj = $("#tail");
+				var logs = $tailObj.html();
 				index = -1;
 				var maxLogBuffer = _this.getConfigValue(
 					config.keys.MAX_LOG_BUFFER, config.defaults.MAX_LOG_BUFFER);
@@ -82,14 +82,14 @@
 					logLines--;
 				}
 				logs = logs.substring(index + 1);
-				tailObj.html(logs + message.tail);
-				tailObj.scrollTop(tailObj[0].scrollHeight);
+				$tailObj.html(logs + message.tail);
+				$tailObj.scrollTop($tailObj[0].scrollHeight);
 			}
 		});
 
-		socket.on(config.events.OPENCHANNEL_WS, function(response) {
+		socket.on(config.events.OPENCHANNEL_WS, function (response) {
 			console.log("OpenChannel WS event", response);
-			$timeout(function() {
+			$timeout(function () {
 				if (response.evt && response.rid) { // valid event
 					if (wsRequestListenersFilter(response)) {
 						if ((response.evt === "error") && response.data.error) {
@@ -123,9 +123,9 @@
 			});
 		});
 
-		socket.on(config.events.CLOSECHANNEL_WS, function(response) {
+		socket.on(config.events.CLOSECHANNEL_WS, function (response) {
 			console.log("CloseChannel WS event", response);
-			$timeout(function() {
+			$timeout(function () {
 				if (response.evt && response.rid) { // valid event
 					if (wsRequestListenersFilter(response)) {
 						if ((response.evt === "error") && response.data.error) {
@@ -161,7 +161,7 @@
 			} else {
 				return true;
 			}
-		}
+		};
 
 		this.registerWSRequestListener = function (requestId, callback, expires) {
 			var deferred = $q.defer();
@@ -172,7 +172,7 @@
 				deferred: deferred
 			};
 			return deferred.promise;
-		}
+		};
 
 		this.unregisterWSRequestListener = function (requestId) {
 			if (wsRequestListeners.hasOwnProperty(requestId)) {
@@ -180,13 +180,13 @@
 				requestListener.deferred.resolve();
 				delete wsRequestListeners[requestId];
 			}
-		}
+		};
 
-		var wsListenersCleaner = $interval(function() {
+		var wsListenersCleaner = $interval(function () {
 			var count = 0;
 			var now = new Date().getTime();
 			for (var requestId in wsRequestListeners) {
-				_this.unregisterWSRequestListener()
+				_this.unregisterWSRequestListener();
 				if (wsRequestListeners.hasOwnProperty(requestId)) {
 					var requestListener = wsRequestListeners[requestId];
 					if (requestListener.expires < now) {
@@ -201,7 +201,7 @@
 		this.notify = function (type, message) {
 			console.log("Notification (" + type + ") :", message);
 			if (message) {
-				$timeout(function() {
+				$timeout(function () {
 					if (type === config.notif.INFO) {
 						ngToast.info({
 							content: message
@@ -235,8 +235,8 @@
 				while ((index = message.indexOf("\n", index + 1)) > -1) {
 					notifLines++;
 				}
-				var notifObj = $("#notifications");
-				var notifHtml = notifObj.html();
+				var $notifObj = $("#notifications");
+				var notifHtml = $notifObj.html();
 				index = -1;
 				var maxLogBuffer = _this.getConfigValue(
 					config.keys.MAX_NOTIF_BUFFER, config.defaults.MAX_NOTIF_BUFFER);
@@ -245,9 +245,9 @@
 					notifLines--;
 				}
 				notifHtml = notifHtml.substring(index + 1);
-				var now = $filter('date')(new Date(),'yyyy-MM-dd HH:mm:ss Z');
-				notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
-				notifObj.scrollTop(notifObj[0].scrollHeight);
+				var now = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss Z");
+				$notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
+				$notifObj.scrollTop($notifObj[0].scrollHeight);
 			}
 		};
 
@@ -255,29 +255,29 @@
 			if (message && message.length > 0) {
 				bootbox.alert(message);
 			}
-		}
+		};
 
 		var fetchConfig = function () {
 			configCache = localStorageService.get("config"); // update cache
 			if (!configCache) { configCache = {}; }
 			return configCache;
-		}
+		};
 
 		var writeConfig = function (config) {
 			localStorageService.set("config", config);
 			configCache = config; // update cache
-		}
+		};
 
 		var fetchAddresses = function () {
 			addressesCache = localStorageService.get("addresses"); // update cache
 			if (!addressesCache) { addressesCache = {}; }
 			return addressesCache;
-		}
+		};
 
 		var writeAddresses = function (addresses) {
 			localStorageService.set("addresses", addresses);
 			addressesCache = addresses; // update cache
-		}
+		};
 
 		var updateKnownPeers = function (peers, fromPeers) {
 			var knownPeers = fetchKnownPeers();
@@ -305,13 +305,13 @@
 			}
 			writeKnownPeers(knownPeers);
 			return knownPeers;
-		}
+		};
 
 		var fetchKnownPeers = function () {
 			knownPeersCache = localStorageService.get("known_peers"); // update cache
 			if (!knownPeersCache) { knownPeersCache = {}; }
 			return knownPeersCache;
-		}
+		};
 
 		var writeKnownPeers = function (knownPeers) {
 			localStorageService.set("known_peers", knownPeers);
@@ -320,13 +320,13 @@
 
 		var convertPropertiesToArray = function (obj) {
 			var array = [];
-			for(var key in obj) {
+			for (var key in obj) {
 				array.push(obj[key]);
 			}
 			return array;
 		};
 
-		this.getInfo = function(useCache) {
+		this.getInfo = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && infoCache) {
 				deferred.resolve(infoCache);
@@ -341,19 +341,19 @@
 			return deferred.promise;
 		};
 
-		this.getNetworkInfo = function() {
+		this.getNetworkInfo = function () {
 			return $http.get(serverUrl(API.GETNETWORKINFO));
 		};
 
-		this.walletBalance = function() {
+		this.walletBalance = function () {
 			return $http.get(serverUrl(API.WALLETBALANCE));
 		};
 
-		this.channelBalance = function() {
+		this.channelBalance = function () {
 			return $http.get(serverUrl(API.CHANNELBALANCE));
 		};
 
-		this.getConfigValue = function(name, defaultValue) {
+		this.getConfigValue = function (name, defaultValue) {
 			var config = configCache ? configCache : fetchConfig();
 			var value = config[name];
 			if (!value && defaultValue) {
@@ -361,21 +361,21 @@
 				writeConfig(config);
 			}
 			return value;
-		}
+		};
 
-		this.setConfigValue = function(name, value) {
+		this.setConfigValue = function (name, value) {
 			var config = configCache ? configCache : fetchConfig();
 			config[name] = value;
 			writeConfig(config);
 			return true;
-		}
+		};
 
-		this.getConfigValues = function() {
+		this.getConfigValues = function () {
 			var config = configCache ? configCache : fetchConfig();
 			return angular.copy(config);
-		}
+		};
 
-		this.setConfigValues = function(values) {
+		this.setConfigValues = function (values) {
 			var deferred = $q.defer();
 			try {
 				if (values) {
@@ -392,21 +392,21 @@
 				deferred.reject(err);
 			}
 			return deferred.promise;
-		}
+		};
 
-		this.getAddresses = function() {
+		this.getAddresses = function () {
 			var addresses = addressesCache ? addressesCache : fetchAddresses();
 			return angular.copy(addresses);
-		}
+		};
 
-		this.addAddress = function(name, address) {
+		this.addAddress = function (name, address) {
 			var addresses = addressesCache ? addressesCache : fetchAddresses();
 			addresses[name] = address;
 			writeAddresses(addresses);
 			return true;
-		}
+		};
 
-		this.addAddresses = function(newAddresses) {
+		this.addAddresses = function (newAddresses) {
 			var deferred = $q.defer();
 			try {
 				if (values) {
@@ -423,9 +423,9 @@
 				deferred.reject(err);
 			}
 			return deferred.promise;
-		}
+		};
 
-		this.listPeers = function(useCache) {
+		this.listPeers = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && peersCache) {
 				deferred.resolve(peersCache);
@@ -469,14 +469,14 @@
 			return deferred.promise;
 		};
 
-		this.editKnownPeer = function(knownPeer) {
+		this.editKnownPeer = function (knownPeer) {
 			var deferred = $q.defer();
 			updateKnownPeers([knownPeer], false);
 			deferred.resolve(knownPeer);
 			return deferred.promise;
 		};
 
-		this.removeKnownPeer = function(knownPeerPubKey) {
+		this.removeKnownPeer = function (knownPeerPubKey) {
 			var deferred = $q.defer();
 			var knownPeers = fetchKnownPeers();
 			if (knownPeers.hasOwnProperty(knownPeerPubKey)) {
@@ -489,7 +489,7 @@
 			return deferred.promise;
 		};
 
-		this.listChannels = function(useCache) {
+		this.listChannels = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && channelsCache) {
 				deferred.resolve(channelsCache);
@@ -504,24 +504,24 @@
 			return deferred.promise;
 		};
 
-		this.pendingChannels = function() {
+		this.pendingChannels = function () {
 			return $http.get(serverUrl(API.PENDINGCHANNELS));
 		};
 
-		this.listPayments = function() {
+		this.listPayments = function () {
 			return $http.get(serverUrl(API.LISTPAYMENTS));
 		};
 
-		this.listInvoices = function() {
+		this.listInvoices = function () {
 			return $http.get(serverUrl(API.LISTINVOICES));
 		};
 
-		this.connectPeer = function(pubkey, host) {
+		this.connectPeer = function (pubkey, host) {
 			var data = { pubkey: pubkey, host: host };
 			return $http.post(serverUrl(API.CONNECTPEER), data);
 		};
 
-		this.openChannel = function(pubkey, localamt, pushamt, numconf) {
+		this.openChannel = function (pubkey, localamt, pushamt, numconf) {
 			var deferred = $q.defer();
 			var data = { rid: uuid.v4(), pubkey: pubkey, localamt: localamt, pushamt: pushamt, numconf: numconf };
 			socket.emit(config.events.OPENCHANNEL_WS, data, function (response) {
@@ -534,9 +534,9 @@
 			return deferred.promise;
 		};
 
-		this.closeChannel = function(funding_txid, output_index, force) {
+		this.closeChannel = function (fundingTxId, outputIndex, force) {
 			var deferred = $q.defer();
-			var data = { rid: uuid.v4(), funding_txid: funding_txid, output_index: output_index, force: force };
+			var data = { rid: uuid.v4(), funding_txid: fundingTxId, output_index: outputIndex, force: force };
 			socket.emit(config.events.CLOSECHANNEL_WS, data, function (response) {
 				if (response.error) {
 					deferred.reject(response.error);
@@ -547,27 +547,27 @@
 			return deferred.promise;
 		};
 
-		this.addInvoice = function(memo, value) {
+		this.addInvoice = function (memo, value) {
 			var data = { memo: memo, value: value };
 			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
-		this.sendPayment = function(payreq) {
+		this.sendPayment = function (payreq) {
 			var data = { payreq: payreq };
 			return $http.post(serverUrl(API.SENDPAYMENT), data);
 		};
 
-		this.decodePayReq = function(payreq) {
+		this.decodePayReq = function (payreq) {
 			var data = { payreq: payreq };
 			return $http.post(serverUrl(API.DECODEPAYREQ), data);
 		};
 
-		this.queryRoute = function(pubkey, amount) {
+		this.queryRoute = function (pubkey, amount) {
 			var data = { pubkey: pubkey, amt: amount };
 			return $http.post(serverUrl(API.QUERYROUTE), data);
 		};
 
-		this.newAddress = function(type) {
+		this.newAddress = function (type) {
 			var data = { type: type };
 			return $http.post(serverUrl(API.NEWADDRESS), data);
 		};
