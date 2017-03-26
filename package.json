@@ -5,6 +5,7 @@
   "productName": "lncliweb",
   "main": "main.js",
   "scripts": {
+    "install": "gulp install",
     "start": "electron ."
   },
   "repository": {
