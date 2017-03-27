@@ -1,8 +1,8 @@
 (function () {
 
-	slacktipapp.controller("UserCtrl", ["$scope", "$timeout", "$uibModal", "slacktip", "config", controller]);
+	slacktipapp.controller("UserCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "slacktip", "config", controller]);
 
-	function controller($scope, $timeout, $uibModal, slacktip, config) {
+	function controller($rootScope, $scope, $timeout, $uibModal, slacktip, config) {
 
 		var $ctrl = this;
 
@@ -15,6 +15,7 @@
 			slacktip.getUser(false).then(function (response) {
 				$scope.spinner--;
 				console.log(response);
+				$rootScope.$broadcast(config.events.USER_REFRESHED, response.data);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
 			}, function (err) {

@@ -251,6 +251,14 @@ module.exports = function (app, lightning, slacktip, db) {
 	// web app send tip
 	app.post("/api/slacktip/sendtip", require("./routes/slacktip/sendtip.js")(slacktip));
 
+	// session logout ----------------------------------------------------------
+	app.get("/api/logout", function (req, res) {
+		req.session.destroy(function (err) {
+			logger.debug("Session destroyed");
+			res.sendStatus(200);
+		});
+	});
+
 	// application -------------------------------------------------------------
 	app.get("*", function (req, res) {
 		res.sendFile("index.html", { root: __dirname + "/../public/" }); // load the single view file (angular will handle the page changes on the front-end)

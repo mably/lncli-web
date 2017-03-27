@@ -8,6 +8,7 @@
 		var _this = this;
 
 		var API = {
+			LOGOUT: "/api/logout",
 			GETUSER: "/api/slacktip/getuser",
 			ADDINVOICE: "/api/slacktip/addinvoice",
 			WITHDRAWFUNDS: "/api/slacktip/withdrawfunds",
@@ -215,6 +216,10 @@
 		this.sendTip = function (userid, teamid, amount) {
 			var data = { userid: userid, teamid: teamid, amount: amount };
 			return $http.post(serverUrl(API.SENDTIP), data);
+		};
+
+		this.logout = function () {
+			return $http.get(serverUrl(API.LOGOUT));
 		};
 
 		Object.seal(this);
