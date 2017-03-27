@@ -32,6 +32,10 @@
 			_this.notify(config.notif.SUCCESS, helloMsg);
 		});
 
+		socket.on(config.events.INVOICE_WS, function (data) {
+			console.log("Invoice received:", data);
+		});
+
 		var wsRequestListenersFilter = function (response) {
 			if (wsRequestListeners.hasOwnProperty(response.rid)) {
 				return wsRequestListeners[response.rid].callback(response);

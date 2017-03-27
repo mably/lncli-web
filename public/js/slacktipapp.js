@@ -29,6 +29,7 @@ slacktipapp.constant("config", {
 		WARNING: "WARNING"
 	},
 	events: {
+		INVOICE_WS: "invoice",
 		USER_REFRESH: "user.refresh",
 		USER_REFRESHED: "user.refreshed"
 	},
