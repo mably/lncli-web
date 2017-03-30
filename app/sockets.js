@@ -39,6 +39,10 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					}
 				}
 			});
+			tailProcess.on("exit", function (code, signal) {
+				logger.deubug("Tail command exited!", code, signal);
+				tailProcess = null;
+			});
 		}
 	};
 
