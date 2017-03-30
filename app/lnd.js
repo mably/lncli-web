@@ -22,7 +22,11 @@ module.exports = function (lightning) {
 			lndInvoicesStream.on("data", function (data) {
 				logger.debug("SubscribeInvoices Data", data);
 				for (var i = 0; i < invoiceListeners.length; i++) {
-					invoiceListeners[i].dataReceived(data);
+					try {
+						invoiceListeners[i].dataReceived(data);
+					} catch (err) {
+						logger.warn(err);
+					}
 				}
 			});
 			lndInvoicesStream.on("end", function () {
