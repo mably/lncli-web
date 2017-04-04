@@ -45,7 +45,7 @@ module.exports = function (program) {
 
 	// app configuration =================
 	app.use(require("./cors"));                                     // enable CORS headers
-	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
+	app.use(["/", "/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
 	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({ extended: "true" }));           // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
