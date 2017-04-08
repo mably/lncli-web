@@ -273,7 +273,7 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 			if (tipRequest.token === slackConfig.verificationToken) {
 				try {
 					//var re = /(\d*)\s+\<@(\w*)\|(\w*)\>.*/;
-					var re = /(?:(\d*)\s+<@(\w*)\|(\w*)\>|(balance|history)).*/;
+					var re = /(?:(\d*)\s+<@(\w*)\|([a-z0-9][a-z0-9._-]*)\>|(balance|history)).*/;
 					var array = tipRequest.text.match(re);
 					debug(array, array.length);
 					if (array && (array.length >= 5)) {
