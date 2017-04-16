@@ -24,25 +24,62 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 	}
 
 	var tailProcess = null;
+	var tailProcessTimeoutId = null;
+	var tailProcessLastDataReceived = null;
 
 	var registerGlobalListeners = function () {
 		if (!tailProcess) {
 			tailProcess = spawn("tail", ["-f", lndLogfile]);
 			tailProcess.on("error", function (err) {
 				logger.warn("Couldn't launch tail command!", err.message);
-			});
-			tailProcess.stdout.on("data", function (data) {
-				logger.debug("tail", data.toString("utf-8"));
-				for (var i = 0; i < clients.length; i++) {
-					if (!clients[i]._limituser) {
-						clients[i].emit("tail", { tail: data.toString("utf-8") });
-					}
-				}
-			});
-			tailProcess.on("exit", function (code, signal) {
-				logger.debug("Tail command exited!", code, signal);
 				tailProcess = null;
 			});
+			tailProcess.stdout.on("data", function (data) {
+				try {
+					logger.debug("tail stdout", data.toString("utf-8"));
+					tailProcessLastDataReceived = Date.now();
+					for (var i = 0; i < clients.length; i++) {
+						if (!clients[i]._limituser) {
+							try {
+								clients[i].emit("tail", { tail: data.toString("utf-8") });
+							} catch (err) {
+								logger.warn("tail emit error", err);
+							}
+						}
+					}
+				} catch (err) {
+					logger.warn("tail data error", err);
+				}
+			});
+			tailProcess.stderr.on("data", function(data) {
+				logger.debug("tail stderr", data.toString("utf-8"));
+				tailProcessLastDataReceived = Date.now();
+			});
+			tailProcess.on("exit", function (code, signal) {
+				logger.debug("tail command exited!", code, signal);
+				tailProcess = null;
+			});
+			tailProcess.on("close", function (code) {
+				logger.debug("tail command was closed!", code);
+				tailProcess = null;
+			});
+			// clear existing tail process activity checker
+			if (tailProcessTimeoutId) {
+				clearInterval(tailProcessTimeoutId);
+			}
+			// check every minute that the tail process have been sending data during the last minute
+			tailProcessLastDataReceived = Date.now();
+			tailProcessTimeoutId = setInterval(
+				function () {
+					if (tailProcess && (tailProcessLastDataReceived + (60 * 1000)) < Date.now()) {
+						logger.warn("tail data timeout, killing process", tailProcess.pid);
+						tailProcess.kill();
+					}
+				},
+				60 * 1000 // one minute
+			);
+		} else {
+			logger.debug("tail process already running", tailProcess.pid);
 		}
 	};
 
