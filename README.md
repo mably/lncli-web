@@ -33,6 +33,12 @@ Fetch and install all the front end dependencies by running:
 "./node_modules/.bin/bower" install --allow-root
 ```
 
+Setup default configuration files by running:
+
+```
+"./node_modules/.bin/gulp" install
+```
+
 ## Execution
 
 Start the back-end server:
