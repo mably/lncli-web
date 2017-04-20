@@ -109,7 +109,7 @@
 		</div>
 		<div id="navbar" class="navbar-collapse collapse" data-toggle="collapse" data-target=".navbar-collapse.in">
 		  <ul class="nav navbar-nav">
-			  <li><a href="#infos">Informations</a></li>
+			  <li><a href="#infos">Information</a></li>
 			  <li><a href="#balances">Balances</a></li>
 			  <li><a href="#peers">Peers</a></li>
 			  <li><a href="#channels">Channels</a></li>
@@ -118,8 +118,8 @@
 			  <li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools <span class="caret"></span></a>
 				<ul class="dropdown-menu">
-				  <li><a ng-click="newAddress()">New address</a></li>
-				  <li><a ng-click="queryRoute()">Query route</a></li>
+				  <li><a ng-click="newAddress()">New Address</a></li>
+				  <li><a ng-click="queryRoute()">Query Routes</a></li>
 				  <li><a ng-click="editSettings()">Settings</a></li>
 				</ul>
 			  </li> 
@@ -133,7 +133,7 @@
 <div class="container">
 	<div class="page-header">
 		<a name="infos"></a>
-		<h1>Node and Network informations</h1>
+		<h1>Node and Network Information</h1>
 	</div>
 	<div class="row">
 		<div class="col-sm-6">
@@ -153,7 +153,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="GetNetworkInfoCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Network info <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Network Info <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#getnetworkinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -168,13 +168,13 @@
 
 	<div class="page-header">
 		<a name="balances"></a>
-		<h1>Wallet and channel balances</h1>
+		<h1>Wallet and Channel Balances</h1>
 	</div>
 	<div class="row">
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="WalletBalanceCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Wallet balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Wallet Balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="New address" aria-label="New address" ng-click="newAddress()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -189,7 +189,7 @@
 		<div class="col-sm-6">
 		  <div class="panel panel-default" ng-controller="ChannelBalanceCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Channel balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Channel Balance <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#channelbalance-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -210,7 +210,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Connected peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Connected Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Connect peer" aria-label="Connect peer" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -227,7 +227,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-default" ng-controller="ListKnownPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Known peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Known Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Import peers" aria-label="Import peers" ng-click="import()"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -248,7 +248,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Active channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Active Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Open channel" aria-label="Open channel" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
@@ -265,7 +265,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-warning" ng-controller="PendingChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Pending channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">Pending Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#pendingchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -335,7 +335,7 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">lnd log file <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">lnd Log File <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			</div>
 			<div class="panel-body">
 			  <pre id="tail"></pre>
