@@ -51,7 +51,7 @@
 									peers: peersResponse.data.peers,
 									pubkey: "03c892e3f3f077ea1e381c081abb36491a2502bc43ed37ffb82e264224f325ff27",
 									localamt: "10000",
-									pushamt: "1000",
+									pushamt: "5000",
 									numconf: "1"
 								};
 							}
