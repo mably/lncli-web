@@ -140,7 +140,7 @@ module.exports = function (app, lightning, db) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function (err, response) {
+			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: false }, function (err, response) {
 				if (err) {
 					logger.debug("ConnectPeer Error:", err);
 					err.error = err.message;
