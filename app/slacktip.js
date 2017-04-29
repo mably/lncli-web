@@ -20,6 +20,8 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 	var transactionsCol = db.collection("slacktip-transactions");
 
 	const txprocessor = require("./txprocessor")(db, accountsCol, transactionsCol);
+	
+	const lntipCommandSyntaxHelp = "*Syntax*:\n`/lntip <amount in satoshis> @<valid Slack nick>`, ex: `/lntip 10000 @satoshi`.\n`/lntip balance` will display your current tipping account balance.\n`/lntip history` _(not available yet)_.\n`/lntip help` will display information about lntip command usage.";
 
 	var invoiceListener = null;
 
@@ -256,10 +258,12 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 						}
 					]
 				});
+			} else if (subcommand === "help") {
+				resolve(buildHelpResponse());
 			} else {
 				resolve({
 					response_type: "ephemeral",
-					text: "Unknown '" + subcommand + "' subcommand, should be 'balance' or 'history' (soon)."
+					text: "Unknown '" + subcommand + "' subcommand, should be 'balance', 'help' or 'history' (soon)."
 				});
 			}
 		}, function (reason) {
@@ -273,7 +277,7 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 			if (tipRequest.token === slackConfig.verificationToken) {
 				try {
 					//var re = /(\d*)\s+\<@(\w*)\|(\w*)\>.*/;
-					var re = /(?:(\d*)\s+<@(\w*)\|([a-z0-9][a-z0-9._-]*)\>|(balance|history)).*/;
+					var re = /(?:(\d*)\s+<@(\w*)\|([a-z0-9][a-z0-9._-]*)\>|(balance|history|help)).*/;
 					var array = tipRequest.text.match(re);
 					debug(array);
 					if (array && (array.length >= 5)) {
@@ -308,11 +312,8 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 	var buildInvalidTipResponse = function (err) {
 		var response = {
 			response_type: "ephemeral",
-			text: "We did not understand your tipping request, could you try again please?",
+			text: "We did not understand your tipping request, could you try again please?\n" + lntipCommandSyntaxHelp,
 			attachments: [
-				{
-					text: "Syntax: /lntip <amount in satoshis> @<valid Slack nick>, ex: /lntip 10000 @satoshi"
-				},
 				{
 					text: "Thanx for supporting the <" + tippingServerUrl + "|Slack LN tipping bot>!"
 				}
@@ -325,6 +326,19 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 				}
 			);
 		}
+		return response;
+	};
+
+	var buildHelpResponse = function () {
+		var response = {
+			response_type: "ephemeral",
+			text: lntipCommandSyntaxHelp,
+			attachments: [
+				{
+					text: "Thanx for supporting the <" + tippingServerUrl + "|Slack LN tipping bot>!"
+				}
+			]
+		};
 		return response;
 	};
 
