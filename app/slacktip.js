@@ -275,7 +275,7 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 					//var re = /(\d*)\s+\<@(\w*)\|(\w*)\>.*/;
 					var re = /(?:(\d*)\s+<@(\w*)\|([a-z0-9][a-z0-9._-]*)\>|(balance|history)).*/;
 					var array = tipRequest.text.match(re);
-					debug(array, array.length);
+					debug(array);
 					if (array && (array.length >= 5)) {
 						var sourceIdentity = { user: { id: tipRequest.user_id }, team: { id: tipRequest.team_id } };
 						if (array[1]) {
