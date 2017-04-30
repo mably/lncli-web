@@ -260,6 +260,8 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 				});
 			} else if (subcommand === "help") {
 				resolve(buildHelpResponse());
+			} else if (subcommand === "history") {
+				resolve(buildHistoryResponse());
 			} else {
 				resolve({
 					response_type: "ephemeral",
@@ -333,6 +335,19 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 		var response = {
 			response_type: "ephemeral",
 			text: lntipCommandSyntaxHelp,
+			attachments: [
+				{
+					text: "Thanx for supporting the <" + tippingServerUrl + "|Slack LN tipping bot>!"
+				}
+			]
+		};
+		return response;
+	};
+
+	var buildHistoryResponse = function () {
+		var response = {
+			response_type: "ephemeral",
+			text: "The `history` command is not implemented yet.",
 			attachments: [
 				{
 					text: "Thanx for supporting the <" + tippingServerUrl + "|Slack LN tipping bot>!"
