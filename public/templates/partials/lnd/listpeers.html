@@ -13,6 +13,7 @@
 					<th>Bytes<br/>sent</th>
 					<th>Bytes<br/>recv</th>
 					<th>Ping<br/>time</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -26,6 +27,11 @@
 					<td>{{ peer.bytes_sent }}</td>
 					<td>{{ peer.bytes_recv }}</td>
 					<td>{{ peer.ping_time }}</td>
+					<td>
+						<div class="btn-toolbar pull-right">
+							<button type="button" class="btn btn-default btn-xs" title="Disconnect" aria-label="Disconnect" ng-click="disconnect(peer)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+						</div>
+					</td>
 				</tr>
 			</tbody>
 		</table>
