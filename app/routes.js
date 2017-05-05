@@ -140,7 +140,9 @@ module.exports = function (app, lightning, slacktip, db) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.connectPeer({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }, function (err, response) {
+			var connectRequest = { addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true };
+			logger.debug("ConnectPeer Request:", connectRequest);
+			lightning.connectPeer(connectRequest, function (err, response) {
 				if (err) {
 					logger.debug("ConnectPeer Error:", err);
 					err.error = err.message;
