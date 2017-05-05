@@ -20,7 +20,7 @@ module.exports = function (lightning, lnd, db, server, slackConfig) {
 	var transactionsCol = db.collection("slacktip-transactions");
 
 	const txprocessor = require("./txprocessor")(db, accountsCol, transactionsCol);
-	
+
 	const lntipCommandSyntaxHelp = "*Syntax*:\n`/lntip <amount in satoshis> @<valid Slack nick>`, ex: `/lntip 10000 @satoshi`.\n`/lntip balance` will display your current tipping account balance.\n`/lntip history` _(not available yet)_.\n`/lntip help` will display information about lntip command usage.";
 
 	var invoiceListener = null;
