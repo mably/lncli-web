@@ -51,7 +51,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					logger.warn("tail data error", err);
 				}
 			});
-			tailProcess.stderr.on("data", function(data) {
+			tailProcess.stderr.on("data", function (data) {
 				logger.debug("tail stderr", data.toString("utf-8"));
 				tailProcessLastDataReceived = Date.now();
 			});

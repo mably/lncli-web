@@ -16,7 +16,9 @@
 					$scope.spinner--;
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.channels = response.data.pending_channels;
+					$scope.pending_open_channels = response.data.pending_open_channels;
+					$scope.pending_closing_channels = response.data.pending_closing_channels;
+					$scope.pending_force_closing_channels = response.data.pending_force_closing_channels;
 				}, function (err) {
 					$scope.spinner--;
 					console.log("Error:", err);
@@ -32,7 +34,7 @@
 		};
 
 		$scope.channelPeerAlias = function (channel) {
-			var knownPeer = $scope.knownPeers[channel.identity_key];
+			var knownPeer = $scope.knownPeers[channel.remote_node_pub];
 			return knownPeer ? knownPeer.alias : null;
 		};
 
@@ -54,6 +56,19 @@
 			if (channel.channel_point) {
 				var txId = channel.channel_point.split(":")[0];
 				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
+			}
+		};
+
+		$scope.closingTxCopied = function (channel) {
+			channel.closingTxCopied = true;
+			$timeout(function () {
+				channel.closingTxCopied = false;
+			}, 500);
+		};
+
+		$scope.openClosingTxInExplorer = function (closingTxId) {
+			if (closingTxId) {
+				$window.open("https://testnet.smartbit.com.au/tx/" + closingTxId, "_blank");
 			}
 		};
 
