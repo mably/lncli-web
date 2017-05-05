@@ -63,6 +63,23 @@
 
 		};
 
+		$scope.disconnect = function (peer) {
+			$scope.spinner++;
+			lncli.disconnectPeer(peer.pub_key).then(function (response) {
+				$scope.spinner--;
+				console.log("DisconnectPeer", response);
+				if (response.data.error) {
+					lncli.alert(response.data.error);
+				} else {
+					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+				}
+			}, function (err) {
+				$scope.spinner--;
+				console.log(err);
+				lncli.alert(err.message || err.statusText);
+			});
+		};
+
 		$scope.pubkeyCopied = function (peer) {
 			peer.pubkeyCopied = true;
 			$timeout(function () {
