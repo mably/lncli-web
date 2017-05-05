@@ -18,6 +18,7 @@
 			LISTPAYMENTS: "/api/lnd/listpayments",
 			LISTINVOICES: "/api/lnd/listinvoices",
 			CONNECTPEER: "/api/lnd/connectpeer",
+			DISCONNECTPEER: "/api/lnd/disconnectpeer",
 			ADDINVOICE: "/api/lnd/addinvoice",
 			SENDPAYMENT: "/api/lnd/sendpayment",
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
@@ -519,6 +520,11 @@
 		this.connectPeer = function (pubkey, host) {
 			var data = { pubkey: pubkey, host: host };
 			return $http.post(serverUrl(API.CONNECTPEER), data);
+		};
+
+		this.disconnectPeer = function (pubkey) {
+			var data = { pubkey: pubkey };
+			return $http.post(serverUrl(API.DISCONNECTPEER), data);
 		};
 
 		this.openChannel = function (pubkey, localamt, pushamt, numconf) {

@@ -155,6 +155,26 @@ module.exports = function (app, lightning, db) {
 		}
 	});
 
+	// disconnect peer from lnd node
+	app.post("/api/lnd/disconnectpeer", function (req, res) {
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var disconnectRequest = { pub_key: req.body.pubkey };
+			logger.debug("DisconnectPeer Request:", disconnectRequest);
+			lightning.disconnectPeer(disconnectRequest, function (err, response) {
+				if (err) {
+					logger.debug("DisconnectPeer Error:", err);
+					err.error = err.message;
+					res.send(err);
+				} else {
+					logger.debug("DisconnectPeer:", response);
+					res.json(response);
+				}
+			});
+		}
+	});
+
 	// addinvoice
 	app.post("/api/lnd/addinvoice", function (req, res) {
 		if (req.limituser) {
