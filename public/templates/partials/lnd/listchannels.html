@@ -9,16 +9,17 @@
 		<table class="table table-striped" ng-if="channels.length > 0">
 			<thead>
 				<tr>
-					<th>Chan Id</th>		
+					<th>Channel Id</th>
 					<th>Peer alias</th>
 					<th>Remote pubkey</th>
 					<th>Channel point</th>
 					<th>Capacity</th>
 					<th>Local<br/>balance</th>
 					<th>Remote<br/>balance</th>
-					<th>Sat<br/>sent</th>
-					<th>Sat<br/>recv</th>
-					<th>Num<br/>updates</th>
+					<th>Sat.<br/>sent</th>
+					<th>Sat.<br/>recv</th>
+					<th>Num.<br/>updates</th>
+					<th>Pend.<br/>HTLCs</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -35,6 +36,7 @@
 					<td>{{ channel.total_satoshis_sent }}</td>
 					<td>{{ channel.total_satoshis_received }}</td>
 					<td>{{ channel.num_updates }}</td>
+					<td>{{ channel.pending_htlcs.length }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">
 							<button type="button" class="btn btn-default btn-xs" title="Close" aria-label="Close" ng-click="close(channel)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
