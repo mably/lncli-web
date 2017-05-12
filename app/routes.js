@@ -255,6 +255,38 @@ module.exports = function (app, lightning, db) {
 		});
 	});
 
+	// signmessage
+	app.post("/api/lnd/signmessage", function (req, res) {
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			lightning.signMessage({ msg: req.body.msg }, function (err, response) {
+				if (err) {
+					logger.debug("SignMessage Error:", err);
+					err.error = err.message;
+					res.send(err);
+				} else {
+					logger.debug("SignMessage:", response);
+					res.json(response);
+				}
+			});
+		}
+	});
+
+	// verifymessage
+	app.post("/api/lnd/verifymessage", function (req, res) {
+		lightning.verifyMessage({ msg: req.body.msg, signature: req.body.signature }, function (err, response) {
+			if (err) {
+				logger.debug("VerifyMessage Error:", err);
+				err.error = err.message;
+				res.send(err);
+			} else {
+				logger.debug("VerifyMessage:", response);
+				res.json(response);
+			}
+		});
+	});
+
 	// application -------------------------------------------------------------
 	app.get("*", function (req, res) {
 		res.sendFile("lnd.html", { root: __dirname + "/../public/" }); // load the single view file (angular will handle the page changes on the front-end)

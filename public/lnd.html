@@ -79,6 +79,8 @@
 	<script src="./js/controllers/lnd/editsettings.js"></script>
 	<script src="./js/controllers/lnd/newaddress.js"></script>
 	<script src="./js/controllers/lnd/queryroute.js"></script>
+	<script src="./js/controllers/lnd/signmessage.js"></script>
+	<script src="./js/controllers/lnd/verifymessage.js"></script>
 	<script src="./js/directives/lnd/getinfo.js"></script>
 	<script src="./js/directives/lnd/getnetworkinfo.js"></script>
 	<script src="./js/directives/lnd/walletbalance.js"></script>
@@ -120,6 +122,10 @@
 				<ul class="dropdown-menu">
 				  <li><a ng-click="newAddress()">New Address</a></li>
 				  <li><a ng-click="queryRoute()">Query Routes</a></li>
+				  <li role="separator" class="divider"></li>
+				  <li><a ng-click="signMessage()">Sign message</a></li>
+				  <li><a ng-click="verifyMessage()">Verify message</a></li>
+				  <li role="separator" class="divider"></li>
 				  <li><a ng-click="editSettings()">Settings</a></li>
 				</ul>
 			  </li> 
