@@ -23,7 +23,9 @@
 			SENDPAYMENT: "/api/lnd/sendpayment",
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
 			QUERYROUTE: "/api/lnd/queryroute",
-			NEWADDRESS: "/api/lnd/newaddress"
+			NEWADDRESS: "/api/lnd/newaddress",
+			SIGNMESSAGE: "/api/lnd/signmessage",
+			VERIFYMESSAGE: "/api/lnd/verifymessage"
 		};
 
 		var infoCache = null;
@@ -576,6 +578,16 @@
 		this.newAddress = function (type) {
 			var data = { type: type };
 			return $http.post(serverUrl(API.NEWADDRESS), data);
+		};
+
+		this.signMessage = function (message) {
+			var data = { msg: message };
+			return $http.post(serverUrl(API.SIGNMESSAGE), data);
+		};
+
+		this.verifyMessage = function (message, signature) {
+			var data = { msg: message, signature: signature };
+			return $http.post(serverUrl(API.VERIFYMESSAGE), data);
 		};
 
 		Object.seal(this);

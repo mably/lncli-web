@@ -51,6 +51,38 @@
 
 		};
 
+		$scope.signMessage = function () {
+
+			var modalInstance = $uibModal.open(config.modals.SIGN_MESSAGE);
+
+			modalInstance.rendered.then(function () {
+				$("#signmessage-message").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
+		$scope.verifyMessage = function () {
+
+			var modalInstance = $uibModal.open(config.modals.VERIFY_MESSAGE);
+
+			modalInstance.rendered.then(function () {
+				$("#verifymessage-message").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.editSettings = function () {
 
 			var modalInstance = $uibModal.open({
