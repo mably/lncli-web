@@ -18,7 +18,7 @@ service Lightning {
 
     rpc GetTransactions (GetTransactionsRequest) returns (TransactionDetails) {
         option (google.api.http) = {
-            get: "/v1/transactions" 
+            get: "/v1/transactions"
         };
     }
     rpc SendCoins (SendCoinsRequest) returns (SendCoinsResponse) {
@@ -37,6 +37,9 @@ service Lightning {
             get: "/v1/newaddress"
         };
     }
+
+    rpc SignMessage (SignMessageRequest) returns (SignMessageResponse);
+    rpc VerifyMessage (VerifyMessageRequest) returns (VerifyMessageResponse);
 
     rpc ConnectPeer (ConnectPeerRequest) returns (ConnectPeerResponse) {
         option (google.api.http) = {
@@ -166,6 +169,8 @@ service Lightning {
         };
     }
 
+    rpc StopDaemon(StopRequest) returns (StopResponse);
+
     rpc SubscribeChannelGraph(GraphTopologySubscription) returns (stream GraphTopologyUpdate);
 
     rpc SetAlias(SetAliasRequest) returns (SetAliasResponse);
@@ -243,6 +248,22 @@ message NewWitnessAddressRequest {
 }
 message NewAddressResponse {
     string address = 1 [json_name = "address"];
+}
+
+message SignMessageRequest {
+    bytes msg = 1 [ json_name = "msg" ];
+}
+message SignMessageResponse {
+    string signature = 1 [ json_name = "signature" ];
+}
+
+message VerifyMessageRequest {
+    bytes msg = 1 [ json_name = "msg" ];
+    string signature = 2 [ json_name = "signature" ];
+}
+message VerifyMessageResponse {
+    bool valid = 1 [ json_name = "valid" ];
+    string pubkey = 2 [ json_name = "pubkey" ];
 }
 
 message ConnectPeerRequest {
@@ -542,9 +563,12 @@ message NetworkInfo {
     //  * also additional RPC for tracking fee info once in
 }
 
+message StopRequest{}
+message StopResponse{}
+
 message GraphTopologySubscription {}
 message GraphTopologyUpdate {
-    repeated NodeUpdate node_updates = 1; 
+    repeated NodeUpdate node_updates = 1;
     repeated ChannelEdgeUpdate channel_updates = 2;
     repeated ClosedChannelUpdate closed_chans = 3;
 }

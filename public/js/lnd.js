@@ -57,6 +57,34 @@ lnwebcli.constant("config", {
 					type: 0 // Witness
 				}
 			}
+		},
+		SIGN_MESSAGE: {
+			animation: true,
+			ariaLabelledBy: "signmessage-modal-title",
+			ariaDescribedBy: "signmessage-modal-body",
+			templateUrl: "templates/partials/lnd/signmessage.html",
+			controller: "ModalSignMessageCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+					message: "lnd rocks!"
+				}
+			}
+		},
+		VERIFY_MESSAGE: {
+			animation: true,
+			ariaLabelledBy: "verifymessage-modal-title",
+			ariaDescribedBy: "verifymessage-modal-body",
+			templateUrl: "templates/partials/lnd/verifymessage.html",
+			controller: "ModalVerifyMessageCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+					message: "lnd rocks!"
+				}
+			}
 		}
 	}
 });
