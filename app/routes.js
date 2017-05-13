@@ -315,7 +315,8 @@ module.exports = function (app, lightning, db) {
 						// Add edge
 						edge = edges[i];
 						if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
-							g.addEdge(edge.node1_pub, edge.node2_pub, { label: edge.channel_id.substr(0, 10) });
+							var edgeLabel = " " + edge.channel_id.substr(0, 10);
+							g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: "12.0" });
 						}
 					}
 
