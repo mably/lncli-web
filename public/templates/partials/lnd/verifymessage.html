@@ -24,7 +24,16 @@
 			</div>
 		</form>
 		<div ng-show="$ctrl.data">
-			<pre>{{ $ctrl.data }}</pre>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<dl class="dl-horizontal" style="overflow-wrap: break-word;margin-bottom:0;">
+					  <dt>Pub key</dt>
+					  <dd>{{ $ctrl.data.pubkey }}</dd>
+					  <dt ng-show="$ctrl.data.alias">Alias</dt>
+					  <dd ng-show="$ctrl.data.alias">{{ $ctrl.data.alias }}</dd>
+					</dl>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="modal-footer">
