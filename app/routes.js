@@ -260,7 +260,7 @@ module.exports = function (app, lightning, slacktip, db) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.signMessage({ msg: req.body.msg }, function (err, response) {
+			lightning.signMessage({ msg: Buffer.from(req.body.msg, "utf8") }, function (err, response) {
 				if (err) {
 					logger.debug("SignMessage Error:", err);
 					err.error = err.message;
@@ -275,7 +275,7 @@ module.exports = function (app, lightning, slacktip, db) {
 
 	// verifymessage
 	app.post("/api/lnd/verifymessage", function (req, res) {
-		lightning.verifyMessage({ msg: req.body.msg, signature: req.body.signature }, function (err, response) {
+		lightning.verifyMessage({ msg: Buffer.from(req.body.msg, "utf8"), signature: req.body.signature }, function (err, response) {
 			if (err) {
 				logger.debug("VerifyMessage Error:", err);
 				err.error = err.message;
