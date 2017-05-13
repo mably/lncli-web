@@ -9,6 +9,8 @@
 		$ctrl.spinner = 0;
 
 		$ctrl.values = defaults;
+		$ctrl.success = null;
+		$ctrl.warning = null;
 		$ctrl.data = null;
 
 		$ctrl.ok = function () {
@@ -21,11 +23,23 @@
 					if ($ctrl.isClosed) {
 						lncli.alert(response.data.error);
 					} else {
+						$ctrl.success = null;
 						$ctrl.warning = response.data.error;
 					}
 				} else {
-					$ctrl.warning = null;
-					$ctrl.data = angular.toJson(response.data, 4);
+					$ctrl.data = response.data;
+					if (response.data.valid) {
+						$ctrl.warning = null;
+						$ctrl.success = "Message signature successfully verified.";
+						lncli.getKnownPeer(true, response.data.pubkey).then(function (signingPeer) {
+							$ctrl.data.alias = signingPeer.alias;
+						}, function (err) {
+							console.log(err);
+						});
+					} else {
+						$ctrl.success = null;
+						$ctrl.warning = "Signature is invalid.";
+					}
 				}
 			}, function (err) {
 				$ctrl.spinner--;
@@ -35,6 +49,7 @@
 				if ($ctrl.isClosed) {
 					lncli.alert(errmsg);
 				} else {
+					$ctrl.success = null;
 					$ctrl.warning = errmsg;
 				}
 			});

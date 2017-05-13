@@ -456,6 +456,20 @@
 			return deferred.promise;
 		};
 
+		this.getKnownPeer = function (useCache, nodePubKey) {
+			var deferred = $q.defer();
+			_this.getKnownPeers(useCache).then(function (knownPeers) {
+				if (knownPeers) {
+					deferred.resolve(knownPeers[nodePubKey]);
+				} else {
+					deferred.reject("Peer not found");
+				}
+			}, function (err) {
+				deferred.reject(err);
+			});
+			return deferred.promise;
+		};
+
 		this.listKnownPeers = function (useCache) {
 			var deferred = $q.defer();
 			if (useCache && knownPeersCache) {
