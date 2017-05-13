@@ -51,6 +51,16 @@
 
 		};
 
+		$scope.renderGraph = function () {
+
+			lncli.renderGraph().then(function (response) {
+				window.open("/files/networkgraph.svg", "_blank");
+			}, function (err) {
+				console.log(err);
+			});
+
+		};
+
 		$scope.signMessage = function () {
 
 			var modalInstance = $uibModal.open(config.modals.SIGN_MESSAGE);

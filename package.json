@@ -38,6 +38,7 @@
     "express": "^4.14.1",
     "express-session": "^1.15.1",
     "grant-express": "^3.7.1",
+    "graphviz": "0.0.8",
     "greenlock": "^2.1.12",
     "grpc": "^1.1.1",
     "le-acme-core": "^2.0.9",

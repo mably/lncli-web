@@ -24,6 +24,7 @@
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
 			QUERYROUTE: "/api/lnd/queryroute",
 			NEWADDRESS: "/api/lnd/newaddress",
+			RENDERGRAPH: "/api/lnd/rendergraph",
 			SIGNMESSAGE: "/api/lnd/signmessage",
 			VERIFYMESSAGE: "/api/lnd/verifymessage"
 		};
@@ -592,6 +593,21 @@
 		this.newAddress = function (type) {
 			var data = { type: type };
 			return $http.post(serverUrl(API.NEWADDRESS), data);
+		};
+
+		this.renderGraph = function () {
+			var deferred = $q.defer();
+			_this.getKnownPeers(true).then(function (knownPeers) {
+				var data = { peers: knownPeers };
+				$http.post(serverUrl(API.RENDERGRAPH), data).then(function (response) {
+					deferred.resolve(response);
+				}, function (err) {
+					deferred.reject(err);
+				});
+			}, function (err) {
+				deferred.reject(err);
+			});
+			return deferred.promise;
 		};
 
 		this.signMessage = function (message) {
