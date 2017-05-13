@@ -43,3 +43,4 @@ jspm_packages
 /data/*
 /config/config.js
 /config/defaults.js
+/public/files/*
