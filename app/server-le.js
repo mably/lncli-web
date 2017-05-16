@@ -68,12 +68,29 @@ module.exports = function (program) {
 		agreeCb(null, myopts.tosUrl);
 	}
 
+	function approveDomains(opts, certs, cb) {
+		// This is where you check your database and associated
+		// email addresses with domains and agreements and such
+
+		// The domains being approved for the first time are listed in opts.domains
+		// Certs being renewed are listed in certs.altnames
+		if (certs) {
+			opts.domains = certs.altnames;
+		} else {
+			opts.email = program.leEmail;
+			opts.agreeTos = true;
+		}
+
+		cb(null, { options: opts, certs: certs });
+	}
+
 	var le = LE.create({
 		server: LE.productionServerUrl,                           // or LE.productionServerUrl
 		store: leStore,                                           // handles saving of config, accounts, and certificates
 		challenges: { "http-01": leChallenge },                   // handles /.well-known/acme-challege keys and tokens
 		challengeType: "http-01",                                 // default to this challenge type
 		agreeToTerms: leAgree,                                    // hook to allow user to view and accept LE TOS
+		approveDomains: approveDomains,
 		debug: true
 		//, log: function (debug) {console.log.apply(console, args);} // handles debug outputs
 	});
@@ -106,7 +123,6 @@ module.exports = function (program) {
 	app.use(session({ secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, rolling: true, saveUninitialized: true }));
 
 	// app configuration =================
-	app.use("/", le.middleware());                                  // letsencrypt middleware for express
 	app.use(require("./cors"));                                     // enable CORS headers
 	app.use(grant);                                                 // mount grant
 	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
@@ -127,13 +143,11 @@ module.exports = function (program) {
 	if (program.serverport) {
 		server = require("http").Server(app);
 	} else {
-		var certPath = lePath + "/etc/live/" + program.serverhost;
-		var options = {
-			key: require("fs").readFileSync(certPath + "/privkey.pem"),
-			cert: require("fs").readFileSync(certPath + "/fullchain.pem"),
-			ca: require("fs").readFileSync(certPath + "/chain.pem")
-		};
-		server = require("https").createServer(options, app);
+		// handles acme-challenge and redirects to https
+		require("http").createServer(le.middleware(require("redirect-https")())).listen(80, module.serverHost, function () {
+			console.log("Listening for ACME http-01 challenges on", this.address());
+		});
+		server = require("https").createServer(le.httpsOptions, le.middleware(app));
 	}
 	const io = require("socket.io")(server);
 
