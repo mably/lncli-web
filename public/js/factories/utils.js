@@ -1,11 +1,8 @@
-/**
- * Various utility functions
- */
+// public/js/factories/utils.js
 (function () {
+	"use strict";
 
-	lnwebcli.factory("lnwebcliUtils", [factory]);
-
-	function factory() {
+	module.exports = function () {
 
 		return {
 
@@ -19,6 +16,7 @@
 			}
 
 		};
-	}
+
+	};
 
 })();

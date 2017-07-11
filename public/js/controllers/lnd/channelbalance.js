@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ChannelBalanceCtrl", ["$scope", "$timeout", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, lncli, config) {
+	module.exports = function ($scope, $timeout, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -30,6 +29,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();
