@@ -1,9 +1,7 @@
 (function () {
 	"use strict";
 
-	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", "lnwebcliUtils", Service]);
-
-	function Service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification, utils) {
+	module.exports = function ($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService, $, config, uuid, webNotification, iosocket) {
 
 		var _this = this;
 
@@ -41,7 +39,7 @@
 			return window.serverRootPath ? window.serverRootPath + path : path;
 		};
 
-		var socket = io.connect(serverUrl("/"), { secure: location.protocol === "https" });
+		var socket = iosocket.connect(serverUrl("/"), { secure: location.protocol === "https" });
 
 		socket.on(config.events.INVOICE_WS, function (data) {
 			console.log("Invoice received:", data);
@@ -621,6 +619,6 @@
 		};
 
 		Object.seal(this);
-	}
+	};
 
 })();

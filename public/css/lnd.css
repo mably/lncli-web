@@ -1,0 +1,29 @@
+@import url("../../node_modules/bootstrap/dist/css/bootstrap.css");
+@import url("../../node_modules/font-awesome/css/font-awesome.css");
+@import url("../../node_modules/ng-toast/dist/ngToast.css");
+
+html { overflow-y: scroll; }
+body { padding-top: 50px; }
+td.pubkey, td.payreq {
+	overflow-wrap: break-word;
+	white-space: normal !important;
+}
+td.payreq {
+	max-width: 28em;
+}
+div.page-header {
+	position: relative;
+}
+div.page-header > a[name] {
+	position: absolute;
+	top: -70px;
+}
+@media screen and (max-width: 767px) {
+	td.pubkey, td.payreq {
+		max-width: 15em;
+	}
+}
+#tail, #notifications {
+	max-height: 30em;
+	overflow: scroll;
+}

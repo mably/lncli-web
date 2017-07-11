@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("WalletBalanceCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -46,6 +45,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();

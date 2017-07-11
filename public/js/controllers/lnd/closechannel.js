@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "channel", "lncli", controller]);
-
-	function controller($scope, $timeout, $uibModalInstance, channel, lncli) {
+	module.exports = function ($scope, $timeout, $uibModalInstance, channel, lncli) {
 
 		var $ctrl = this;
 
@@ -81,6 +80,6 @@
 			unregisterWSRequestListeners();
 		});
 
-	}
+	};
 
 })();

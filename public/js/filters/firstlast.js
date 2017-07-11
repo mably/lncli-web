@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.filter("firstlast", [filter]);
-
-	function filter($scope, $uibModal, lncli) {
+	module.exports = function ($scope, $uibModal, lncli) {
 		return function (input, first, last, separator) {
 			var filtered;
 			last = last || first;
@@ -14,6 +13,6 @@
 			}
 			return filtered;
 		};
-	}
+	};
 
 })();
