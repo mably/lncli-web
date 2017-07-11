@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($rootScope, $scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, lncli, config) {
 
 		var $ctrl = this;
 
@@ -130,6 +129,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();

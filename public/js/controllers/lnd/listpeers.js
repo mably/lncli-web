@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ListPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
 
 		var $ctrl = this;
 
@@ -101,6 +100,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();

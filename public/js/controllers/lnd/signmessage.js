@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalSignMessageCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
-
-	function controller($uibModalInstance, defaults, lncli) {
+	module.exports = function ($uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -52,6 +51,6 @@
 			$ctrl.success = null;
 		};
 
-	}
+	};
 
 })();

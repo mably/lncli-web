@@ -12,7 +12,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 
 	var clients = [];
 
-	var authRequired = (login && pass) || (limitlogin && limitpass);
+	var authEnabled = (login && pass) || (limitlogin && limitpass);
 
 	var userToken = null;
 	var limitUserToken = null;
@@ -89,7 +89,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 
 		debug("socket.handshake", socket.handshake);
 
-		if (authRequired) {
+		if (authEnabled) {
 			try {
 				var authorizationHeaderToken;
 				if (socket.handshake.query.auth) {

@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalVerifyMessageCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
-
-	function controller($uibModalInstance, defaults, lncli) {
+	module.exports = function ($uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -67,6 +66,6 @@
 			$ctrl.success = null;
 		};
 
-	}
+	};
 
 })();

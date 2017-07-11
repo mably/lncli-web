@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalImportKnownPeersCtrl", ["$uibModalInstance", "defaults", "lncli", controller]);
-
-	function controller($uibModalInstance, defaults, lncli) {
+	module.exports = function ($uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -33,6 +32,6 @@
 			$ctrl.warning = null;
 		};
 
-	}
+	};
 
 })();

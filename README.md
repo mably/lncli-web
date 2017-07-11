@@ -1,4 +1,4 @@
-# Slack tipping bot using LN for payments
+# Lnd Web Client
 
 ## Installation
 
@@ -21,22 +21,10 @@ Move into the newly created directory:
 cd lncli-web
 ```
 
-Fetch and install all the backend server dependencies by running:
+Fetch the dependencies and build the application by running:
 
 ```
 npm install
-```
-
-Fetch and install all the front end dependencies by running:
-
-```
-"./node_modules/.bin/bower" install --allow-root
-```
-
-Setup default configuration files by running:
-
-```
-"./node_modules/.bin/gulp" install
 ```
 
 ## Execution

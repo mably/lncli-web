@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalQueryRouteCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", controller]);
-
-	function controller($scope, $uibModalInstance, defaults, lncli) {
+	module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
@@ -52,5 +51,5 @@
 			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
 			$ctrl.isClosed = true;
 		});
-	}
+	};
 })();
