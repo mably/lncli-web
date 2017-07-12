@@ -375,6 +375,16 @@ module.exports = function (app, lightning, db) {
 		});
 	});
 
+	// ln-payreq-auth.html
+	app.get("/ln-payreq-auth.html", function (req, res) {
+		res.send("Payment verified!");
+	});
+
+	// ln-sign-auth.html
+	app.get("/ln-sign-auth.html", function (req, res) {
+		res.send("Signature verified! Authentication message was properly signed by node " + req.userpubkey + ".");
+	});
+
 	// application -------------------------------------------------------------
 	app.get("*", function (req, res) {
 		res.sendFile("lnd.html", { root: __dirname + "/../public/" }); // load the single view file (angular will handle the page changes on the front-end)
