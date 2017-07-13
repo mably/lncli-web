@@ -35,14 +35,14 @@
 		var addressesCache = null;
 		var wsRequestListeners = {};
 
-		var endPoint = utils.getUrlParameterByName("endpoint");
+		var endPoint = (localStorage && localStorage.url) || window.serverRootPath; // localStorage is used by LND Chrome Extension, window.serverRootPath by Electron
 
 		var serverUrl = function (path) {
 			return endPoint ? endPoint + path : path;
 		};
 
 		var isSecure = function () {
-			return endPoint ? endPoint.toLowerCase().startsWith("https:") : location.protocol === "https";
+			return endPoint ? endPoint.toLowerCase().startsWith("https:") : location.protocol.startsWith("https");
 		};
 
 		var socket = iosocket.connect(serverUrl("/"), { secure: isSecure() });
