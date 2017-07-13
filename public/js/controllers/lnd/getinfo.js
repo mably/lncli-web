@@ -9,6 +9,7 @@
 		$scope.refresh = function () {
 			$scope.spinner++;
 			$scope.updateNextRefresh();
+			$scope.endpoint = lncli.getEndPoint();
 			lncli.getInfo(false).then(function (response) {
 				$scope.spinner--;
 				console.log(response);

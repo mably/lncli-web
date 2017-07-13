@@ -411,6 +411,11 @@ module.exports = function (app, lightning, slacktip, db) {
 		res.send("Signature verified! Authentication message was properly signed by node " + req.userpubkey + ".");
 	});
 
+	// ln-signpayreq-auth.html
+	app.get("/ln-signpayreq-auth.html", function (req, res) {
+		res.send("Payment and signature verified! Authentication message was properly signed by node " + req.userpubkey + ".");
+	});
+
 	// application -------------------------------------------------------------
 	app.get("*", function (req, res) {
 		res.sendFile("index.html", { root: __dirname + "/../public/" }); // load the single view file (angular will handle the page changes on the front-end)

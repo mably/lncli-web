@@ -41,6 +41,10 @@
 			return endPoint ? endPoint + path : path;
 		};
 
+		this.getEndPoint = function () {
+			return endPoint ? endPoint : window.location.origin;
+		};
+
 		var isSecure = function () {
 			return endPoint ? endPoint.toLowerCase().startsWith("https:") : location.protocol.startsWith("https");
 		};

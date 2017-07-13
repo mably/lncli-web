@@ -45,6 +45,8 @@ module.exports = function (program) {
 	const lnpayreqauth = require("./lnpayreqauth")(lightning, config).filter;
 	// setup LN signature authentication =================
 	const lnsignauth = require("./lnsignauth")(lightning, config).filter;
+	// setup combined LN signature and payment authentication =================
+	const lnsignpayreqauth = require("./lnsignpayreqauth")(lightning, config).filter;
 
 	// init slacktip module =================
 	const slacktip = require("./slacktip")(lightning, lnd, db, module, require("../config/slack-config"));
@@ -59,6 +61,7 @@ module.exports = function (program) {
 	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
 	app.use(["/ln-payreq-auth.html"], lnpayreqauth);                // enable LN payment request authentication for specific test page
 	app.use(["/ln-sign-auth.html"], lnsignauth);                    // enable LN signature authentication for specific test page
+	app.use(["/ln-signpayreq-auth.html"], lnsignpayreqauth);        // enable combined LN payment and signature authentication
 	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({ extended: "true" }));           // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
