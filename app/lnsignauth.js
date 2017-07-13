@@ -9,7 +9,8 @@ module.exports = function (lightning, config) {
 
 	// configure basic authentification for express
 	module.filter = function (req, res, next) {
-		debug("url: " + req.originalUrl);
+		debug("url:", req.originalUrl);
+		debug("sessionID:", req.sessionID);
 		function unauthorized(res) {
 			res.set("WWW-Authenticate", "Basic realm=lnsign:" + req.sessionID);
 			return res.sendStatus(401);
@@ -20,7 +21,7 @@ module.exports = function (lightning, config) {
 			return unauthorized(res);
 		}
 
-		debug("user.name", user.name);
+		debug("sessionID.signature:", user.name);
 
 		lightning.verifyMessage({ msg: Buffer.from(req.sessionID, "utf8"), signature: user.name }, function (err, response) {
 			if (err) {
