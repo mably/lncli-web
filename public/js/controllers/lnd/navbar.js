@@ -53,7 +53,7 @@
 		$scope.renderGraph = function () {
 
 			lncli.renderGraph().then(function (response) {
-				window.open("/api/lnd/networkgraph.svg", "_blank");
+				window.open(lncli.getEndPoint() + "/api/lnd/networkgraph.svg", "_blank");
 			}, function (err) {
 				console.log(err);
 			});
