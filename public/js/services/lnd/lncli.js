@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService, $, config, uuid, webNotification, iosocket) {
+	module.exports = function ($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService, $, config, uuid, webNotification, iosocket, utils) {
 
 		var _this = this;
 
@@ -35,11 +35,17 @@
 		var addressesCache = null;
 		var wsRequestListeners = {};
 
+		var endPoint = utils.getUrlParameterByName("endpoint");
+
 		var serverUrl = function (path) {
-			return window.serverRootPath ? window.serverRootPath + path : path;
+			return endPoint ? endPoint + path : path;
 		};
 
-		var socket = iosocket.connect(serverUrl("/"), { secure: location.protocol === "https" });
+		var isSecure = function () {
+			return endPoint ? endPoint.toLowerCase().startsWith("https:") : location.protocol === "https";
+		};
+
+		var socket = iosocket.connect(serverUrl("/"), { secure: isSecure() });
 
 		socket.on(config.events.INVOICE_WS, function (data) {
 			console.log("Invoice received:", data);
