@@ -50,6 +50,22 @@
 
 		};
 
+		$scope.sendCoins = function () {
+
+			var modalInstance = $uibModal.open(config.modals.SEND_COINS);
+
+			modalInstance.rendered.then(function () {
+				$("#sendcoins-addr").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.renderGraph = function () {
 
 			lncli.renderGraph().then(function (response) {

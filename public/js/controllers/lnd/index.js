@@ -19,6 +19,7 @@ module.exports = function (lnwebcli) {
 	lnwebcli.controller("ModalOpenChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "defaults", "lncli", require("./openchannel")]);
 	lnwebcli.controller("PendingChannelsCtrl", ["$scope", "$timeout", "$window", "lncli", "config", require("./pendingchannels")]);
 	lnwebcli.controller("ModalQueryRouteCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", require("./queryroute")]);
+	lnwebcli.controller("ModalSendCoinsCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", require("./sendcoins")]);
 	lnwebcli.controller("ModalSendPaymentCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", require("./sendpayment")]);
 	lnwebcli.controller("ModalSignMessageCtrl", ["$uibModalInstance", "defaults", "lncli", require("./signmessage")]);
 	lnwebcli.controller("ModalVerifyMessageCtrl", ["$uibModalInstance", "defaults", "lncli", require("./verifymessage")]);

@@ -57,6 +57,7 @@ lnwebcli.constant("config", {
 	events: {
 		PEER_REFRESH: "peer.refresh",
 		CHANNEL_REFRESH: "channel.refresh",
+		BALANCE_REFRESH: "balance.refresh",
 		HELLO_WS: "hello",
 		TAIL_WS: "tail",
 		INVOICE_WS: "invoice",
@@ -75,6 +76,21 @@ lnwebcli.constant("config", {
 			resolve: {
 				defaults: {
 					type: 0 // Witness
+				}
+			}
+		},
+		SEND_COINS: {
+			animation: true,
+			ariaLabelledBy: "sendcoins-modal-title",
+			ariaDescribedBy: "sendcoins-modal-body",
+			templateUrl: "templates/partials/lnd/sendcoins.html",
+			controller: "ModalSendCoinsCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+					addr: "",
+					amount: 0
 				}
 			}
 		},

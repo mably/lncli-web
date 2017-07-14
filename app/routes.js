@@ -256,6 +256,26 @@ module.exports = function (app, lightning, db) {
 		});
 	});
 
+	// sendcoins
+	app.post("/api/lnd/sendcoins", function (req, res) {
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var sendCoinsRequest = { addr: req.body.addr, amount: req.body.amount };
+			logger.debug("SendCoins", sendCoinsRequest);
+			lightning.sendCoins(sendCoinsRequest, function (err, response) {
+				if (err) {
+					logger.debug("SendCoins Error:", err);
+					err.error = err.message;
+					res.send(err);
+				} else {
+					logger.debug("SendCoins:", response);
+					res.json(response);
+				}
+			});
+		}
+	});
+
 	// rendergraph
 	app.post("/api/lnd/rendergraph", function (req, res) {
 		if (req.limituser) {
