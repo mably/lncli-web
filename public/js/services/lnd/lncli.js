@@ -18,6 +18,7 @@
 			CONNECTPEER: "/api/lnd/connectpeer",
 			DISCONNECTPEER: "/api/lnd/disconnectpeer",
 			ADDINVOICE: "/api/lnd/addinvoice",
+			SENDCOINS: "/api/lnd/sendcoins",
 			SENDPAYMENT: "/api/lnd/sendpayment",
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
 			QUERYROUTE: "/api/lnd/queryroute",
@@ -581,6 +582,11 @@
 		this.addInvoice = function (memo, value) {
 			var data = { memo: memo, value: value };
 			return $http.post(serverUrl(API.ADDINVOICE), data);
+		};
+
+		this.sendCoins = function (addr, amount) {
+			var data = { addr: addr, amount: amount };
+			return $http.post(serverUrl(API.SENDCOINS), data);
 		};
 
 		this.sendPayment = function (payreq) {
