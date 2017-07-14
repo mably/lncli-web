@@ -35,7 +35,7 @@
 		var addressesCache = null;
 		var wsRequestListeners = {};
 
-		var endPoint = (localStorage && localStorage.url) || window.serverRootPath; // localStorage is used by LND Chrome Extension, window.serverRootPath by Electron
+		var endPoint = utils.getUrlParameterByName("endpoint") || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
 
 		var serverUrl = function (path) {
 			return endPoint ? endPoint + path : path;
