@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, bootbox, lncli, config) {
 
 		var $ctrl = this;
 
@@ -63,19 +63,23 @@
 		};
 
 		$scope.disconnect = function (peer) {
-			$scope.spinner++;
-			lncli.disconnectPeer(peer.pub_key).then(function (response) {
-				$scope.spinner--;
-				console.log("DisconnectPeer", response);
-				if (response.data.error) {
-					lncli.alert(response.data.error);
-				} else {
-					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+			bootbox.confirm("Do you really want to disconnect from that peer?", function (result) {
+				if (result) {
+					$scope.spinner++;
+					lncli.disconnectPeer(peer.pub_key).then(function (response) {
+						$scope.spinner--;
+						console.log("DisconnectPeer", response);
+						if (response.data.error) {
+							lncli.alert(response.data.error);
+						} else {
+							$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+						}
+					}, function (err) {
+						$scope.spinner--;
+						console.log(err);
+						lncli.alert(err.message || err.statusText);
+					});
 				}
-			}, function (err) {
-				$scope.spinner--;
-				console.log(err);
-				lncli.alert(err.message || err.statusText);
 			});
 		};
 
