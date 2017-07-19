@@ -27,6 +27,12 @@ Fetch the dependencies and build the application by running:
 npm install
 ```
 
+If not started automatically, run the following command to build the application:
+
+```
+"./node_modules/.bin/gulp" bundle
+```
+
 ## Execution
 
 Start the back-end server:
