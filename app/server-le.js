@@ -22,8 +22,9 @@ module.exports = function (program) {
 	const config = require("../config/config");
 
 	// define useful global variables ======================================
-	module.useTLS = !program.serverport;
-	module.serverPort = program.serverport || "443";
+	module.useTLS = true;
+	module.serverPort = program.serverport || "8280";
+	module.httpsPort = program.httpsport || "8283";
 	module.serverHost = program.serverhost;
 
 	// setup winston logging ==========
@@ -39,7 +40,7 @@ module.exports = function (program) {
 	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
-	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
+	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost), (program.lndCertPath || defaults.lndCertPath));
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
@@ -150,16 +151,14 @@ module.exports = function (program) {
 	});
 
 	// init server =================
-	var server;
-	if (program.serverport) {
-		server = require("http").Server(app);
-	} else {
-		// handles acme-challenge and redirects to https
-		require("http").createServer(le.middleware(require("redirect-https")())).listen(80, module.serverHost, function () {
-			console.log("Listening for ACME http-01 challenges on", this.address());
-		});
-		server = require("https").createServer(le.httpsOptions, le.middleware(app));
-	}
+
+	// handles acme-challenge and redirects to https
+	require("http").createServer(le.middleware(require("redirect-https")())).listen(module.serverPort, module.serverHost, function () {
+		console.log("Listening for ACME http-01 challenges on", this.address());
+	});
+
+	var server = require("https").createServer(le.httpsOptions, le.middleware(app));
+
 	const io = require("socket.io")(server);
 
 	// setup sockets =================
@@ -170,9 +169,9 @@ module.exports = function (program) {
 	require("./routes")(app, lightning, slacktip, db);
 
 	// listen (start app with node server.js) ======================================
-	server.listen(module.serverPort, module.serverHost);
+	server.listen(module.httpsPort, module.serverHost);
 
-	logger.info("App listening on " + module.serverHost + " port " + module.serverPort);
+	logger.info("App listening on " + module.serverHost + " port " + module.httpsPort);
 
 	module.server = server;
 

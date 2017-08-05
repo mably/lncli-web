@@ -21,6 +21,7 @@ module.exports = function (program) {
 	// define useful global variables ======================================
 	module.useTLS = program.usetls;
 	module.serverPort = program.serverport || defaults.serverPort;
+	module.httpsPort = module.serverPort;
 	module.serverHost = program.serverhost || defaults.serverHost;
 
 	// setup winston logging ==========
@@ -36,7 +37,7 @@ module.exports = function (program) {
 	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
-	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
+	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost), (program.lndCertPath || defaults.lndCertPath));
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
