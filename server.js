@@ -5,7 +5,8 @@ const program = require("commander");
 // parse command line parameters
 program
 	.version("1.0.0")
-	.option("-s, --serverport [port]", "web server listening port (defaults to 8280)")
+	.option("-s, --serverport [port]", "web server http listening port (defaults to 8280)")
+	.option("-x, --httpsport [port]", "web server https listening port (defaults to 8283)")
 	.option("-h, --serverhost [host]", "web server listening host (defaults to localhost)")
 	.option("-l, --lndhost [host:port]", "RPC lnd host (defaults to localhost:10009)")
 	.option("-t, --usetls [path]", "path to a directory containing key.pem and cert.pem files")
