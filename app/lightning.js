@@ -5,7 +5,7 @@ const fs = require("fs");
 // expose the routes to our app with module.exports
 module.exports = function (protoPath, lndHost, lndCertPath) {
 
-	process.env["GRPC_SSL_CIPHER_SUITES"] = "HIGH+ECDSA";
+	process.env.GRPC_SSL_CIPHER_SUITES = "HIGH+ECDSA";
 
 	var lnrpcDescriptor = grpc.load(protoPath);
 
