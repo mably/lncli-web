@@ -1,9 +1,7 @@
 (function () {
 	"use strict";
 
-	lnwebcli.service("lncli", ["$rootScope", "$filter", "$http", "$timeout", "$interval", "$q", "ngToast", "localStorageService", "config", "uuid", "webNotification", "lnwebcliUtils", Service]);
-
-	function Service($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, localStorageService, config, uuid, webNotification, utils) {
+	module.exports = function ($rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService, $, config, uuid, webNotification, iosocket, utils) {
 
 		var _this = this;
 
@@ -20,6 +18,7 @@
 			CONNECTPEER: "/api/lnd/connectpeer",
 			DISCONNECTPEER: "/api/lnd/disconnectpeer",
 			ADDINVOICE: "/api/lnd/addinvoice",
+			SENDCOINS: "/api/lnd/sendcoins",
 			SENDPAYMENT: "/api/lnd/sendpayment",
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
 			QUERYROUTE: "/api/lnd/queryroute",
@@ -37,11 +36,21 @@
 		var addressesCache = null;
 		var wsRequestListeners = {};
 
+		var endPoint = utils.getUrlParameterByName("endpoint") || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
+
 		var serverUrl = function (path) {
-			return window.serverRootPath ? window.serverRootPath + path : path;
+			return endPoint ? endPoint + path : path;
 		};
 
-		var socket = io.connect(serverUrl("/"), { secure: location.protocol === "https" });
+		this.getEndPoint = function () {
+			return endPoint ? endPoint : window.location.origin;
+		};
+
+		var isSecure = function () {
+			return endPoint ? endPoint.toLowerCase().startsWith("https:") : location.protocol.startsWith("https");
+		};
+
+		var socket = iosocket.connect(serverUrl("/"), { secure: isSecure() });
 
 		socket.on(config.events.INVOICE_WS, function (data) {
 			console.log("Invoice received:", data);
@@ -575,6 +584,11 @@
 			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
+		this.sendCoins = function (addr, amount) {
+			var data = { addr: addr, amount: amount };
+			return $http.post(serverUrl(API.SENDCOINS), data);
+		};
+
 		this.sendPayment = function (payreq) {
 			var data = { payreq: payreq };
 			return $http.post(serverUrl(API.SENDPAYMENT), data);
@@ -621,6 +635,6 @@
 		};
 
 		Object.seal(this);
-	}
+	};
 
 })();

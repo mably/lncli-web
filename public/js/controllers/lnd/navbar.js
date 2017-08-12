@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("NavBarCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
 
 		var $ctrl = this;
 
@@ -51,10 +50,26 @@
 
 		};
 
+		$scope.sendCoins = function () {
+
+			var modalInstance = $uibModal.open(config.modals.SEND_COINS);
+
+			modalInstance.rendered.then(function () {
+				$("#sendcoins-addr").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.renderGraph = function () {
 
 			lncli.renderGraph().then(function (response) {
-				window.open("/api/lnd/networkgraph.svg", "_blank");
+				window.open(lncli.getEndPoint() + "/api/lnd/networkgraph.svg", "_blank");
 			}, function (err) {
 				console.log(err);
 			});
@@ -122,6 +137,6 @@
 
 		};
 
-	}
+	};
 
 })();

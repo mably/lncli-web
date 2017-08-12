@@ -21,6 +21,7 @@ module.exports = function (program) {
 	// define useful global variables ======================================
 	module.useTLS = program.usetls;
 	module.serverPort = program.serverport || defaults.serverPort;
+	module.httpsPort = module.serverPort;
 	module.serverHost = program.serverhost || defaults.serverHost;
 
 	// setup winston logging ==========
@@ -36,10 +37,17 @@ module.exports = function (program) {
 	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
-	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost));
+	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost), (program.lndCertPath || defaults.lndCertPath));
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
+
+	// setup LN payment request authentication =================
+	const lnpayreqauth = require("./lnpayreqauth")(lightning, config).filter;
+	// setup LN signature authentication =================
+	const lnsignauth = require("./lnsignauth")(lightning, config).filter;
+	// setup combined LN signature and payment authentication =================
+	const lnsignpayreqauth = require("./lnsignpayreqauth")(lightning, config).filter;
 
 	// init slacktip module =================
 	const slacktip = require("./slacktip")(lightning, lnd, db, module, require("../config/slack-config"));
@@ -52,6 +60,9 @@ module.exports = function (program) {
 	app.use(require("./cors"));                                     // enable CORS headers
 	app.use(grant);                                                 // mount grant
 	app.use(["/lnd.html", "/api/lnd/"], basicauth);                 // enable basic authentication for lnd apis
+	app.use(["/ln-payreq-auth.html"], lnpayreqauth);                // enable LN payment request authentication for specific test page
+	app.use(["/ln-sign-auth.html"], lnsignauth);                    // enable LN signature authentication for specific test page
+	app.use(["/ln-signpayreq-auth.html"], lnsignpayreqauth);        // enable combined LN payment and signature authentication
 	app.use(express.static(__dirname + "/../public"));              // set the static files location /public/img will be /img for users
 	app.use(bodyParser.urlencoded({ extended: "true" }));           // parse application/x-www-form-urlencoded
 	app.use(bodyParser.json());                                     // parse application/json
@@ -60,7 +71,7 @@ module.exports = function (program) {
 	// error handler
 	app.use(function (err, req, res, next) {
 		// Do logging and user-friendly error message display
-		winston.error(err);
+		logger.error(err);
 		res.status(500).send({ status: 500, message: "internal error", type: "internal" });
 	});
 

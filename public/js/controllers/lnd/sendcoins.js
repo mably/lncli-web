@@ -1,22 +1,20 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($uibModalInstance, defaults, lncli) {
+	module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
 
 		var $ctrl = this;
 
 		$ctrl.spinner = 0;
 
 		$ctrl.values = defaults;
-		$ctrl.signature = null;
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.signMessage($ctrl.values.message).then(function (response) {
+			lncli.sendCoins($ctrl.values.addr, $ctrl.values.amount).then(function (response) {
 				$ctrl.spinner--;
-				console.log("SignMessage", response);
+				console.log("SendCoins", response);
 				if (response.data.error) {
-					$ctrl.signature = null;
 					if ($ctrl.isClosed) {
 						lncli.alert(response.data.error);
 					} else {
@@ -24,12 +22,12 @@
 					}
 				} else {
 					$ctrl.warning = null;
-					$ctrl.signature = response.data.signature;
+					$uibModalInstance.close($ctrl.values);
+					lncli.notify("INFO", "Tx " + response.data.txid + " successfully sent.");
 				}
 			}, function (err) {
 				$ctrl.spinner--;
 				console.log(err);
-				$ctrl.signature = null;
 				var errmsg = err.message || err.statusText;
 				if ($ctrl.isClosed) {
 					lncli.alert(errmsg);
@@ -39,18 +37,17 @@
 			});
 		};
 
-		$ctrl.close = function () {
-			$uibModalInstance.close($ctrl.values);
+		$ctrl.cancel = function () {
+			$uibModalInstance.dismiss("cancel");
 		};
 
-		$ctrl.dismissWarning = function () {
+		$ctrl.dismissAlert = function () {
 			$ctrl.warning = null;
 		};
 
-		$ctrl.dismissSuccess = function () {
-			$ctrl.success = null;
-		};
-
+		$scope.$on("modal.closing", function (event, reason, closed) {
+			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
+			$ctrl.isClosed = true;
+		});
 	};
-
 })();

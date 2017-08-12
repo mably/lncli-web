@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalEditKnownPeerCtrl", ["$rootScope", "$uibModalInstance", "knownpeer", "lncli", "config", controller]);
-
-	function controller($rootScope, $uibModalInstance, knownpeer, lncli, config) {
+	module.exports = function ($rootScope, $uibModalInstance, knownpeer, lncli, config) {
 
 		var $ctrl = this;
 
@@ -27,6 +26,6 @@
 			$ctrl.warning = null;
 		};
 
-	}
+	};
 
 })();

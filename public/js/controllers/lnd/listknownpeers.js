@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($rootScope, $scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, bootbox, lncli, config) {
 
 		var $ctrl = this;
 
@@ -70,14 +69,16 @@
 		};
 
 		$scope.remove = function (peer) {
-			bootbox.confirm("Do you really want to remove that peer?", function () {
-				lncli.removeKnownPeer(peer.pub_key).then(function (response) {
-					console.log("RemoveKnownPeer removed=", response);
-					$scope.refresh();
-				}, function (err) {
-					console.log(err);
-					lncli.alert(err.message);
-				});
+			bootbox.confirm("Do you really want to remove that peer?", function (result) {
+				if (result) {
+					lncli.removeKnownPeer(peer.pub_key).then(function (response) {
+						console.log("RemoveKnownPeer removed=", response);
+						$scope.refresh();
+					}, function (err) {
+						console.log(err);
+						lncli.alert(err.message);
+					});
+				}
 			});
 		};
 
@@ -130,6 +131,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();

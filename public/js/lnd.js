@@ -1,5 +1,25 @@
-// public/core.js
-var lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64"]);
+// public/js/lnd.js
+var css = require("../css/lnd.css");
+
+window.jQuery = require("jquery");
+require("bootstrap");
+
+const angular = require("angular");
+require("angular-ui-bootstrap");
+require("angular-local-storage");
+require("ngclipboard");
+require("angular-sanitize");
+const bootbox = require("bootbox");
+require("ng-toast");
+require("angular-uuid");
+window.webNotification = require("simple-web-notification"); // required by angular-web-notification
+require("angular-web-notification");
+require("angular-base64");
+
+const lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64"]);
+
+lnwebcli.value("jQuery", window.jQuery);
+lnwebcli.value("bootbox", bootbox);
 
 lnwebcli.config(["localStorageServiceProvider", function (localStorageServiceProvider) {
 	localStorageServiceProvider
@@ -37,6 +57,7 @@ lnwebcli.constant("config", {
 	events: {
 		PEER_REFRESH: "peer.refresh",
 		CHANNEL_REFRESH: "channel.refresh",
+		BALANCE_REFRESH: "balance.refresh",
 		HELLO_WS: "hello",
 		TAIL_WS: "tail",
 		INVOICE_WS: "invoice",
@@ -55,6 +76,21 @@ lnwebcli.constant("config", {
 			resolve: {
 				defaults: {
 					type: 0 // Witness
+				}
+			}
+		},
+		SEND_COINS: {
+			animation: true,
+			ariaLabelledBy: "sendcoins-modal-title",
+			ariaDescribedBy: "sendcoins-modal-body",
+			templateUrl: "templates/partials/lnd/sendcoins.html",
+			controller: "ModalSendCoinsCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+					addr: "",
+					amount: 0
 				}
 			}
 		},
@@ -88,3 +124,9 @@ lnwebcli.constant("config", {
 		}
 	}
 });
+
+require("./filters")(lnwebcli);
+require("./factories")(lnwebcli);
+require("./controllers/lnd")(lnwebcli);
+require("./directives/lnd")(lnwebcli);
+require("./services/lnd")(lnwebcli);

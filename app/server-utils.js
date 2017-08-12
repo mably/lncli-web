@@ -11,7 +11,7 @@ module.exports = function (server) {
 	server.getURL = function () {
 		return "http" + (this.useTLS ? "s" : "") + "://" + this.serverHost
 			+ (this.useTLS
-				? ((this.serverPort === "443") ? "" : ":" + this.serverPort)
+				? ((this.httpsPort === "443") ? "" : ":" + this.httpsPort)
 				: ((this.serverPort === "80") ? "" : ":" + this.serverPort));
 	};
 

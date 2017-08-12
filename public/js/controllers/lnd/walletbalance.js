@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("WalletBalanceCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -44,8 +43,30 @@
 
 		};
 
+		$scope.sendCoins = function () {
+
+			var modalInstance = $uibModal.open(config.modals.SEND_COINS);
+
+			modalInstance.rendered.then(function () {
+				$("#sendcoins-addr").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+				$scope.refresh();
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
+		$scope.$on(config.events.BALANCE_REFRESH, function (event, args) {
+			console.log("Received event BALANCE_REFRESH", event, args);
+			$scope.refresh();
+		});
+
 		$scope.refresh();
 
-	}
+	};
 
 })();

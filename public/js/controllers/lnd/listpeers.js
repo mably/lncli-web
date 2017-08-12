@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ListPeersCtrl", ["$scope", "$timeout", "$uibModal", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $uibModal, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, bootbox, lncli, config) {
 
 		var $ctrl = this;
 
@@ -43,8 +42,8 @@
 				resolve: {
 					defaults: function () {
 						return {
-							pubkey: "036a0c5ea35df8a528b98edf6f290b28676d51d0fe202b073fe677612a39c0aa09",
-							host: "159.203.125.125:10011"
+							pubkey: "",
+							host: ""
 						};
 					}
 				}
@@ -64,19 +63,23 @@
 		};
 
 		$scope.disconnect = function (peer) {
-			$scope.spinner++;
-			lncli.disconnectPeer(peer.pub_key).then(function (response) {
-				$scope.spinner--;
-				console.log("DisconnectPeer", response);
-				if (response.data.error) {
-					lncli.alert(response.data.error);
-				} else {
-					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+			bootbox.confirm("Do you really want to disconnect from that peer?", function (result) {
+				if (result) {
+					$scope.spinner++;
+					lncli.disconnectPeer(peer.pub_key).then(function (response) {
+						$scope.spinner--;
+						console.log("DisconnectPeer", response);
+						if (response.data.error) {
+							lncli.alert(response.data.error);
+						} else {
+							$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+						}
+					}, function (err) {
+						$scope.spinner--;
+						console.log(err);
+						lncli.alert(err.message || err.statusText);
+					});
 				}
-			}, function (err) {
-				$scope.spinner--;
-				console.log(err);
-				lncli.alert(err.message || err.statusText);
 			});
 		};
 
@@ -101,6 +104,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();

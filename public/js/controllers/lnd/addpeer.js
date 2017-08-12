@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalAddPeerCtrl", ["$rootScope", "$scope", "$uibModalInstance", "defaults", "lncli", "config", controller]);
-
-	function controller($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
+	module.exports = function ($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
 
 		var $ctrl = this;
 
@@ -51,6 +50,6 @@
 			$ctrl.isClosed = true;
 		});
 
-	}
+	};
 
 })();

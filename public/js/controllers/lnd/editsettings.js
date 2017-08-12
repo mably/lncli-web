@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("ModalEditSettingsCtrl", ["$uibModalInstance", "settings", "lncli", controller]);
-
-	function controller($uibModalInstance, settings, lncli) {
+	module.exports = function ($uibModalInstance, settings, lncli) {
 
 		var $ctrl = this;
 
@@ -26,6 +25,6 @@
 			$ctrl.warning = null;
 		};
 
-	}
+	};
 
 })();

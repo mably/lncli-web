@@ -1,8 +1,7 @@
 (function () {
+	"use strict";
 
-	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "lncli", "config", controller]);
-
-	function controller($scope, $timeout, $window, lncli, config) {
+	module.exports = function ($scope, $timeout, $window, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -10,6 +9,7 @@
 		$scope.refresh = function () {
 			$scope.spinner++;
 			$scope.updateNextRefresh();
+			$scope.endpoint = lncli.getEndPoint();
 			lncli.getInfo(false).then(function (response) {
 				$scope.spinner--;
 				console.log(response);
@@ -49,6 +49,6 @@
 
 		$scope.refresh();
 
-	}
+	};
 
 })();
