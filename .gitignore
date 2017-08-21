@@ -48,3 +48,4 @@ jspm_packages
 /public/files/*
 /public/dist
 /public/vendor
+/*.cert
