@@ -80,6 +80,8 @@ Lnd uses the `P-521` curve for its certificates but NodeJS gRPC module is only c
 You need to generate your own lnd certificates using the following commands (thanks to Alex Akselrod for helping me on this):
 
 ```
+# Enter the Lnd home directory, located by default at ~/.lnd on Linux or 
+# /Users/[username]/Library/Application Support/Lnd/ on Mac OSX
 cd ~/.lnd
 openssl ecparam -genkey -name prime256v1 -out tls.key
 openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
