@@ -55,9 +55,9 @@ rm csr.csr
 ```
 
 
-### Copy Generated Certificate files into lncli-dir
+### Copy generated certificate file into lncli-web directory
 
-cp tls.cert [lncli_directory]/lnd.cert
+cp tls.cert [lncli-web_directory]/lnd.cert
 
 ### Start the Webserver
 
