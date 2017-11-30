@@ -6,6 +6,7 @@ module.exports = function (lnwebcli) {
 	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "channel", "lncli", require("./closechannel")]);
 	lnwebcli.controller("ModalEditKnownPeerCtrl", ["$rootScope", "$uibModalInstance", "knownpeer", "lncli", "config", require("./editknownpeer")]);
 	lnwebcli.controller("ModalEditSettingsCtrl", ["$uibModalInstance", "settings", "lncli", require("./editsettings")]);
+	lnwebcli.controller("ModalQRCodeCtrl", ["$uibModalInstance", "qrcode", "lncli", require("./qrcode")]);
 	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "lncli", "config", require("./getinfo")]);
 	lnwebcli.controller("GetNetworkInfoCtrl", ["$scope", "$timeout", "lncli", "config", require("./getnetworkinfo")]);
 	lnwebcli.controller("ModalImportKnownPeersCtrl", ["$uibModalInstance", "defaults", "lncli", require("./importknownpeers")]);
