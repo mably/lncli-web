@@ -6,7 +6,7 @@ const request = require("request");
 const graphviz = require("graphviz");
 
 // expose the routes to our app with module.exports
-module.exports = function (app, lightning, db) {
+module.exports = function (app, lightning, db, config) {
 
 	// api ---------------------------------------------------------------------
 
@@ -32,6 +32,7 @@ module.exports = function (app, lightning, db) {
 				err.error = err.message;
 				res.send(err);
 			} else {
+				response.address = config.lndAddress;
 				logger.debug("GetInfo:", response);
 				res.json(response);
 			}

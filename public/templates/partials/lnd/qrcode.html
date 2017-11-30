@@ -8,7 +8,7 @@
 			{{ $ctrl.warning }}
 		</div>
 		<div>
-			<qrcode data="{{ $ctrl.qrcode }}" size="300"></qrcode>
+			<qrcode data="{{ $ctrl.qrcode.data }}" size="{{ $ctrl.qrcode.size }}"></qrcode>
 		</div>
 	</div>
 	<div class="modal-footer">

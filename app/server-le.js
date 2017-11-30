@@ -159,7 +159,7 @@ module.exports = function (program) {
 	require("./sockets")(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
 
 	// setup routes =================
-	require("./routes")(app, lightning, db);
+	require("./routes")(app, lightning, db, config);
 
 	// listen (start app with node server.js) ======================================
 	server.listen(module.httpsPort, module.serverHost);
