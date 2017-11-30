@@ -29,6 +29,7 @@
 					<td>{{ peer.ping_time }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">
+							<button type="button" class="btn btn-default btn-xs" title="Show node URI QR Code" aria-label="Show node URI QR Code" ng-click="showQRCode(peer.pub_key + '@' + peer.address)"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></button>
 							<button type="button" class="btn btn-default btn-xs" title="Disconnect" aria-label="Disconnect" ng-click="disconnect(peer)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 						</div>
 					</td>

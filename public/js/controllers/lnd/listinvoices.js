@@ -67,7 +67,7 @@
 			}, 500);
 		};
 
-		$scope.showQRCode = function (data) {
+		$scope.showQRCode = function (data, size) {
 
 			var modalInstance = $uibModal.open({
 				animation: true,
@@ -79,13 +79,12 @@
 				size: "lg",
 				resolve: {
 					qrcode: function () {
-						return data;
+						return {
+							data: data,
+							size: (size) ? size : 300
+						};
 					}
 				}
-			});
-
-			modalInstance.rendered.then(function () {
-				$("#qrcode-autorefresh").focus();
 			});
 
 			modalInstance.result.then(function (values) {
