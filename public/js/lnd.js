@@ -15,8 +15,11 @@ require("angular-uuid");
 window.webNotification = require("simple-web-notification"); // required by angular-web-notification
 require("angular-web-notification");
 require("angular-base64");
+const qrcode = require("qrcode-generator");
+window.qrcode = qrcode;
+require("angular-qrcode");
 
-const lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64"]);
+const lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64", "monospaced.qrcode"]);
 
 lnwebcli.value("jQuery", window.jQuery);
 lnwebcli.value("bootbox", bootbox);
