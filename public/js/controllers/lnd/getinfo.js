@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $window, lncli, config) {
+	module.exports = function ($scope, $timeout, $window, $uibModal, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -15,6 +15,7 @@
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
+				$scope.node_uri = response.data.identity_pubkey + "@" + response.data.address;
 			}, function (err) {
 				$scope.spinner--;
 				console.log("Error:", err);
@@ -35,6 +36,13 @@
 			}, 500);
 		};
 
+		$scope.nodeuriCopied = function (info) {
+			info.nodeuriCopied = true;
+			$timeout(function () {
+				info.nodeuriCopied = false;
+			}, 500);
+		};
+
 		$scope.openBlockInExplorerByHash = function (blockHash) {
 			if (blockHash) {
 				$window.open("https://testnet.smartbit.com.au/block/" + blockHash, "_blank");
@@ -45,6 +53,34 @@
 			if (blockHeight) {
 				$window.open("https://testnet.smartbit.com.au/block/" + blockHeight, "_blank");
 			}
+		};
+
+		$scope.showQRCode = function (data, size) {
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "qrcode-modal-title",
+				ariaDescribedBy: "qrcode-modal-body",
+				templateUrl: "templates/partials/lnd/qrcode.html",
+				controller: "ModalQRCodeCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					qrcode: function () {
+						return {
+							data: data,
+							size: (size) ? size : 300
+						};
+					}
+				}
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
 		};
 
 		$scope.refresh();
