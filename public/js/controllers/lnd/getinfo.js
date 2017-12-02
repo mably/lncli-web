@@ -15,7 +15,11 @@
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
-				$scope.node_uri = response.data.identity_pubkey + "@" + response.data.address;
+				if (response.data.address) {
+					$scope.node_uri = response.data.identity_pubkey + "@" + response.data.address;
+				} else {
+					delete $scope.node_uri;
+				}
 			}, function (err) {
 				$scope.spinner--;
 				console.log("Error:", err);
