@@ -40,7 +40,10 @@ module.exports = function (program) {
 	const db = require("./database")(defaults.dataPath);
 
 	// setup lightning client =================
-	const lightning = require("./lightning")(defaults.lndProto, (program.lndhost || defaults.lndHost), (program.lndCertPath || defaults.lndCertPath));
+	const lndHost = program.lndhost || defaults.lndHost;
+	const lndCertPath = program.lndCertPath || defaults.lndCertPath;
+	const macaroonPath = program.macaroonPath || defaults.macaroonPath;
+	const lightning = require("./lightning")(defaults.lndProto, lndHost, lndCertPath, macaroonPath);
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
@@ -166,7 +169,7 @@ module.exports = function (program) {
 	require("./sockets")(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
 
 	// setup routes =================
-	require("./routes")(app, lightning, slacktip, db);
+	require("./routes")(app, lightning, slacktip, db, config);
 
 	// listen (start app with node server.js) ======================================
 	server.listen(module.httpsPort, module.serverHost);

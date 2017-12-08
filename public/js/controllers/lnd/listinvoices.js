@@ -67,6 +67,34 @@
 			}, 500);
 		};
 
+		$scope.showQRCode = function (data, size) {
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "qrcode-modal-title",
+				ariaDescribedBy: "qrcode-modal-body",
+				templateUrl: "templates/partials/lnd/qrcode.html",
+				controller: "ModalQRCodeCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					qrcode: function () {
+						return {
+							data: data,
+							size: (size) ? size : 300
+						};
+					}
+				}
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.refresh();
 
 	};
