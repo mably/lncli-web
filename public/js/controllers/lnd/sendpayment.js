@@ -21,6 +21,12 @@
 					} else {
 						$ctrl.warning = response.data.error;
 					}
+				} else if (response.data.payment_error) {
+					if ($ctrl.isClosed) {
+						lncli.alert(response.data.payment_error);
+					} else {
+						$ctrl.warning = response.data.payment_error;
+					}
 				} else {
 					$ctrl.warning = null;
 					$uibModalInstance.close($ctrl.values);
