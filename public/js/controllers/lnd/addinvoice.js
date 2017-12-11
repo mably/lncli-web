@@ -11,7 +11,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.addInvoice($ctrl.values.memo, $ctrl.values.value).then(function (response) {
+			lncli.addInvoice($ctrl.values.memo, $ctrl.values.value, $ctrl.values.expiry).then(function (response) {
 				$ctrl.spinner--;
 				console.log("AddInvoice", response);
 				if (response.data.error) {

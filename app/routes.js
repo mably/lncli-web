@@ -196,7 +196,14 @@ module.exports = function (app, lightning, slacktip, db, config) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.addInvoice({ memo: req.body.memo, value: req.body.value }, function (err, response) {
+			var invoiceRequest = { memo: req.body.memo };
+			if (req.body.value) {
+				invoiceRequest.value = req.body.value;
+			}
+			if (req.body.expiry) {
+				invoiceRequest.expiry = req.body.expiry;
+			}
+			lightning.addInvoice(invoiceRequest, function (err, response) {
 				if (err) {
 					logger.debug("AddInvoice Error:", err);
 					err.error = err.message;

@@ -29,6 +29,9 @@
 
 		$scope.add = function () {
 
+			var expiryTime = lncli.getConfigValue(
+					config.keys.INVOICE_EXPIRY, config.defaults.INVOICE_EXPIRY);
+
 			var modalInstance = $uibModal.open({
 				animation: true,
 				ariaLabelledBy: "addinvoice-modal-title",
@@ -41,7 +44,8 @@
 					defaults: function () {
 						return {
 							memo: "test",
-							value: "1000"
+							value: "1000",
+							expiry: expiryTime
 						};
 					}
 				}

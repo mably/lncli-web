@@ -579,8 +579,8 @@
 			return deferred.promise;
 		};
 
-		this.addInvoice = function (memo, value) {
-			var data = { memo: memo, value: value };
+		this.addInvoice = function (memo, value, expiry) {
+			var data = { memo: memo, value: value, expiry: expiry };
 			return $http.post(serverUrl(API.ADDINVOICE), data);
 		};
 
