@@ -44,13 +44,15 @@ lnwebcli.constant("config", {
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
-		LOG_NOTIFY_PATTERN: "lognotifypattern"
+		LOG_NOTIFY_PATTERN: "lognotifypattern",
+		INVOICE_EXPIRY: "invoiceexpiry"
 	},
 	defaults: {
 		AUTO_REFRESH: 60000, // 1 minute
 		MAX_LOG_BUFFER: 500, // 500 lines of logs max
 		MAX_NOTIF_BUFFER: 500, // 500 lines of notifications max
-		LOG_NOTIFY_PATTERN: "\\[ERR\\]"
+		LOG_NOTIFY_PATTERN: "\\[ERR\\]",
+		INVOICE_EXPIRY: 3600
 	},
 	notif: {
 		SUCCESS: "SUCCESS",
