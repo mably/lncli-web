@@ -35,6 +35,13 @@ If not started automatically, run the following command to build the application
 
 ## Execution
 
+### Requirements
+
+lnd should be started with wallet encryption and macaroons disabled.
+
+```
+lnd [...] --no-macaroons --noencryptwallet
+```
 
 ### Generate lnd certificates compatible with NodeJS gRPC
 
