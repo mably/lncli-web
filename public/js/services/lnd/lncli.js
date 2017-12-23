@@ -7,6 +7,7 @@
 
 		var API = {
 			GETINFO: "/api/lnd/getinfo",
+			GETNODEINFO: "/api/lnd/getnodeinfo",
 			GETNETWORKINFO: "/api/lnd/getnetworkinfo",
 			WALLETBALANCE: "/api/lnd/walletbalance",
 			CHANNELBALANCE: "/api/lnd/channelbalance",
@@ -352,6 +353,11 @@
 				});
 			}
 			return deferred.promise;
+		};
+
+		this.getNodeInfo = function (pubkey) {
+			var data = { pubkey: pubkey };
+			return $http.post(serverUrl(API.GETNODEINFO), data);
 		};
 
 		this.getNetworkInfo = function () {
