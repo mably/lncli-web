@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $uibModal, $, bootbox, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, bootbox, lncli, config) {
 
 		var $ctrl = this;
 

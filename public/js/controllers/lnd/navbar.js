@@ -5,6 +5,34 @@
 
 		var $ctrl = this;
 
+		$scope.getNodeInfo = function () {
+
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: "getnodeinfo-modal-title",
+				ariaDescribedBy: "getnodeinfo-modal-body",
+				templateUrl: "templates/partials/lnd/getnodeinfo.html",
+				controller: "ModalGetNodeInfoCtrl",
+				controllerAs: "$ctrl",
+				size: "lg",
+				resolve: {
+					defaults: {
+					}
+				}
+			});
+
+			modalInstance.rendered.then(function () {
+				$("#getnodeinfo-pubkey").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.queryRoute = function () {
 
 			var modalInstance = $uibModal.open({

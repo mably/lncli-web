@@ -24,7 +24,7 @@ module.exports = function (app, lightning, db, config) {
 		});
 	});
 
-	// get lnd node info
+	// get lnd info
 	app.get("/api/lnd/getinfo", function (req, res) {
 		lightning.getInfo({}, function (err, response) {
 			if (err) {
@@ -49,6 +49,20 @@ module.exports = function (app, lightning, db, config) {
 						res.json(response);
 					}
 				});
+			}
+		});
+	});
+
+	// get lnd node info
+	app.post("/api/lnd/getnodeinfo", function (req, res) {
+		lightning.getNodeInfo({ pub_key: req.body.pubkey }, function (err, response) {
+			if (err) {
+				logger.debug("GetNodeInfo Error:", err);
+				err.error = err.message;
+				res.send(err);
+			} else {
+				logger.debug("GetNodeInfo:", response);
+				res.json(response);
 			}
 		});
 	});
