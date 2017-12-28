@@ -7,9 +7,9 @@
 
 		$ctrl.values = defaults;
 		$ctrl.addressTypes = [
-			{ name: "WITNESS_PUBKEY_HASH", id: 0 },
 			{ name: "NESTED_PUBKEY_HASH", id: 1 },
-			{ name: "PUBKEY_HASH", id: 2 },
+			{ name: "WITNESS_PUBKEY_HASH", id: 0 },
+			//{ name: "PUBKEY_HASH", id: 2 },
 		];
 
 		$ctrl.ok = function () {
