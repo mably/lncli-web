@@ -80,7 +80,7 @@ lnwebcli.constant("config", {
 			size: "lg",
 			resolve: {
 				defaults: {
-					type: 0 // Witness
+					type: 1 // Nested
 				}
 			}
 		},
