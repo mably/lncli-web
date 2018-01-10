@@ -29,6 +29,8 @@
 			VERIFYMESSAGE: "/api/lnd/verifymessage"
 		};
 
+		this.restrictedUser = false;
+
 		var infoCache = null;
 		var peersCache = null;
 		var channelsCache = null;
@@ -60,14 +62,16 @@
 
 		socket.on(config.events.HELLO_WS, function (data) {
 			console.log("Hello event received:", data);
+			_this.restrictedUser = data.limitUser;
+			onConfigUpdate();
 			var helloMsg = ((data && data.remoteAddress) ? data.remoteAddress + " s" : "S") + "ucessfully connected!";
 			_this.notify(config.notif.SUCCESS, helloMsg);
 		});
 
 		var logLines = 0;
-		socket.on(config.events.TAIL_WS, function (message) {
-			console.log("Tail message:", message);
-			if (message.tail) {
+		socket.on(config.events.LOG_WS, function (message) {
+			console.log("Log message:", message);
+			if (message.data) {
 				var logNotifyPattern = _this.getConfigValue(
 					config.keys.LOG_NOTIFY_PATTERN, config.defaults.LOG_NOTIFY_PATTERN);
 				var logPatternRE = null;
@@ -76,9 +80,9 @@
 				}
 				var index = -1;
 				var previndex = 0;
-				while ((index = message.tail.indexOf("\n", index + 1)) > -1) {
+				while ((index = message.data.indexOf("\n", index + 1)) > -1) {
 					if (logPatternRE) {
-						var logLine = message.tail.substr(previndex, (index - previndex));
+						var logLine = message.data.substr(previndex, (index - previndex));
 						if (logLine.match(logPatternRE)) {
 							_this.notify(config.notif.WARNING, logLine);
 						}
@@ -96,7 +100,7 @@
 					logLines--;
 				}
 				logs = logs.substring(index + 1);
-				$tailObj.html(logs + message.tail);
+				$tailObj.html(logs + message.data);
 				$tailObj.scrollTop($tailObj[0].scrollHeight);
 			}
 		});
@@ -280,6 +284,7 @@
 		var writeConfig = function (config) {
 			localStorageService.set("config", config);
 			configCache = config; // update cache
+			onConfigUpdate();
 		};
 
 		var fetchAddresses = function () {
@@ -638,6 +643,20 @@
 		this.verifyMessage = function (message, signature) {
 			var data = { msg: message, signature: signature };
 			return $http.post(serverUrl(API.VERIFYMESSAGE), data);
+		};
+
+		var onConfigUpdate = function () {
+			refreshLogFilterPattern();
+		};
+
+		var refreshLogFilterPattern = function () {
+			var logFilterPattern = _this.getConfigValue(config.keys.LOG_FILTER_PATTERN);
+			if (!_this.restrictedUser && logFilterPattern) {
+				$("#logpanel").show();
+				socket.emit(config.events.LOGFILTER_WS, { rid: uuid.v4(), logFilterPattern: logFilterPattern });
+			} else {
+				$("#logpanel").hide();
+			}
 		};
 
 		Object.seal(this);

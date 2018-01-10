@@ -44,6 +44,7 @@ lnwebcli.constant("config", {
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
+		LOG_FILTER_PATTERN: "logfilterpattern",
 		LOG_NOTIFY_PATTERN: "lognotifypattern",
 		INVOICE_EXPIRY: "invoiceexpiry"
 	},
@@ -51,6 +52,7 @@ lnwebcli.constant("config", {
 		AUTO_REFRESH: 60000, // 1 minute
 		MAX_LOG_BUFFER: 500, // 500 lines of logs max
 		MAX_NOTIF_BUFFER: 500, // 500 lines of notifications max
+		LOG_FILTER_PATTERN: "\\[WRN\\]|\\[ERR\\]",
 		LOG_NOTIFY_PATTERN: "\\[ERR\\]",
 		INVOICE_EXPIRY: 3600
 	},
@@ -64,10 +66,11 @@ lnwebcli.constant("config", {
 		CHANNEL_REFRESH: "channel.refresh",
 		BALANCE_REFRESH: "balance.refresh",
 		HELLO_WS: "hello",
-		TAIL_WS: "tail",
 		INVOICE_WS: "invoice",
 		OPENCHANNEL_WS: "openchannel",
 		CLOSECHANNEL_WS: "closechannel",
+		LOG_WS: "log",
+		LOGFILTER_WS: "logfilter",
 	},
 	modals: {
 		NEW_ADDRESS: {
