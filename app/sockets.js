@@ -32,12 +32,13 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 		var index = -1;
 		var previndex = 0;
 		while ((index = logData.indexOf("\n", index + 1)) > -1) {
+			var logLine = logData.substr(previndex, (index - previndex));
 			if (logPatternRE) {
-				var logLine = logData.substr(previndex, (index - previndex));
-				var match = logLine.match(logPatternRE);
-				if (match) {
+				if (logLine.match(logPatternRE)) {
 					filteredLogData += logLine + "\n";
 				}
+			} else {
+				filteredLogData += logLine + "\n";
 			}
 			previndex = index + 1;
 		}
@@ -59,9 +60,13 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					for (var i = 0; i < clients.length; i++) {
 						if (!clients[i]._limituser && clients[i]._logFilter) {
 							try {
-								clients[i].emit("log", {
-									data: filterLogData(logData, clients[i]._logFilter)
-								});
+								var filteredLogData = filterLogData(
+									logData, clients[i]._logFilter);
+								if (filteredLogData.length > 0) {
+									clients[i].emit("log", {
+										data: filteredLogData
+									});
+								}
 							} catch (err) {
 								logger.warn("tail emit error", err);
 							}

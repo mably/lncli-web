@@ -68,6 +68,9 @@
 			_this.notify(config.notif.SUCCESS, helloMsg);
 		});
 
+		var resolvedPromise = typeof Promise == "undefined" ? null : Promise.resolve();
+		this.nextTick = resolvedPromise ? function (fn) { resolvedPromise.then(fn); } : function (fn) { setTimeout(fn); };
+
 		var logLines = 0;
 		socket.on(config.events.LOG_WS, function (message) {
 			console.log("Log message:", message);
@@ -101,7 +104,9 @@
 				}
 				logs = logs.substring(index + 1);
 				$tailObj.html(logs + message.data);
-				$tailObj.scrollTop($tailObj[0].scrollHeight);
+				_this.nextTick(function () {
+					$tailObj.scrollTop($tailObj[0].scrollHeight);
+				});
 			}
 		});
 
@@ -265,7 +270,9 @@
 				notifHtml = notifHtml.substring(index + 1);
 				var now = $filter("date")(new Date(), "yyyy-MM-dd HH:mm:ss Z");
 				$notifObj.html(notifHtml + now + " - " + type + " - " + message + "\n");
-				$notifObj.scrollTop($notifObj[0].scrollHeight);
+				_this.nextTick(function () {
+					$notifObj.scrollTop($notifObj[0].scrollHeight);
+				});
 			}
 		};
 
