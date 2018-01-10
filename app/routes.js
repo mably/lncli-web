@@ -33,6 +33,13 @@ module.exports = function (app, lightning, db, config) {
 				res.send(err);
 			} else {
 				logger.debug("GetInfo:", response);
+				if (!response.uris || response.uris.length === 0) {
+					if (config.lndAddress) {
+						response.uris = [
+							response.identity_pubkey + "@" + config.lndAddress
+						];
+					}
+				}
 				res.json(response);
 			}
 		});
