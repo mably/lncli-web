@@ -3,8 +3,8 @@
 	<dl class="dl-horizontal" style="overflow-wrap: break-word;">
 	  <dt>Node pubkey</dt>
 	  <dd>{{ info.identity_pubkey }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.identity_pubkey }}" ngclipboard-success="pubkeyCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></dd>
-	  <dt ng-if="info.address">Node URI</dt>
-	  <dd ng-if="info.address">{{ info.identity_pubkey | firstlast:6 }}@{{ info.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ node_uri }}" ngclipboard-success="nodeuriCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.nodeuriCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+	  <dt ng-if="node_uri">Node URI</dt>
+	  <dd ng-if="node_uri">{{ info.identity_pubkey | firstlast:6 }}@{{ node_address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ node_uri }}" ngclipboard-success="nodeuriCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.nodeuriCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 	  <button type="button" class="btn btn-default btn-xs" title="Show node URI QR Code" aria-label="Show node URI QR Code" ng-click="showQRCode(node_uri)"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></button></dd>	  
 	  <dt>Pending channels</dt>
 	  <dd>{{ info.num_pending_channels }}</dd>
