@@ -15,10 +15,12 @@
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.info = response.data;
-				if (response.data.address) {
-					$scope.node_uri = response.data.identity_pubkey + "@" + response.data.address;
+				if ($scope.info.uris && $scope.info.uris.length > 0) {
+					$scope.node_uri = $scope.info.uris[0];
+					$scope.node_address = $scope.node_uri.substr($scope.node_uri.indexOf("@") + 1);
 				} else {
 					delete $scope.node_uri;
+					delete $scope.node_address;
 				}
 			}, function (err) {
 				$scope.spinner--;
