@@ -27,21 +27,41 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 	var tailProcessTimeoutId = null;
 	var tailProcessLastDataReceived = null;
 
+	var filterLogData = function (logData, logPatternRE) {
+		var filteredLogData = "";
+		var index = -1;
+		var previndex = 0;
+		while ((index = logData.indexOf("\n", index + 1)) > -1) {
+			if (logPatternRE) {
+				var logLine = logData.substr(previndex, (index - previndex));
+				var match = logLine.match(logPatternRE);
+				if (match) {
+					filteredLogData += logLine + "\n";
+				}
+			}
+			previndex = index + 1;
+		}
+		return filteredLogData;
+	};
+
 	var registerGlobalListeners = function () {
 		if (!tailProcess) {
-			tailProcess = spawn("tail", ["-f", lndLogfile]);
+			tailProcess = spawn("tail", ["-F", "--sleep-interval=2", lndLogfile]);
 			tailProcess.on("error", function (err) {
 				logger.warn("Couldn't launch tail command!", err.message);
 				tailProcess = null;
 			});
 			tailProcess.stdout.on("data", function (data) {
 				try {
-					logger.debug("tail stdout", data.toString("utf-8"));
+					var logData = data.toString("utf-8");
+					logger.debug("tail stdout", logData);
 					tailProcessLastDataReceived = Date.now();
 					for (var i = 0; i < clients.length; i++) {
-						if (!clients[i]._limituser) {
+						if (!clients[i]._limituser && clients[i]._logFilter) {
 							try {
-								clients[i].emit("tail", { tail: data.toString("utf-8") });
+								clients[i].emit("log", {
+									data: filterLogData(logData, clients[i]._logFilter)
+								});
 							} catch (err) {
 								logger.warn("tail emit error", err);
 							}
@@ -145,6 +165,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 		registerLndInvoiceListener(socket);
 		registerCloseChannelListener(socket);
 		registerOpenChannelListener(socket);
+		registerLogFilterListener(socket);
 	};
 
 	// unregister the socket listeners
@@ -167,6 +188,22 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 	// unregister the lnd invoices listener
 	var unregisterLndInvoiceListener = function (socket) {
 		lnd.unregisterInvoiceListener(socket._invoiceListener);
+	};
+
+	// logfilter
+	var LOGFILTER_EVENT = "logfilter";
+	var registerLogFilterListener = function (socket) {
+		socket.on(LOGFILTER_EVENT, function (data, callback) {
+			logger.debug("logfilter", data);
+			var rid = data.rid; // request ID
+			if (socket._limituser) {
+				callback({ rid: rid, error: "forbidden" });
+			} else {
+				if (data.logFilterPattern) {
+					socket._logFilter = new RegExp(data.logFilterPattern, "g");
+				}
+			}
+		});
 	};
 
 	// openchannel
