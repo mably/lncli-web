@@ -7,7 +7,7 @@
 			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			{{ $ctrl.warning }}
 		</div>
-		<form>
+		<form ng-hide="$ctrl.values.hidesearch">
 			<div class="form-group">
 				<label for="getnodeinfo-pubkey">Node pub key</label>
 				<input type="text" class="form-control" id="getnodeinfo-pubkey" placeholder="node public key" ng-model="$ctrl.values.pubkey">
@@ -18,7 +18,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="$ctrl.getNodeInfo()">Get node info</button>
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.getNodeInfo()" ng-hide="$ctrl.values.hidesearch">Get node info</button>
 		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Close</button>
 	</div>
 <div>

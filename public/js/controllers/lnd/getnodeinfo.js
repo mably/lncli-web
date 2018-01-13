@@ -39,6 +39,10 @@
 			});
 		};
 
+		if ($ctrl.values.pubkey) {
+			$ctrl.getNodeInfo();
+		}
+
 		$ctrl.cancel = function () {
 			$uibModalInstance.dismiss("cancel");
 		};
