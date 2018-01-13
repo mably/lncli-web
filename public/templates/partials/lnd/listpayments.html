@@ -1,23 +1,34 @@
 <div>
 
 	<div class="table-responsive">
-		<table class="table table-striped" ng-if="payments.length > 0">
+		<table class="table table-striped" st-table="st_payments" st-safe-src="payments" ng-if="payments.length > 0">
 			<thead>
 				<tr>
-					<th>Created</th>
-					<th>Value</th>
-					<th>Fee</th>
-					<th>Payment hash</th>
+					<th st-sort="creation_date" st-sort-default="reverse">Created</th>
+					<th st-sort="value">Value</th>
+					<th st-sort="fee">Fee</th>
+					<th st-sort="payment_hash">Payment hash</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="payment in payments">
+				<tr ng-repeat="payment in st_payments">
 					<td>{{ payment.creation_date * 1000 | date:'medium' }}</td>
 					<td>{{ payment.value }}</td>
 					<td>{{ payment.fee }}</td>
 					<td>{{ payment.payment_hash }}</td>
 				</tr>
 			</tbody>
+			<tfoot ng-show="numberOfPayments > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="2" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 

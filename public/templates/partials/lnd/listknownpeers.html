@@ -1,18 +1,17 @@
 <div>
-
 	<div class="table-responsive">
-		<table class="table table-striped" ng-if="peers.length > 0">
+		<table class="table table-striped" st-table="stPeers" st-safe-src="peers" ng-if="numberOfPeers > 0">
 			<thead>
 				<tr>
-					<th>Pubkey</th>
-					<th>Address</th>
-					<th>Alias</th>
-					<th>Last seen</th>
+					<th st-sort="pub_key">Pubkey</th>
+					<th st-sort="address">Address</th>
+					<th st-sort="alias">Alias</th>
+					<th st-sort="lastseen" st-sort-default="reverse">Last seen</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="peer in peers">
+				<tr ng-repeat="peer in stPeers">
 					<td class="pubkey"><span title="{{ peer.pub_key }}">{{ peer.pub_key }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.alias }}</td>
@@ -26,10 +25,21 @@
 					</td>
 				</tr>
 			</tbody>
+			<tfoot ng-show="numberOfPeers > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="2" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 
-	<div ng-if="peers.length == 0">
+	<div ng-if="numberOfPeers == 0">
 		<span>No known peers</span>
 	</div>
 

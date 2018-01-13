@@ -390,6 +390,7 @@
 			if (!value && defaultValue) {
 				config[name] = defaultValue;
 				writeConfig(config);
+				value = defaultValue;
 			}
 			return value;
 		};

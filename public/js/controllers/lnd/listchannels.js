@@ -5,6 +5,10 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.numberOfChannels = 0;
+		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
+		$scope.cfg = {};
+		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTCHANNELS_PAGESIZE, $scope.pageSizes[0]);
 
 		$scope.refresh = function () {
 			lncli.getKnownPeers(true).then(function (knownPeers) {
@@ -16,8 +20,10 @@
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
 					$scope.channels = response.data.channels;
+					$scope.numberOfChannels = $scope.channels.length;
 				}, function (err) {
 					$scope.spinner--;
+					$scope.numberOfChannels = 0;
 					console.log("Error:", err);
 					lncli.alert(err.message || err.statusText);
 				});
@@ -138,6 +144,10 @@
 			console.log("Received event CHANNEL_REFRESH", event, args);
 			$scope.refresh();
 		});
+
+		$scope.pageSizeChanged = function () {
+			lncli.setConfigValue(config.keys.LISTCHANNELS_PAGESIZE, $scope.cfg.itemsPerPage);
+		};
 
 		$scope.refresh();
 

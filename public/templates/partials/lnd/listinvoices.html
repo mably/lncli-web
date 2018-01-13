@@ -1,19 +1,19 @@
 <div>
 
 	<div class="table-responsive">
-		<table class="table table-striped" ng-if="invoices.length > 0">
+		<table class="table table-striped" st-table="st_invoices" st-safe-src="invoices" ng-if="invoices.length > 0">
 			<thead>
 				<tr>
-					<th>Created</th>
-					<th>Memo</th>
-					<th>Value</th>
-					<th>Settled</th>
-					<th>Settle date</th>
-					<th>Payment request</th>
+					<th st-sort="creation_date" st-sort-default="reverse">Created</th>
+					<th st-sort="memo">Memo</th>
+					<th st-sort="value">Value</th>
+					<th st-sort="settled">Settled</th>
+					<th st-sort="settle_date">Settle date</th>
+					<th st-sort="payment_request">Payment request</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="invoice in invoices">
+				<tr ng-repeat="invoice in st_invoices">
 					<td>{{ invoice.creation_date * 1000 | date:'medium' }}</td>
 					<td>{{ invoice.memo }}</td>
 					<td>{{ invoice.value }}</td>
@@ -23,6 +23,17 @@
 					<button type="button" class="btn btn-default btn-xs" title="Show QR Code" aria-label="Show QR Code" ng-click="showQRCode(invoice.payment_request)"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></button></td>
 				</tr>
 			</tbody>
+			<tfoot ng-show="numberOfInvoices > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="2" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 

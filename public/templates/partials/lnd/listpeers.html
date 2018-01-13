@@ -1,23 +1,23 @@
 <div>
 
 	<div class="table-responsive">
-		<table class="table table-striped" ng-if="peers.length > 0">
+		<table class="table table-striped" st-table="stPeers" st-safe-src="peers" ng-if="numberOfPeers > 0">
 			<thead>
 				<tr>
-					<th>Id</th>
-					<th>Pubkey</th>
-					<th>Address</th>
-					<th>Alias</th>
-					<th>Sat<br/>sent</th>
-					<th>Sat<br/>recv</th>
-					<th>Bytes<br/>sent</th>
-					<th>Bytes<br/>recv</th>
-					<th>Ping<br/>time</th>
+					<th st-sort="peer_id" st-sort-default="true">Id</th>
+					<th st-sort="pub_key">Pubkey</th>
+					<th st-sort="address">Address</th>
+					<th st-sort="alias">Alias</th>
+					<th st-sort="sat_sent">Sat<br/>sent</th>
+					<th st-sort="sat_recv">Sat<br/>recv</th>
+					<th st-sort="bytes_sent">Bytes<br/>sent</th>
+					<th st-sort="bytes_recv">Bytes<br/>recv</th>
+					<th st-sort="ping_time">Ping<br/>time</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="peer in peers">
+				<tr ng-repeat="peer in stPeers">
 					<td>{{ peer.peer_id }}</td>
 					<td><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
@@ -35,10 +35,21 @@
 					</td>
 				</tr>
 			</tbody>
+			<tfoot ng-if="numberOfPeers > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="2" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 
-	<div ng-if="peers.length == 0">
+	<div ng-if="numberOfPeers == 0">
 		<span>No connected peers</span>
 	</div>
 

@@ -35,6 +35,7 @@
     "angular-local-storage": "^0.7.1",
     "angular-qrcode": "^7.2.0",
     "angular-sanitize": "^1.6.4",
+    "angular-smart-table": "^2.1.11",
     "angular-ui-bootstrap": "^2.5.0",
     "angular-uuid": "0.0.4",
     "angular-web-notification": "^1.2.22",

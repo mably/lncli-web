@@ -27,3 +27,24 @@ div.page-header > a[name] {
 	max-height: 30em;
 	overflow: scroll;
 }
+
+.st-sort-ascent:before {
+	content: '\25B2';
+}
+
+.st-sort-descent:before {
+	content: '\25BC';
+}
+
+ul.pagination, select.itemsperpage {
+	margin: 10px 0 0 0;
+}
+
+select.itemsperpage {
+	display: inline-block;
+	width: 5.2em;
+}
+
+.panel-body .table {
+	margin-bottom: 0;
+}

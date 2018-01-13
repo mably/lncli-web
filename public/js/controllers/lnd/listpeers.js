@@ -7,6 +7,10 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.numberOfPeers = 0;
+		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
+		$scope.cfg = {};
+		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPEERS_PAGESIZE, $scope.pageSizes[0]);
 
 		$scope.refresh = function () {
 			$scope.spinner++;
@@ -16,8 +20,10 @@
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.peers = response.data.peers;
+				$scope.numberOfPeers = $scope.peers.length;
 			}, function (err) {
 				$scope.spinner--;
+				$scope.numberOfPeers = 0;
 				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
@@ -129,6 +135,10 @@
 			console.log("Received event PEER_REFRESH", event, args);
 			$scope.refresh();
 		});
+
+		$scope.pageSizeChanged = function () {
+			lncli.setConfigValue(config.keys.LISTPEERS_PAGESIZE, $scope.cfg.itemsPerPage);
+		};
 
 		$scope.refresh();
 
