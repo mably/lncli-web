@@ -26,7 +26,7 @@
 					$scope.pending_closing_channels = response.data.pending_closing_channels;
 					$scope.numberOfClosingChannels = $scope.pending_closing_channels.length;
 					$scope.pending_force_closing_channels = response.data.pending_force_closing_channels;
-					$scope.numberOfForceClosingChannels = scope.pending_force_closing_channels.length;
+					$scope.numberOfForceClosingChannels = $scope.pending_force_closing_channels.length;
 				}, function (err) {
 					$scope.spinner--;
 					$scope.numberOfOpeningChannels = 0;
