@@ -48,3 +48,17 @@ select.itemsperpage {
 .panel-body .table {
 	margin-bottom: 0;
 }
+
+.forkmeongithub {
+	position: fixed;
+	top: 0;
+	left: 0;
+	border: 0;
+	z-index: 10000;
+}
+
+@media screen and (max-width: 767px) {
+	.forkmeongithub {
+		display: none;
+	}
+}
