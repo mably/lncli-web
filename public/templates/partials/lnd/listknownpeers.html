@@ -1,8 +1,9 @@
 <div>
 	<div class="table-responsive">
-		<table class="table table-striped" st-table="stPeers" st-safe-src="peers" ng-if="numberOfPeers > 0">
+		<table class="table table-striped" st-table="st_peers" st-safe-src="peers" ng-if="numberOfPeers > 0">
 			<thead>
 				<tr>
+					<th><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_peers)" /></th>
 					<th st-sort="pub_key">Pubkey</th>
 					<th st-sort="address">Address</th>
 					<th st-sort="alias">Alias</th>
@@ -11,14 +12,15 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="peer in stPeers">
+				<tr ng-repeat="peer in st_peers">
+					<td><input type="checkbox" ng-model="peer.selected" /></td>
 					<td class="pubkey"><span title="{{ peer.pub_key }}">{{ peer.pub_key }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.alias }}</td>
 					<td>{{ peer.lastseen | date:'shortDate' }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">
-							<button type="button" class="btn btn-default btn-xs" title="Connect" aria-label="Connect" ng-click="connect(peer)"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
+							<button type="button" class="btn btn-default btn-xs" title="Connect" aria-label="Connect" ng-click="connect(peer)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
 							<button type="button" class="btn btn-default btn-xs" title="Edit" aria-label="Edit" ng-click="edit(peer)"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></button>
 							<button type="button" class="btn btn-default btn-xs" title="Remove" aria-label="Remove" ng-click="remove(peer)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 						</div>
@@ -27,7 +29,7 @@
 			</tbody>
 			<tfoot ng-show="numberOfPeers > 10">
 				<tr>
-					<td colspan="3" class="text-left">
+					<td colspan="4" class="text-left">
 						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
 					</td>
 					<td colspan="2" class="text-right">
