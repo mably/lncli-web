@@ -18,8 +18,9 @@ require("angular-base64");
 const qrcode = require("qrcode-generator");
 window.qrcode = qrcode;
 require("angular-qrcode");
+require("angular-smart-table");
 
-const lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64", "monospaced.qrcode"]);
+const lnwebcli = angular.module("lnwebcli", ["ui.bootstrap", "LocalStorageModule", "ngclipboard", "ngSanitize", "ngToast", "angular-uuid", "angular-web-notification", "base64", "monospaced.qrcode", "smart-table"]);
 
 lnwebcli.value("jQuery", window.jQuery);
 lnwebcli.value("bootbox", bootbox);
@@ -44,9 +45,16 @@ lnwebcli.constant("config", {
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
+		LISTCHANNELS_PAGESIZE: "listchannelspagesize",
+		LISTINVOICES_PAGESIZE: "listinvoicespagesize",
+		LISTKNOWNPEERS_PAGESIZE: "listknownpeerspagesize",
+		LISTPAYMENTS_PAGESIZE: "listpaymentspagesize",
+		LISTPEERS_PAGESIZE: "listpeerspagesize",
+		LISTPENDINGCHANNELS_PAGESIZE: "listpendingchannelspagesize",
 		LOG_FILTER_PATTERN: "logfilterpattern",
 		LOG_NOTIFY_PATTERN: "lognotifypattern",
-		INVOICE_EXPIRY: "invoiceexpiry"
+		INVOICE_EXPIRY: "invoiceexpiry",
+		PAGE_SIZES: "pagesizes"
 	},
 	defaults: {
 		AUTO_REFRESH: 60000, // 1 minute
@@ -54,7 +62,8 @@ lnwebcli.constant("config", {
 		MAX_NOTIF_BUFFER: 500, // 500 lines of notifications max
 		LOG_FILTER_PATTERN: "\\[WRN\\]|\\[ERR\\]",
 		LOG_NOTIFY_PATTERN: "\\[ERR\\]",
-		INVOICE_EXPIRY: 3600
+		INVOICE_EXPIRY: 3600,
+		PAGE_SIZES: [10, 25, 50, 100]
 	},
 	notif: {
 		SUCCESS: "SUCCESS",

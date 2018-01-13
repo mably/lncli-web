@@ -5,6 +5,10 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.numberOfPayments = 0;
+		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
+		$scope.cfg = {};
+		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPAYMENTS_PAGESIZE, $scope.pageSizes[0]);
 
 		$scope.refresh = function () {
 			$scope.spinner++;
@@ -14,8 +18,10 @@
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.payments = response.data.payments;
+				$scope.numberOfPayments = $scope.payments.length;
 			}, function (err) {
 				$scope.spinner--;
+				$scope.numberOfPayments = 0;
 				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
@@ -57,6 +63,10 @@
 				console.log("Modal dismissed at: " + new Date());
 			});
 
+		};
+
+		$scope.pageSizeChanged = function () {
+			lncli.setConfigValue(config.keys.LISTPAYMENTS_PAGESIZE, $scope.cfg.itemsPerPage);
 		};
 
 		$scope.refresh();

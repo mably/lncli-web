@@ -6,25 +6,25 @@
 	</div>
 
 	<div class="table-responsive">
-		<table class="table table-striped" ng-if="channels.length > 0">
+		<table class="table table-striped" st-table="st_channels" st-safe-src="channels" ng-if="channels.length > 0">
 			<thead>
 				<tr>
-					<th>Channel Id</th>
-					<th>Peer alias</th>
-					<th>Remote pubkey</th>
-					<th>Channel point</th>
-					<th>Capacity</th>
-					<th>Local<br/>balance</th>
-					<th>Remote<br/>balance</th>
-					<th>Sat.<br/>sent</th>
-					<th>Sat.<br/>recv</th>
-					<th>Num.<br/>updates</th>
-					<th>Pend.<br/>HTLCs</th>
+					<th st-sort="chan_id">Channel Id</th>
+					<th st-sort="channelPeerAlias">Peer alias</th>
+					<th st-sort="remote_pubkey">Remote pubkey</th>
+					<th st-sort="channel_point">Channel point</th>
+					<th st-sort="capacity">Capacity</th>
+					<th st-sort="local_balance">Local<br/>balance</th>
+					<th st-sort="remote_balance">Remote<br/>balance</th>
+					<th st-sort="total_satoshis_sent">Sat.<br/>sent</th>
+					<th st-sort="total_satoshis_received">Sat.<br/>recv</th>
+					<th st-sort="num_updates">Num.<br/>updates</th>
+					<th st-sort="pending_htlcs.length">Pend.<br/>HTLCs</th>
 					<th></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="channel in channels">
+				<tr ng-repeat="channel in st_channels">
 					<td>{{ channel.chan_id }}</td>
 					<td>{{ channelPeerAlias(channel) }}</td>
 					<td><span title="{{ channel.remote_pubkey }}">{{ channel.remote_pubkey | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.remote_pubkey }}" ngclipboard-success="pubkeyCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
@@ -44,6 +44,17 @@
 					</td>
 				</tr>
 			</tbody>
+			<tfoot ng-show="numberOfChannels > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="2" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
 		</table>
 	</div>
 
