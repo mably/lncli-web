@@ -138,7 +138,8 @@
 			<div class="panel-heading clearfix">
 			  <span class="panel-title">Connected Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
-				<button type="button" class="btn btn-default btn-sm" title="Connect peer" aria-label="Connect peer" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
+				<button type="button" class="btn btn-default btn-sm" title="Connect to a new peer" aria-label="Connect to a new peer" ng-click="add()"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
+				<button type="button" class="btn btn-default btn-sm" title="Disconnect from some peers" aria-label="Disconnect from some peers" ng-click="disconnectBatch()"><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listpeers-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>
@@ -155,6 +156,8 @@
 			<div class="panel-heading clearfix">
 			  <span class="panel-title">Known Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
+				<button type="button" class="btn btn-default btn-sm" title="Connect to selected peers" aria-label="Connect to selected peers" ng-click="connectBatch()"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
+				<button type="button" class="btn btn-default btn-sm" title="Remove selected peers" aria-label="Remove selected peers" ng-click="removeBatch()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Import peers" aria-label="Import peers" ng-click="import()"><span class="glyphicon glyphicon-save" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listknownpeers-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
@@ -177,6 +180,7 @@
 			  <span class="panel-title">Active Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Open channel" aria-label="Open channel" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
+				<button type="button" class="btn btn-default btn-sm" title="Close selected channels" aria-label="Close selected channels" ng-click="closeBatch()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>

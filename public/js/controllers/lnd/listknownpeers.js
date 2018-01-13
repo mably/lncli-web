@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, bootbox, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
 
 		var $ctrl = this;
 
@@ -10,6 +10,8 @@
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.pageSizes[0]);
+		$scope.form = {};
+		$scope.form.checkbox = false;
 
 		$scope.refresh = function () {
 			$scope.spinner++;
@@ -19,6 +21,7 @@
 				$scope.data = JSON.stringify(response, null, "\t");
 				$scope.peers = response;
 				$scope.numberOfPeers = $scope.peers.length;
+				$scope.form.checkbox = false;
 			}, function (err) {
 				$scope.spinner--;
 				$scope.numberOfPeers = 0;
@@ -42,6 +45,22 @@
 				console.log(err);
 				lncli.alert(err.message || err.statusText);
 			});
+		};
+
+		$scope.connectBatch = function () {
+			if (hasSelected()) {
+				bootbox.confirm("Do you really want to connect to those selected peers?", function (result) {
+					if (result) {
+						$scope.peers.forEach(function (peer) {
+							if (peer.selected) {
+								$scope.connect(peer);
+							}
+						});
+					}
+				});
+			} else {
+				bootbox.alert("You need to select some peers first.");
+			}
 		};
 
 		$scope.edit = function (peer) {
@@ -74,18 +93,61 @@
 			});
 		};
 
-		$scope.remove = function (peer) {
-			bootbox.confirm("Do you really want to remove that peer?", function (result) {
-				if (result) {
-					lncli.removeKnownPeer(peer.pub_key).then(function (response) {
-						console.log("RemoveKnownPeer removed=", response);
+		var removePeer = function (peer) {
+			lncli.removeKnownPeer(peer.pub_key).then(function (response) {
+				console.log("RemoveKnownPeer removed=", response);
+				$scope.refresh();
+			}, function (err) {
+				console.log(err);
+				lncli.alert(err.message);
+			});
+		};
+
+		$scope.remove = function (peer, confirm = true) {
+			if (confirm) {
+				bootbox.confirm("Do you really want to remove that peer?", function (result) {
+					if (result) {
+						removePeer(peer);
+					}
+				});
+			} else {
+				removePeer(peer);
+			}
+		};
+
+		var removePeerBatch = function () {
+			$scope.peers.forEach(function (peer) {
+				var promises = [];
+				if (peer.selected) {
+					promises.push(lncli.removeKnownPeer(peer.pub_key));
+				}
+				if (promises.length > 0) {
+					$q.all(promises).then(function (response) {
+						console.log("RemoveKnownPeer batch removed=", response);
 						$scope.refresh();
 					}, function (err) {
 						console.log(err);
+						$scope.refresh();
 						lncli.alert(err.message);
 					});
 				}
 			});
+		};
+
+		$scope.removeBatch = function (confirm = true) {
+			if (hasSelected()) {
+				if (confirm) {
+					bootbox.confirm("Do you really want to remove those selected peers?", function (result) {
+						if (result) {
+							removePeerBatch();
+						}
+					});
+				} else {
+					removePeerBatch();
+				}
+			} else {
+				bootbox.alert("You need to select some peers first.");
+			}
 		};
 
 		$scope.import = function () {
@@ -137,6 +199,18 @@
 
 		$scope.pageSizeChanged = function () {
 			lncli.setConfigValue(config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.cfg.itemsPerPage);
+		};
+
+		var hasSelected = function () {
+			return $scope.peers.some(function (peer) {
+				return peer.selected;
+			});
+		};
+
+		$scope.selectAll = function (stPeers) {
+			stPeers.forEach(function (peer) {
+				peer.selected = $scope.form.checkbox;
+			});
 		};
 
 		$scope.refresh();

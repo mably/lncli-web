@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, bootbox, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
 
 		var $ctrl = this;
 
@@ -11,6 +11,8 @@
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPEERS_PAGESIZE, $scope.pageSizes[0]);
+		$scope.form = {};
+		$scope.form.checkbox = false;
 
 		$scope.refresh = function () {
 			$scope.spinner++;
@@ -21,6 +23,7 @@
 				$scope.data = JSON.stringify(response.data, null, "\t");
 				$scope.peers = response.data.peers;
 				$scope.numberOfPeers = $scope.peers.length;
+				$scope.form.checkbox = false;
 			}, function (err) {
 				$scope.spinner--;
 				$scope.numberOfPeers = 0;
@@ -89,6 +92,22 @@
 			});
 		};
 
+		$scope.disconnectBatch = function () {
+			if (hasSelected()) {
+				bootbox.confirm("Do you really want to disconnect from those selected peers?", function (result) {
+					if (result) {
+						$scope.peers.forEach(function (peer) {
+							if (peer.selected) {
+								$scope.disconnect(peer);
+							}
+						});
+					}
+				});
+			} else {
+				bootbox.alert("You need to select some peers first.");
+			}
+		};
+
 		$scope.pubkeyCopied = function (peer) {
 			peer.pubkeyCopied = true;
 			$timeout(function () {
@@ -131,8 +150,16 @@
 			});
 		};
 
-		$scope.selectAll = function () {
-			alert($scope.checkbox.selected);
+		var hasSelected = function () {
+			return $scope.peers.some(function (peer) {
+				return peer.selected;
+			});
+		};
+
+		$scope.selectAll = function (stPeers) {
+			stPeers.forEach(function (peer) {
+				peer.selected = $scope.form.checkbox;
+			});
 		};
 
 		$scope.showQRCode = function (data, size) {

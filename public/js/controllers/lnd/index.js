@@ -9,11 +9,11 @@ module.exports = function (lnwebcli) {
 	lnwebcli.controller("ModalQRCodeCtrl", ["$uibModalInstance", "qrcode", "lncli", require("./qrcode")]);
 	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "$uibModal", "lncli", "config", require("./getinfo")]);
 	lnwebcli.controller("GetNetworkInfoCtrl", ["$scope", "$timeout", "lncli", "config", require("./getnetworkinfo")]);
-	lnwebcli.controller("ListChannelsCtrl", ["$scope", "$timeout", "$window", "$uibModal", "jQuery", "lncli", "config", require("./listchannels")]);
+	lnwebcli.controller("ListChannelsCtrl", ["$scope", "$timeout", "$window", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listchannels")]);
 	lnwebcli.controller("ListInvoicesCtrl", ["$scope", "$timeout", "$uibModal", "jQuery", "lncli", "config", require("./listinvoices")]);
-	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "jQuery", "bootbox", "lncli", "config", require("./listknownpeers")]);
+	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listknownpeers")]);
 	lnwebcli.controller("ListPaymentsCtrl", ["$scope", "$timeout", "$uibModal", "jQuery", "lncli", "config", require("./listpayments")]);
-	lnwebcli.controller("ListPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "jQuery", "bootbox", "lncli", "config", require("./listpeers")]);
+	lnwebcli.controller("ListPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listpeers")]);
 	lnwebcli.controller("NavBarCtrl", ["$scope", "$timeout", "$uibModal", "jQuery", "lncli", "config", require("./navbar")]);
 	lnwebcli.controller("ModalGetNodeInfoCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", require("./getnodeinfo")]);
 	lnwebcli.controller("ModalImportKnownPeersCtrl", ["$uibModalInstance", "defaults", "lncli", require("./importknownpeers")]);
