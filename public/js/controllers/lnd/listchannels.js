@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config) {
+	module.exports = function ($rootScope, $scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -121,10 +121,28 @@
 					promises.push(lncli.closeChannel(channelPoint[0], channelPoint[1], false));
 				}
 				if (promises.length > 0) {
-					$q.all(promises).then(function (response) {
-						console.log("CloseChannels batch closed=", response);
-						$scope.refresh();
+					$scope.spinner++;
+					$q.all(promises).then(function (responses) {
+						$scope.spinner--;
+						console.log("CloseChannelBatch", responses);
+						$rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
+						responses.forEach(function (response) {
+							var requestId = response.rid;
+							// timer to not wait indefinitely for first websocket event
+							var waitTimer = $timeout(function () {
+								lncli.unregisterWSRequestListener(requestId);
+							}, 5000); // Wait 5 seconds maximmum for socket response
+							// We wait for first websocket event to check for errors
+							lncli.registerWSRequestListener(requestId, function (response) {
+								$timeout.cancel(waitTimer);
+								lncli.unregisterWSRequestListener(requestId);
+								if (response.evt === "error") {
+									lncli.alert(response.data.error);
+								}
+							});
+						});
 					}, function (err) {
+						$scope.spinner--;
 						console.log(err);
 						$scope.refresh();
 						lncli.alert(err.message);

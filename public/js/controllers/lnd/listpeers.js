@@ -92,17 +92,49 @@
 			});
 		};
 
-		$scope.disconnectBatch = function () {
-			if (hasSelected()) {
-				bootbox.confirm("Do you really want to disconnect from those selected peers?", function (result) {
-					if (result) {
-						$scope.peers.forEach(function (peer) {
-							if (peer.selected) {
-								$scope.disconnect(peer);
+		var disconnectPeerBatch = function () {
+			$scope.peers.forEach(function (peer) {
+				var promises = [];
+				if (peer.selected) {
+					promises.push(lncli.disconnectPeer(peer.pub_key));
+				}
+				if (promises.length > 0) {
+					$scope.spinner++;
+					$q.all(promises).then(function (responses) {
+						$scope.spinner--;
+						console.log("DisconnectPeerBatch", responses);
+						var okResponses = [];
+						responses.forEach(function (response) {
+							if (response.data.error) {
+								lncli.alert(response.data.error);
+							} else {
+								okResponses.push(response);
 							}
 						});
-					}
-				});
+						if (okResponses.length > 0) {
+							$rootScope.$broadcast(config.events.PEER_REFRESH, okResponses);
+						}
+					}, function (err) {
+						$scope.spinner--;
+						console.log(err);
+						$scope.refresh();
+						lncli.alert(err.message);
+					});
+				}
+			});
+		};
+
+		$scope.disconnectBatch = function (confirm = true) {
+			if (hasSelected()) {
+				if (confirm) {
+					bootbox.confirm("Do you really want to disconnect from those selected peers?", function (result) {
+						if (result) {
+							disconnectPeerBatch();
+						}
+					});
+				} else {
+					disconnectPeerBatch();
+				}
 			} else {
 				bootbox.alert("You need to select some peers first.");
 			}

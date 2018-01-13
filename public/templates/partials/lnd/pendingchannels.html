@@ -1,7 +1,7 @@
 <div>
 
 	<div class="table-responsive">
-		<table class="table table-striped" st-table="st_pending_closing_channels" st-safe-src="pending_closing_channels" ng-if="pending_open_channels.length > 0">
+		<table class="table table-striped" st-table="st_pending_open_channels" st-safe-src="pending_open_channels" ng-if="pending_open_channels.length > 0">
 			<thead>
 				<tr>
 					<th st-sort="channelPeerAlias">Peer alias</th>
@@ -9,15 +9,15 @@
 					<th st-sort="channel.channel_point">Channel Point</th>
 					<th st-sort="channel.capacity">Capacity</th>
 					<th st-sort="channel.local_balance">Local<br/>balance</th>
-					<th st-sort="channel.cremote_balance">Remote<br/>balance</th>
-					<th st-sort="channel.confirmation_height">Confirmation<br/>height</th>
+					<th st-sort="channel.remote_balance">Remote<br/>balance</th>
+					<th st-sort="confirmation_height">Confirmation<br/>height</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="pending_channel in st_pending_open_channels">
 					<td>{{ channelPeerAlias(pending_channel) }}</td>
 					<td><span title="{{ pending_channel.channel.remote_node_pub }}">{{ pending_channel.channel.remote_node_pub | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.remote_node_pub }}" ngclipboard-success="pubkeyCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
-					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:6:8 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openChannelPointInExplorer(pending_channel.channel)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ pending_channel.channel.capacity }}</td>
 					<td>{{ pending_channel.channel.local_balance }}</td>
@@ -49,19 +49,19 @@
 					<th st-sort="channel.capacity">Capacity</th>
 					<th st-sort="channel.local_balance">Local<br/>balance</th>
 					<th st-sort="channel.remote_balance">Remote<br/>balance</th>
-					<th st-sort="channel.closing_txid">Closing Tx Id</th>
+					<th st-sort="closing_txid">Closing Tx Id</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="pending_channel in st_pending_closing_channels">
 					<td>{{ channelPeerAlias(pending_channel) }}</td>
 					<td><span title="{{ pending_channel.channel.remote_node_pub }}">{{ pending_channel.channel.remote_node_pub | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.remote_node_pub }}" ngclipboard-success="pubkeyCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
-					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:6:8 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openChannelPointInExplorer(pending_channel.channel)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ pending_channel.channel.capacity }}</td>
 					<td>{{ pending_channel.channel.local_balance }}</td>
 					<td>{{ pending_channel.channel.remote_balance }}</td>
-					<td><span title="{{ pending_channel.closing_txid }}"><a ng-click="openClosingTxInExplorer(pending_channel.closing_txid)" title="Open transaction {{ pending_channel.closing_txid }} in explorer">{{ pending_channel.closing_txid | firstlast:6:8 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.closing_txid }}" ngclipboard-success="closingTxCopied(pending_channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.closingTxCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td><span title="{{ pending_channel.closing_txid }}"><a ng-click="openClosingTxInExplorer(pending_channel.closing_txid)" title="Open transaction {{ pending_channel.closing_txid }} in explorer">{{ pending_channel.closing_txid | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.closing_txid }}" ngclipboard-success="closingTxCopied(pending_channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.closingTxCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openClosingTxInExplorer(pending_channel.closing_txid)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 				</tr>
 			</tbody>
@@ -89,22 +89,22 @@
 					<th st-sort="channel.capacity">Capacity</th>
 					<th st-sort="channel.peer_id">Local<br/>balance</th>
 					<th st-sort="channel.remote_balance">Remote<br/>balance</th>
-					<th st-sort="channel.closing_txid">Closing Tx Id</th>
-					<th st-sort="channel.limbo_balance">Limbo<br/>balance</th>
-					<th st-sort="channel.maturity_height">Maturity<br/>height</th>
-					<th st-sort="channel.blocks_til_maturity">Blocks<br/>til maturity</th>
+					<th st-sort="closing_txid">Closing Tx Id</th>
+					<th st-sort="limbo_balance">Limbo<br/>balance</th>
+					<th st-sort="maturity_height">Maturity<br/>height</th>
+					<th st-sort="blocks_til_maturity">Blocks<br/>til maturity</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="pending_channel in st_pending_force_closing_channels">
 					<td>{{ channelPeerAlias(pending_channel) }}</td>
 					<td><span title="{{ pending_channel.channel.remote_node_pub }}">{{ pending_channel.channel.remote_node_pub | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.remote_node_pub }}" ngclipboard-success="pubkeyCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
-					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:6:8 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td><span title="{{ pending_channel.channel.channel_point }}"><a ng-click="openChannelPointInExplorer(pending_channel.channel)" title="Open transaction {{ pending_channel.channel.channel_point }} in explorer">{{ pending_channel.channel.channel_point | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.channel.channel_point }}" ngclipboard-success="chanpointCopied(pending_channel.channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.channel.chanpointCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openChannelPointInExplorer(pending_channel.channel)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ pending_channel.channel.capacity }}</td>
 					<td>{{ pending_channel.channel.local_balance }}</td>
 					<td>{{ pending_channel.channel.remote_balance }}</td>
-					<td><span title="{{ pending_channel.closing_txid }}"><a ng-click="openClosingTxInExplorer(pending_channel.closing_txid)" title="Open transaction {{ pending_channel.closing_txid }} in explorer">{{ pending_channel.closing_txid | firstlast:6:8 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.closing_txid }}" ngclipboard-success="closingTxCopied(pending_channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.closingTxCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td><span title="{{ pending_channel.closing_txid }}"><a ng-click="openClosingTxInExplorer(pending_channel.closing_txid)" title="Open transaction {{ pending_channel.closing_txid }} in explorer">{{ pending_channel.closing_txid | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.closing_txid }}" ngclipboard-success="closingTxCopied(pending_channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.closingTxCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" aria-label="Open in block explorer" ng-click="openClosingTxInExplorer(pending_channel.closing_txid)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 					<td>{{ pending_channel.limbo_balance }}</td>
 					<td>{{ pending_channel.maturity_height }}</td>

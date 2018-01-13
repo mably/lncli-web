@@ -9,7 +9,7 @@ module.exports = function (lnwebcli) {
 	lnwebcli.controller("ModalQRCodeCtrl", ["$uibModalInstance", "qrcode", "lncli", require("./qrcode")]);
 	lnwebcli.controller("GetInfoCtrl", ["$scope", "$timeout", "$window", "$uibModal", "lncli", "config", require("./getinfo")]);
 	lnwebcli.controller("GetNetworkInfoCtrl", ["$scope", "$timeout", "lncli", "config", require("./getnetworkinfo")]);
-	lnwebcli.controller("ListChannelsCtrl", ["$scope", "$timeout", "$window", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listchannels")]);
+	lnwebcli.controller("ListChannelsCtrl", ["$rootScope", "$scope", "$timeout", "$window", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listchannels")]);
 	lnwebcli.controller("ListInvoicesCtrl", ["$scope", "$timeout", "$uibModal", "jQuery", "lncli", "config", require("./listinvoices")]);
 	lnwebcli.controller("ListKnownPeersCtrl", ["$rootScope", "$scope", "$timeout", "$uibModal", "jQuery", "$q", "bootbox", "lncli", "config", require("./listknownpeers")]);
 	lnwebcli.controller("ListPaymentsCtrl", ["$scope", "$timeout", "$uibModal", "jQuery", "lncli", "config", require("./listpayments")]);

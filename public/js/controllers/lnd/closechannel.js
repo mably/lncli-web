@@ -24,7 +24,7 @@
 					listenersIds.splice(listenersIds.indexOf(requestId), 1);
 					lncli.unregisterWSRequestListener(requestId);
 					$uibModalInstance.close($ctrl.values);
-				}, 15000); // Wait 5 seconds maximmum for socket response
+				}, 5000); // Wait 5 seconds maximmum for socket response
 				listenersIds.push(requestId);
 				// We wait for first websocket event to check for errors
 				lncli.registerWSRequestListener(requestId, function (response) {
