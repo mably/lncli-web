@@ -37,11 +37,15 @@ If not started automatically, run the following command to build the application
 
 ### Requirements
 
-lnd should be started with wallet encryption and macaroons disabled.
+`lncli-web` is now fully compatible with macaroons and encrypted wallets.
+
+But if you want to start `lnd` with wallet encryption and macaroons disabled, just add those two parameters to the command line:
 
 ```
 lnd [...] --no-macaroons --noencryptwallet
 ```
+
+If you want to use macaroons, you need to copy the `lnd` `admin.macaroon` file to the `lncli-web` root directory (by default).  The default path to the `admin.macaroon` file can be modified in the `<lncliweb>/config/defaults.js` file.
 
 ### Generate lnd certificates compatible with NodeJS gRPC
 
