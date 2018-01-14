@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $uibModalInstance, channel, lncli) {
+	module.exports = function ($rootScope, $scope, $timeout, $uibModalInstance, channel, lncli) {
 
 		var $ctrl = this;
 
@@ -39,6 +39,7 @@
 							$ctrl.warning = response.data.error;
 							return false;
 						} else {
+							$rootScope.$broadcast(config.events.CHANNEL_REFRESH, response);
 							$timeout(function () {
 								$uibModalInstance.close($ctrl.values);
 							});

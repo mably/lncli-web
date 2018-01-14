@@ -114,41 +114,53 @@
 		};
 
 		var closeChannelBatch = function () {
+			var promises = [];
+			$scope.spinner++;
 			$scope.channels.forEach(function (channel) {
-				var promises = [];
 				if (channel.selected) {
+					var deferred = $q.defer();
+					promises.push(deferred.promise);
 					var channelPoint = channel.channel_point.split(":");
-					promises.push(lncli.closeChannel(channelPoint[0], channelPoint[1], false));
-				}
-				if (promises.length > 0) {
-					$scope.spinner++;
-					$q.all(promises).then(function (responses) {
-						$scope.spinner--;
-						console.log("CloseChannelBatch", responses);
-						$rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
-						responses.forEach(function (response) {
-							var requestId = response.rid;
-							// timer to not wait indefinitely for first websocket event
-							var waitTimer = $timeout(function () {
-								lncli.unregisterWSRequestListener(requestId);
-							}, 5000); // Wait 5 seconds maximmum for socket response
-							// We wait for first websocket event to check for errors
-							lncli.registerWSRequestListener(requestId, function (response) {
-								$timeout.cancel(waitTimer);
-								lncli.unregisterWSRequestListener(requestId);
-								if (response.evt === "error") {
-									lncli.alert(response.data.error);
-								}
-							});
+					lncli.closeChannel(channelPoint[0], channelPoint[1], false).then(function (response) {
+						console.log("CloseChannelBatch", response);
+						var requestId = response.rid;
+						// timer to not wait indefinitely for first websocket event
+						var waitTimer = $timeout(function () {
+							lncli.unregisterWSRequestListener(requestId);
+							deferred.resolve({ error: "no response" });
+						}, 5000); // Wait 5 seconds maximmum for socket response
+						// We wait for first websocket event to check for errors
+						lncli.registerWSRequestListener(requestId, function (response) {
+							$timeout.cancel(waitTimer);
+							lncli.unregisterWSRequestListener(requestId);
+							if (response.evt === "error") {
+								deferred.resolve({ error: response.data.error });
+								lncli.alert(response.data.error);
+							} else {
+								deferred.resolve(response);
+							}
 						});
 					}, function (err) {
-						$scope.spinner--;
 						console.log(err);
-						$scope.refresh();
+						deferred.resolve({ error: err.message });
 						lncli.alert(err.message);
 					});
 				}
 			});
+			if (promises.length > 0) {
+				$q.all(promises).then(function (responses) {
+					console.log("All promises - ok", responses);
+					$scope.spinner--;
+					$rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
+				}, function (err) {
+					console.log("All promises - error", err);
+					$scope.spinner--;
+					$rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
+				});
+			} else {
+				console.log("No promises");
+				$scope.spinner--;
+			}
 		};
 
 		$scope.closeBatch = function (confirm = true) {
