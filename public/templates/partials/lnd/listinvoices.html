@@ -19,7 +19,7 @@
 					<td>{{ invoice.value }}</td>
 					<td>{{ invoice.settled }}</td>
 					<td>{{ invoice.settle_date * 1000 | date:'medium' }}</td>
-					<td class="payreq">{{ invoice.payment_request }}  <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ invoice.payment_request }}" ngclipboard-success="payreqCopied(invoice);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="invoice.payreqCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<td class="payreq">{{ invoice.payment_request | firstlast:20:10 }}  <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ invoice.payment_request }}" ngclipboard-success="payreqCopied(invoice);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="invoice.payreqCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-xs" title="Show QR Code" aria-label="Show QR Code" ng-click="showQRCode(invoice.payment_request)"><span class="glyphicon glyphicon-qrcode" aria-hidden="true"></span></button></td>
 				</tr>
 			</tbody>

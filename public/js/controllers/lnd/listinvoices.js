@@ -109,6 +109,11 @@
 			lncli.setConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.cfg.itemsPerPage);
 		};
 
+		$scope.$on(config.events.INVOICE_REFRESH, function (event, args) {
+			console.log("Received event INVOICE_REFRESH", event, args);
+			$scope.refresh();
+		});
+
 		$scope.refresh();
 
 	};

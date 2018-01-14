@@ -58,6 +58,7 @@
 		socket.on(config.events.INVOICE_WS, function (data) {
 			console.log("Invoice received:", data);
 			_this.notify(config.notif.SUCCESS, "Payment received: " + data.value + ", " + data.memo);
+			$rootScope.$broadcast(config.events.INVOICE_REFRESH, data);
 		});
 
 		socket.on(config.events.HELLO_WS, function (data) {

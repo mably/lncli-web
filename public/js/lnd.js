@@ -71,6 +71,7 @@ lnwebcli.constant("config", {
 		WARNING: "WARNING"
 	},
 	events: {
+		INVOICE_REFRESH: "invoice.refresh",
 		PEER_REFRESH: "peer.refresh",
 		CHANNEL_REFRESH: "channel.refresh",
 		BALANCE_REFRESH: "balance.refresh",
