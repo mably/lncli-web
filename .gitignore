@@ -47,3 +47,4 @@ jspm_packages
 /public/dist
 /public/vendor
 /*.cert
+/admin.macaroon
