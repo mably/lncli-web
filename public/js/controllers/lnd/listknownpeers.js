@@ -38,7 +38,9 @@
 				if (response.data.error) {
 					lncli.alert(response.data.error);
 				} else {
-					$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+					$timeout(function () {
+						$rootScope.$broadcast(config.events.PEER_REFRESH, response);
+					}, 500);
 				}
 			}, function (err) {
 				$scope.spinner--;
