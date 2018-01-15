@@ -1,6 +1,7 @@
 @import url("../../node_modules/bootstrap/dist/css/bootstrap.css");
 @import url("../../node_modules/font-awesome/css/font-awesome.css");
 @import url("../../node_modules/ng-toast/dist/ngToast.css");
+@import url("../../node_modules/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css");
 
 html { overflow-y: scroll; }
 body { padding-top: 50px; }
@@ -61,4 +62,17 @@ select.itemsperpage {
 	.forkmeongithub {
 		display: none;
 	}
+}
+
+th > div.abc-checkbox, td > div.abc-checkbox {
+	padding-left: 0px;
+}
+th > div.abc-checkbox label, td > div.abc-checkbox label {
+	padding-left: 0px;
+}
+td > div.abc-checkbox label {
+	top: -3px;
+}
+th.abc-checkbox {
+	width: 32px;
 }

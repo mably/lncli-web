@@ -4,7 +4,7 @@
 		<table class="table table-striped" st-table="st_peers" st-safe-src="peers" ng-if="numberOfPeers > 0">
 			<thead>
 				<tr>
-					<th><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_peers)" /></th>
+					<th class="abc-checkbox"><div class="abc-checkbox"><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_peers)" class="form-check-input" id="peers_checkall_{{ $id }}" /><label class="form-check-label" for="peers_checkall_{{ $id }}"></label></div></th>
 					<th st-sort="peer_id" st-sort-default="true">Id</th>
 					<th st-sort="pub_key">Pubkey</th>
 					<th st-sort="address">Address</th>
@@ -19,7 +19,7 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="peer in st_peers">
-					<td><input type="checkbox" ng-model="peer.selected" /></td>
+					<td><div class="abc-checkbox"><input type="checkbox" ng-model="peer.selected" class="form-check-input" id="peers_check_{{ $id }}" /><label class="form-check-label" for="peers_check_{{ $id }}"></div></td>
 					<td>{{ peer.peer_id }}</td>
 					<td><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" title="Show node {{ peer.pub_key }} info" aria-label="Show node {{ peer.pub_key }} info" ng-click="showNodeInfo(peer)"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>

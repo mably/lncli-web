@@ -39,6 +39,7 @@
     "angular-ui-bootstrap": "^2.5.0",
     "angular-uuid": "0.0.4",
     "angular-web-notification": "^1.2.22",
+    "awesome-bootstrap-checkbox": "^1.0.0",
     "basic-auth": "^2.0.0",
     "bitcore-lib": "^0.15.0",
     "body-parser": "^1.16.0",
