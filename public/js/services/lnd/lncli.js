@@ -387,8 +387,10 @@
 
 		this.getConfigValue = function (name, defaultValue) {
 			var config = configCache ? configCache : fetchConfig();
-			var value = config[name];
-			if (!value && defaultValue) {
+			var value;
+			if (config.hasOwnProperty(name)) {
+				value = config[name];
+			} else if (defaultValue) {
 				config[name] = defaultValue;
 				writeConfig(config);
 				value = defaultValue;
