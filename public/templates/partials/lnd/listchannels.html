@@ -9,7 +9,7 @@
 		<table class="table table-striped" st-table="st_channels" st-safe-src="channels" ng-if="channels.length > 0">
 			<thead>
 				<tr>
-					<th><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_channels)" /></th>
+					<th class="abc-checkbox"><div class="abc-checkbox"><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_channels)" class="form-check-input" id="channels_checkall_{{ $id }}" /><label class="form-check-label" for="channels_checkall_{{ $id }}"></label></div></th>
 					<th st-sort="chan_id">Channel Id</th>
 					<th st-sort="channelPeerAlias">Peer alias</th>
 					<th st-sort="remote_pubkey">Remote pubkey</th>
@@ -26,7 +26,7 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="channel in st_channels">
-					<td><input type="checkbox" ng-model="channel.selected" /></td>
+					<td><div class="abc-checkbox"><input type="checkbox" ng-model="channel.selected" class="form-check-input" id="channels_check_{{ $id }}" /><label class="form-check-label" for="channels_check_{{ $id }}"></div></td>
 					<td>{{ channel.chan_id | firstlast:4 }}</td>
 					<td>{{ channelPeerAlias(channel) }}</td>
 					<td><span title="{{ channel.remote_pubkey }}">{{ channel.remote_pubkey | firstlast:4 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ channel.remote_pubkey }}" ngclipboard-success="pubkeyCopied(channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="channel.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
