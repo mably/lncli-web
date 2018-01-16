@@ -10,6 +10,7 @@
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.pageSizes[0]);
+		$scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTKNOWNPEERS_LISTVISIBLE, true);
 		$scope.form = {};
 		$scope.form.checkbox = false;
 
@@ -213,6 +214,11 @@
 			stPeers.forEach(function (peer) {
 				peer.selected = $scope.form.checkbox;
 			});
+		};
+
+		$scope.toggle = function () {
+			$scope.cfg.listVisible = !$scope.cfg.listVisible;
+			lncli.setConfigValue(config.keys.LISTKNOWNPEERS_LISTVISIBLE, $scope.cfg.listVisible);
 		};
 
 		$scope.refresh();

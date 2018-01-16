@@ -76,3 +76,7 @@ td > div.abc-checkbox label {
 th.abc-checkbox {
 	width: 32px;
 }
+
+span.panel-title {
+	line-height: 2em;
+}

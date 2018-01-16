@@ -9,6 +9,7 @@
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.pageSizes[0]);
+		$scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, true);
 
 		$scope.refresh = function () {
 			$scope.spinner++;
@@ -105,14 +106,19 @@
 
 		};
 
-		$scope.pageSizeChanged = function () {
-			lncli.setConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.cfg.itemsPerPage);
-		};
-
 		$scope.$on(config.events.INVOICE_REFRESH, function (event, args) {
 			console.log("Received event INVOICE_REFRESH", event, args);
 			$scope.refresh();
 		});
+
+		$scope.pageSizeChanged = function () {
+			lncli.setConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.cfg.itemsPerPage);
+		};
+
+		$scope.toggle = function () {
+			$scope.cfg.listVisible = !$scope.cfg.listVisible;
+			lncli.setConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, $scope.cfg.listVisible);
+		};
 
 		$scope.refresh();
 
