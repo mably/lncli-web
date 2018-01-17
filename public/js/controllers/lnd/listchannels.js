@@ -9,6 +9,7 @@
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTCHANNELS_PAGESIZE, $scope.pageSizes[0]);
+		$scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTCHANNELS_LISTVISIBLE, true);
 		$scope.form = {};
 		$scope.form.checkbox = false;
 
@@ -228,6 +229,11 @@
 			stChannels.forEach(function (channel) {
 				channel.selected = $scope.form.checkbox;
 			});
+		};
+
+		$scope.toggle = function () {
+			$scope.cfg.listVisible = !$scope.cfg.listVisible;
+			lncli.setConfigValue(config.keys.LISTCHANNELS_LISTVISIBLE, $scope.cfg.listVisible);
 		};
 
 		$scope.refresh();

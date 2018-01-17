@@ -136,7 +136,8 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Connected Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle peers list" on-toggle="toggle()"></toggle-panel>
+			  Connected Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Connect to a new peer" aria-label="Connect to a new peer" ng-click="add()"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Disconnect from some peers" aria-label="Disconnect from some peers" ng-click="disconnectBatch()"><span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span></button>
@@ -144,7 +145,7 @@
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listpeers-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body ng-hide" ng-show="cfg.listVisible">
 			  <list-peers peers="peers" />
 			</div>
 		  </div>
@@ -154,7 +155,8 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-default" ng-controller="ListKnownPeersCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Known Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle known peers list" on-toggle="toggle()"></toggle-panel>
+			  Known Peers <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Connect to selected peers" aria-label="Connect to selected peers" ng-click="connectBatch()"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Remove selected peers" aria-label="Remove selected peers" ng-click="removeBatch()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -163,7 +165,7 @@
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listknownpeers-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" ng-hide" ng-show="cfg.listVisible">
 			  <list-known-peers peers="peers" />
 			</div>
 		  </div>
@@ -177,7 +179,8 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Active Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle active channels list" on-toggle="toggle()"></toggle-panel>
+			  Active Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Open channel" aria-label="Open channel" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Close selected channels" aria-label="Close selected channels" ng-click="closeBatch()"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
@@ -185,7 +188,7 @@
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" ng-hide" ng-show="cfg.listVisible">
 			  <list-channels channels="channels" />
 			</div>
 		  </div>
@@ -195,13 +198,14 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-warning" ng-controller="PendingChannelsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Pending Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle pending channels list" on-toggle="toggle()"></toggle-panel>
+			  Pending Channels <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#pendingchannels-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 				</div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" ng-hide" ng-show="cfg.listVisible">
 			  <pending-channels channels="channels" />
 			</div>
 		  </div>
@@ -215,14 +219,15 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" ng-controller="ListPaymentsCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Payments <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle payments list" on-toggle="toggle()"></toggle-panel>
+			  Payments <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  <div class="btn-toolbar pull-right">
 				<button type="button" class="btn btn-default btn-sm" title="Send payment" aria-label="Send payment" title="Send payment" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 				<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listpayments-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 			  </div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" ng-hide" ng-show="cfg.listVisible">
 			  <list-payments payments="payments" />
 			</div>
 		  </div>
@@ -232,14 +237,15 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-info" ng-controller="ListInvoicesCtrl">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Invoices <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title"><toggle-panel visible="cfg.listVisible" aria-label="Toggle invoices list" on-toggle="toggle()"></toggle-panel>
+			  Invoices <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			  	<div class="btn-toolbar pull-right" pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Add invoice" aria-label="Add invoice" title="Add invoice" ng-click="add()"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#listinvoices-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
 				</div>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" ng-hide" ng-show="cfg.listVisible">
 			  <list-invoices invoices="invoices" />
 			</div>
 		  </div>
@@ -253,7 +259,8 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-info">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">Notifications <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">
+			  Notifications <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			</div>
 			<div class="panel-body">
 			  <pre id="notifications"></pre>
@@ -265,7 +272,8 @@
 		<div class="col-sm-12">
 		  <div class="panel panel-success" id="logpanel">
 			<div class="panel-heading clearfix">
-			  <span class="panel-title">lnd Log File <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
+			  <span class="panel-title">
+			  lnd Log File <i class="fa fa-spinner fa-spin" ng-show="spinner > 0"></i></span>
 			</div>
 			<div class="panel-body">
 			  <pre id="tail"></pre>
