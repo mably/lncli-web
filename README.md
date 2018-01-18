@@ -61,7 +61,7 @@ You need to generate your own lnd certificates using the following commands (tha
 cd ~/.lnd
 openssl ecparam -genkey -name prime256v1 -out tls.key
 openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
-openssl req -x509 -sha256 -days 3650 -key tls.key -in csr.csr -out tls.cert
+openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out tls.cert
 rm csr.csr
 ```
 
@@ -119,7 +119,7 @@ You need to have a `key.pem` (private key) file and a `cert.pem` (certificate) f
 On Linux you can create the above files using a self-signed certificate by executing the following command:
 
 ```
-openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 36500
 ```
 
 You might need to run this extra command to remove the password protection:
