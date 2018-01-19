@@ -73,7 +73,7 @@ module.exports = function (app, lightning, db, config) {
 		});
 	});
 
-	// get lnd node active channels list
+	// get lnd node opened channels list
 	app.get("/api/lnd/listchannels", function (req, res) {
 		lightning.listChannels({}, function (err, response) {
 			if (err) {

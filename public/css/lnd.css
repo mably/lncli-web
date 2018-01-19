@@ -76,7 +76,12 @@ td > div.abc-checkbox label {
 th.abc-checkbox {
 	width: 32px;
 }
-
+th.chan-active {
+	width: 1em;
+}
+th[st-sort] {
+	cursor: pointer;
+}
 span.panel-title {
 	line-height: 2em;
 }
