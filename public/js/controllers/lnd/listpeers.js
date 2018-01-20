@@ -7,6 +7,7 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.lastRefreshed = null;
 		$scope.numberOfPeers = 0;
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
@@ -16,21 +17,24 @@
 		$scope.form.checkbox = false;
 
 		$scope.refresh = function () {
-			$scope.spinner++;
-			$scope.updateNextRefresh();
-			lncli.listPeers().then(function (response) {
-				$scope.spinner--;
-				console.log(response);
-				$scope.data = JSON.stringify(response.data, null, "\t");
-				$scope.peers = processPeers(response.data.peers);
-				$scope.numberOfPeers = $scope.peers.length;
-				$scope.form.checkbox = false;
-			}, function (err) {
-				$scope.spinner--;
-				$scope.numberOfPeers = 0;
-				console.log("Error:", err);
-				lncli.alert(err.message || err.statusText);
-			});
+			if ($scope.cfg.listVisible) {
+				$scope.lastRefreshed = Date.now();
+				$scope.updateNextRefresh();
+				$scope.spinner++;
+				lncli.listPeers().then(function (response) {
+					$scope.spinner--;
+					console.log(response);
+					$scope.data = JSON.stringify(response.data, null, "\t");
+					$scope.peers = processPeers(response.data.peers);
+					$scope.numberOfPeers = $scope.peers.length;
+					$scope.form.checkbox = false;
+				}, function (err) {
+					$scope.spinner--;
+					$scope.numberOfPeers = 0;
+					console.log("Error:", err);
+					lncli.alert(err.message || err.statusText);
+				});
+			}
 		};
 
 		var processPeers = function (peers) {
@@ -44,10 +48,13 @@
 			return peers;
 		};
 
+		var getRefreshPeriod = function () {
+			return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
+		};
+
 		$scope.updateNextRefresh = function () {
 			$timeout.cancel($scope.nextRefresh);
-			$scope.nextRefresh = $timeout($scope.refresh,
-				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
+			$scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
 		};
 
 		$scope.add = function () {
@@ -246,6 +253,12 @@
 		$scope.toggle = function () {
 			$scope.cfg.listVisible = !$scope.cfg.listVisible;
 			lncli.setConfigValue(config.keys.LISTPEERS_LISTVISIBLE, $scope.cfg.listVisible);
+			if ($scope.cfg.listVisible) {
+				// Refresh if not been refreshed for more than refresh period
+				if (Date.now() - $scope.lastRefreshed > getRefreshPeriod()) {
+					$scope.refresh();
+				}
+			}
 		};
 
 		$scope.refresh();

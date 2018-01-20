@@ -5,6 +5,7 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.lastRefreshed = null;
 		$scope.numberOfChannels = 0;
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
@@ -14,24 +15,27 @@
 		$scope.form.checkbox = false;
 
 		$scope.refresh = function () {
-			lncli.getKnownPeers(true).then(function (knownPeers) {
-				$scope.knownPeers = knownPeers;
-				$scope.spinner++;
-				$scope.updateNextRefresh();
-				lncli.listChannels().then(function (response) {
-					$scope.spinner--;
-					console.log(response);
-					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.channels = processChannels(response.data.channels);
-					$scope.numberOfChannels = $scope.channels.length;
-					$scope.form.checkbox = false;
-				}, function (err) {
-					$scope.spinner--;
-					$scope.numberOfChannels = 0;
-					console.log("Error:", err);
-					lncli.alert(err.message || err.statusText);
+			if ($scope.cfg.listVisible) {
+				lncli.getKnownPeers(true).then(function (knownPeers) {
+					$scope.knownPeers = knownPeers;
+					$scope.lastRefreshed = Date.now();
+					$scope.updateNextRefresh();
+					$scope.spinner++;
+					lncli.listChannels().then(function (response) {
+						$scope.spinner--;
+						console.log(response);
+						$scope.data = JSON.stringify(response.data, null, "\t");
+						$scope.channels = processChannels(response.data.channels);
+						$scope.numberOfChannels = $scope.channels.length;
+						$scope.form.checkbox = false;
+					}, function (err) {
+						$scope.spinner--;
+						$scope.numberOfChannels = 0;
+						console.log("Error:", err);
+						lncli.alert(err.message || err.statusText);
+					});
 				});
-			});
+			}
 		};
 
 		var processChannels = function (channels) {
@@ -46,10 +50,13 @@
 			return channels;
 		};
 
+		var getRefreshPeriod = function () {
+			return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
+		};
+
 		$scope.updateNextRefresh = function () {
 			$timeout.cancel($scope.nextRefresh);
-			$scope.nextRefresh = $timeout($scope.refresh,
-				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
+			$scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
 		};
 
 		$scope.add = function () {
@@ -246,6 +253,12 @@
 		$scope.toggle = function () {
 			$scope.cfg.listVisible = !$scope.cfg.listVisible;
 			lncli.setConfigValue(config.keys.LISTCHANNELS_LISTVISIBLE, $scope.cfg.listVisible);
+			if ($scope.cfg.listVisible) {
+				// Refresh if not been refreshed for more than refresh period
+				if (Date.now() - $scope.lastRefreshed > getRefreshPeriod()) {
+					$scope.refresh();
+				}
+			}
 		};
 
 		$scope.refresh();

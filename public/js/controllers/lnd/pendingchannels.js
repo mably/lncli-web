@@ -5,6 +5,7 @@
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
+		$scope.lastRefreshed = null;
 		$scope.numberOfOpeningChannels = 0;
 		$scope.numberOfClosingChannels = 0;
 		$scope.numberOfForceClosingChannels = 0;
@@ -14,35 +15,38 @@
 		$scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTPENDINGCHANNELS_LISTVISIBLE, true);
 
 		$scope.refresh = function () {
-			lncli.getKnownPeers(true).then(function (knownPeers) {
-				$scope.knownPeers = knownPeers;
-				$scope.spinner++;
-				$scope.updateNextRefresh();
-				lncli.pendingChannels().then(function (response) {
-					$scope.spinner--;
-					console.log(response);
-					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.pending_open_channels =
-						processPendingOpenChannels(
-							response.data.pending_open_channels);
-					$scope.numberOfOpeningChannels = $scope.pending_open_channels.length;
-					$scope.pending_closing_channels =
-						processPendingClosingChannels(
-							response.data.pending_closing_channels);
-					$scope.numberOfClosingChannels = $scope.pending_closing_channels.length;
-					$scope.pending_force_closing_channels =
-						processPendingForceClosingChannels(
-							response.data.pending_force_closing_channels);
-					$scope.numberOfForceClosingChannels = $scope.pending_force_closing_channels.length;
-				}, function (err) {
-					$scope.spinner--;
-					$scope.numberOfOpeningChannels = 0;
-					$scope.numberOfClosingChannels = 0;
-					$scope.numberOfForceClosingChannels = 0;
-					console.log("Error:", err);
-					lncli.alert(err.message || err.statusText);
+			if ($scope.cfg.listVisible) {
+				lncli.getKnownPeers(true).then(function (knownPeers) {
+					$scope.knownPeers = knownPeers;
+					$scope.lastRefreshed = Date.now();
+					$scope.updateNextRefresh();
+					$scope.spinner++;
+					lncli.pendingChannels().then(function (response) {
+						$scope.spinner--;
+						console.log(response);
+						$scope.data = JSON.stringify(response.data, null, "\t");
+						$scope.pending_open_channels =
+							processPendingOpenChannels(
+								response.data.pending_open_channels);
+						$scope.numberOfOpeningChannels = $scope.pending_open_channels.length;
+						$scope.pending_closing_channels =
+							processPendingClosingChannels(
+								response.data.pending_closing_channels);
+						$scope.numberOfClosingChannels = $scope.pending_closing_channels.length;
+						$scope.pending_force_closing_channels =
+							processPendingForceClosingChannels(
+								response.data.pending_force_closing_channels);
+						$scope.numberOfForceClosingChannels = $scope.pending_force_closing_channels.length;
+					}, function (err) {
+						$scope.spinner--;
+						$scope.numberOfOpeningChannels = 0;
+						$scope.numberOfClosingChannels = 0;
+						$scope.numberOfForceClosingChannels = 0;
+						console.log("Error:", err);
+						lncli.alert(err.message || err.statusText);
+					});
 				});
-			});
+			}
 		};
 
 		var processPendingOpenChannels = function (channels) {
@@ -75,10 +79,13 @@
 			return channels;
 		};
 
+		var getRefreshPeriod = function () {
+			return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
+		};
+
 		$scope.updateNextRefresh = function () {
 			$timeout.cancel($scope.nextRefresh);
-			$scope.nextRefresh = $timeout($scope.refresh,
-				lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
+			$scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
 		};
 
 		$scope.channelPeerAlias = function (pendingChannel) {
@@ -132,6 +139,12 @@
 		$scope.toggle = function () {
 			$scope.cfg.listVisible = !$scope.cfg.listVisible;
 			lncli.setConfigValue(config.keys.LISTPENDINGCHANNELS_LISTVISIBLE, $scope.cfg.listVisible);
+			if ($scope.cfg.listVisible) {
+				// Refresh if not been refreshed for more than refresh period
+				if (Date.now() - $scope.lastRefreshed > getRefreshPeriod()) {
+					$scope.refresh();
+				}
+			}
 		};
 
 		$scope.refresh();
