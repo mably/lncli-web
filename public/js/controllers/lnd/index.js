@@ -3,7 +3,7 @@ module.exports = function (lnwebcli) {
 	lnwebcli.controller("ModalAddInvoiceCtrl", ["$scope", "$uibModalInstance", "defaults", "lncli", require("./addinvoice")]);
 	lnwebcli.controller("ModalAddPeerCtrl", ["$rootScope", "$scope", "$uibModalInstance", "defaults", "lncli", "config", require("./addpeer")]);
 	lnwebcli.controller("ChannelBalanceCtrl", ["$scope", "$timeout", "lncli", "config", require("./channelbalance")]);
-	lnwebcli.controller("ModalCloseChannelCtrl", ["$scope", "$timeout", "$uibModalInstance", "channel", "lncli", require("./closechannel")]);
+	lnwebcli.controller("ModalCloseChannelCtrl", ["$rootScope", "$scope", "$timeout", "$uibModalInstance", "channel", "lncli", require("./closechannel")]);
 	lnwebcli.controller("ModalEditKnownPeerCtrl", ["$rootScope", "$uibModalInstance", "knownpeer", "lncli", "config", require("./editknownpeer")]);
 	lnwebcli.controller("ModalEditSettingsCtrl", ["$uibModalInstance", "settings", "lncli", require("./editsettings")]);
 	lnwebcli.controller("ModalQRCodeCtrl", ["$uibModalInstance", "qrcode", "lncli", require("./qrcode")]);

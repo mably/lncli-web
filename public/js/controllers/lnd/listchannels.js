@@ -22,7 +22,7 @@
 					$scope.spinner--;
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.channels = response.data.channels;
+					$scope.channels = processChannels(response.data.channels);
 					$scope.numberOfChannels = $scope.channels.length;
 					$scope.form.checkbox = false;
 				}, function (err) {
@@ -32,6 +32,18 @@
 					lncli.alert(err.message || err.statusText);
 				});
 			});
+		};
+
+		var processChannels = function (channels) {
+			channels.forEach(function (channel) {
+				channel.capacity = parseInt(channel.capacity);
+				channel.local_balance = parseInt(channel.local_balance);
+				channel.remote_balance = parseInt(channel.remote_balance);
+				channel.total_satoshis_sent = parseInt(channel.total_satoshis_sent);
+				channel.total_satoshis_received = parseInt(channel.total_satoshis_received);
+				channel.num_updates = parseInt(channel.num_updates);
+			});
+			return channels;
 		};
 
 		$scope.updateNextRefresh = function () {

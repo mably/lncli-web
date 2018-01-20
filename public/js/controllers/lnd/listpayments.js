@@ -18,7 +18,7 @@
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
-				$scope.payments = response.data.payments;
+				$scope.payments = processPayments(response.data.payments);
 				$scope.numberOfPayments = $scope.payments.length;
 			}, function (err) {
 				$scope.spinner--;
@@ -26,6 +26,14 @@
 				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
+		};
+
+		var processPayments = function (payments) {
+			payments.forEach(function (payment) {
+				payment.value = parseInt(payment.value);
+				payment.fee = parseInt(payment.fee);
+			});
+			return payments;
 		};
 
 		$scope.updateNextRefresh = function () {

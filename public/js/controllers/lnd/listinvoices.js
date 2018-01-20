@@ -18,7 +18,7 @@
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
-				$scope.invoices = response.data.invoices;
+				$scope.invoices = processInvoices(response.data.invoices);
 				$scope.numberOfInvoices = $scope.invoices.length;
 			}, function (err) {
 				$scope.spinner--;
@@ -26,6 +26,13 @@
 				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
+		};
+
+		var processInvoices = function (invoices) {
+			invoices.forEach(function (invoice) {
+				invoice.value = parseInt(invoice.value);
+			});
+			return invoices;
 		};
 
 		$scope.updateNextRefresh = function () {

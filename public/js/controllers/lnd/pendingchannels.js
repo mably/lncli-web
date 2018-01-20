@@ -22,11 +22,17 @@
 					$scope.spinner--;
 					console.log(response);
 					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.pending_open_channels = response.data.pending_open_channels;
+					$scope.pending_open_channels =
+						processPendingOpenChannels(
+							response.data.pending_open_channels);
 					$scope.numberOfOpeningChannels = $scope.pending_open_channels.length;
-					$scope.pending_closing_channels = response.data.pending_closing_channels;
+					$scope.pending_closing_channels =
+						processPendingClosingChannels(
+							response.data.pending_closing_channels);
 					$scope.numberOfClosingChannels = $scope.pending_closing_channels.length;
-					$scope.pending_force_closing_channels = response.data.pending_force_closing_channels;
+					$scope.pending_force_closing_channels =
+						processPendingForceClosingChannels(
+							response.data.pending_force_closing_channels);
 					$scope.numberOfForceClosingChannels = $scope.pending_force_closing_channels.length;
 				}, function (err) {
 					$scope.spinner--;
@@ -37,6 +43,36 @@
 					lncli.alert(err.message || err.statusText);
 				});
 			});
+		};
+
+		var processPendingOpenChannels = function (channels) {
+			channels.forEach(function (pendingChannel) {
+				pendingChannel.channel.capacity = parseInt(pendingChannel.channel.capacity);
+				pendingChannel.channel.local_balance = parseInt(pendingChannel.channel.local_balance);
+				pendingChannel.channel.remote_balance = parseInt(pendingChannel.channel.remote_balance);
+			});
+			return channels;
+		};
+
+		var processPendingClosingChannels = function (channels) {
+			channels.forEach(function (pendingChannel) {
+				pendingChannel.channel.capacity = parseInt(pendingChannel.channel.capacity);
+				pendingChannel.channel.local_balance = parseInt(pendingChannel.channel.local_balance);
+				pendingChannel.channel.remote_balance = parseInt(pendingChannel.channel.remote_balance);
+			});
+			return channels;
+		};
+
+		var processPendingForceClosingChannels = function (channels) {
+			channels.forEach(function (pendingChannel) {
+				pendingChannel.channel.capacity = parseInt(pendingChannel.channel.capacity);
+				pendingChannel.channel.local_balance = parseInt(pendingChannel.channel.local_balance);
+				pendingChannel.channel.remote_balance = parseInt(pendingChannel.channel.remote_balance);
+				pendingChannel.limbo_balance = parseInt(pendingChannel.limbo_balance);
+				pendingChannel.maturity_height = parseInt(pendingChannel.maturity_height);
+				pendingChannel.blocks_til_maturity = parseInt(pendingChannel.blocks_til_maturity);
+			});
+			return channels;
 		};
 
 		$scope.updateNextRefresh = function () {

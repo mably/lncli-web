@@ -22,7 +22,7 @@
 				$scope.spinner--;
 				console.log(response);
 				$scope.data = JSON.stringify(response.data, null, "\t");
-				$scope.peers = response.data.peers;
+				$scope.peers = processPeers(response.data.peers);
 				$scope.numberOfPeers = $scope.peers.length;
 				$scope.form.checkbox = false;
 			}, function (err) {
@@ -31,6 +31,17 @@
 				console.log("Error:", err);
 				lncli.alert(err.message || err.statusText);
 			});
+		};
+
+		var processPeers = function (peers) {
+			peers.forEach(function (peer) {
+				peer.sat_sent = parseInt(peer.sat_sent);
+				peer.sat_recv = parseInt(peer.sat_recv);
+				peer.bytes_sent = parseInt(peer.bytes_sent);
+				peer.bytes_recv = parseInt(peer.bytes_recv);
+				peer.ping_time = parseInt(peer.ping_time);
+			});
+			return peers;
 		};
 
 		$scope.updateNextRefresh = function () {
