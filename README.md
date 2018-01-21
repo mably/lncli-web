@@ -56,7 +56,7 @@ Lnd uses the `P-521` curve for its certificates but NodeJS gRPC module is only c
 You need to generate your own lnd certificates using the following commands (thanks to Alex Akselrod for helping me on this):
 
 ```
-# Enter the Lnd home directory, located by default at ~/.lnd on Linux or 
+# Enter the Lnd home directory, located by default at ~/.lnd on Linux or
 # /Users/[username]/Library/Application Support/Lnd/ on Mac OSX
 cd ~/.lnd
 openssl ecparam -genkey -name prime256v1 -out tls.key
@@ -107,6 +107,26 @@ Open your browser at the following address: [http://localhost:8280](http://local
 Enjoy!
 
 
+## Docker
+
+#### Build the container
+(from inside the lncli-web folder)
+```
+docker build . -t lncli-web
+```
+
+#### Run Docker container
+Mount your .lnd directory to the container:
+
+```
+docker run -v /path/to/.lnd/:/config lncli-web
+```
+
+The container will generate certs if necessary.
+
+Any commandline option (see below) can be overridden by setting an appropriate environment variable.
+
+Example: set `SET_LNDHOST` for `--lndhost`, or set `SET_LE_EMAIL` for `--le-email`
 
 ## Screenshots
 
