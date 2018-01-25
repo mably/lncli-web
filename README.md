@@ -58,6 +58,7 @@ You need to generate your own lnd certificates using the following commands (tha
 ```
 # Enter the Lnd home directory, located by default at ~/.lnd on Linux or 
 # /Users/[username]/Library/Application Support/Lnd/ on Mac OSX
+# $APPDATA/Local/Lnd on Windows. Also change '/CN=localhost/O=lnd' to '//CN=localhost\O=lnd' if you are using Git Bash.
 cd ~/.lnd
 openssl ecparam -genkey -name prime256v1 -out tls.key
 openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
