@@ -37,7 +37,7 @@ else
     cd /config
   fi
   openssl ecparam -genkey -name prime256v1 -out tls.key
-  openssl req -new -sha256 -key tls.key -out csr.csr -subj '/'
+  openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=*/O=lnd/'
   openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out lnd.cert
   rm csr.csr
 fi
