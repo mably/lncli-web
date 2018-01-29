@@ -37,7 +37,7 @@ else
     cd /config
   fi
   openssl ecparam -genkey -name prime256v1 -out tls.key
-  openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
+  openssl req -new -sha256 -key tls.key -out csr.csr -subj '/'
   openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out lnd.cert
   rm csr.csr
 fi
@@ -50,10 +50,10 @@ for override in ${overrides[@]}; do
       # remove "SET_"
       opt=${override#SET_}
       ## ${variable,,} makes the variable lowercase
-      opts+=" --${opt,,} \"${!override}\""
+      opts+=" --${opt,,} ${!override}"
     else
       # since le-email has a dash, manually specify it
-      opts+=" --le-email \"${!override}\""
+      opts+=" --le-email ${!override}"
     fi
   fi
 done
