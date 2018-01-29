@@ -12,6 +12,10 @@
 				<label for="sendpayment-payreq">Payment request</label>
 				<input type="text" class="form-control" id="sendpayment-payreq" placeholder="payment request" ng-model="$ctrl.values.payreq" ng-change="$ctrl.decode()">
 			</div>
+			<div class="form-group">
+				<label for="sendpayment-amount">Amount (optional)</label>
+				<input type="numeric" class="form-control" id="sendpayment-amount" placeholder="amount (optional)" ng-model="$ctrl.values.amount">
+			</div>
 		</form>
 		<div ng-show="$ctrl.decodedPayment">
 			<dl class="dl-horizontal" style="overflow-wrap: break-word;">
