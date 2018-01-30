@@ -19,6 +19,8 @@
 		</form>
 		<div ng-show="$ctrl.decodedPayment">
 			<dl class="dl-horizontal" style="overflow-wrap: break-word;">
+			  <dt ng-show="$ctrl.decodedPayment.description">Description</dt>
+			  <dd ng-show="$ctrl.decodedPayment.description">{{ $ctrl.decodedPayment.description }}</dd>
 			  <dt>Destination</dt>
 			  <dd>{{ $ctrl.decodedPayment.destination }}</dd>
 			  <dt>Payment hash</dt>
