@@ -116,7 +116,7 @@ Enjoy!
 docker build . -t lncli-web
 ```
 
-#### Run Docker container
+#### Run in a Docker container
 Mount your .lnd directory to the container:
 
 ```
@@ -128,6 +128,15 @@ The container will generate certs if necessary.
 Any commandline option (see below) can be overridden by setting an appropriate environment variable.
 
 Example: set `SET_LNDHOST` for `--lndhost`, or set `SET_LE_EMAIL` for `--le-email`
+
+#### Running in a Docker container connecting to a remote LND instance
+Copy the admin.macaroon, tls.key and tls.cert to your machine, for example in /tmp/config.
+
+Then, use `docker run` accordingly:
+```
+docker run -it -e SET_LNDHOST=[IP of lightning host]:10009 -v /tmp/config:/config --net=host lncli-web
+```
+Then just browse to http://127.0.0.1:8280. Note: this still requires you to re-generate your certificates as per above.
 
 ## Screenshots
 

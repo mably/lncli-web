@@ -24,24 +24,6 @@ for file in ${files[@]}; do
   fi
 done
 
-if [[ $lndcert = 1 ]]; then
-  echo "Existing cert was attached, skipping generation"
-else
-  # assumes config wasn't updated, so by default looks in /lncli-web/
-  # if this ever changes, -out [cert] has to change too
-  echo "Generating a new certificate"
-  # if /config is attached, generate it there so it won't get regenerated in the future
-  if [ -d "/config" ]; then
-    echo "/config attached, generating cert and pointing config there"
-    sed -i 's/lndCertPath: \(.*\)/lndCertPath: "\/config\/tls.cert",/g' $config
-    cd /config
-  fi
-  openssl ecparam -genkey -name prime256v1 -out tls.key
-  openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=*/O=lnd/'
-  openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out tls.cert
-  rm csr.csr
-fi
-
 opts=$defaultopts
 for override in ${overrides[@]}; do
   # if this override is set, add it to the options to be passed
@@ -57,16 +39,6 @@ for override in ${overrides[@]}; do
     fi
   fi
 done
-
-
-## disabled for now
-#if [[ $macaroon -ne 1 ]]; then
-#  if [[ -z $SET_USER ]]; then
-    # require at least some auth I mean come on
-#    echo "MACAROON NOT ATTACHED AND BASIC AUTH NOT SPECIFIED, exiting..."
-#    exit 1
-#  fi
-#fi
 
 cd /lncli-web
 echo "launching server with $opts"
