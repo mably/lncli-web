@@ -1,5 +1,5 @@
 #!/bin/bash
-files=("admin.macaroon" "lnd.cert")
+files=("admin.macaroon" "tls.cert")
 overrides=("SET_SERVERPORT" "SET_SERVERHOST" "SET_LNDHOST" "SET_USETLS" "SET_USER" "SET_PWD"  \
            "SET_LIMITUSER" "SET_LIMITPWD" "SET_LOGFILE" "SET_LOGLEVEL" "SET_LNDLOGFILE" "SET_LE_EMAIL")
 defaultopts=""
@@ -16,9 +16,9 @@ for file in ${files[@]}; do
       macaroon=1
     fi
 
-    if [[ "$file" = "lnd.cert" ]]; then
-      echo "lnd.cert attached, pointing config there"
-      sed -i 's/lndCertPath: \(.*\)/lndCertPath: "\/config\/lnd.cert",/g' $config
+    if [[ "$file" = "tls.cert" ]]; then
+      echo "tls.cert attached, pointing config there"
+      sed -i 's/lndCertPath: \(.*\)/lndCertPath: "\/config\/tls.cert",/g' $config
       lndcert=1
     fi
   fi
@@ -33,12 +33,12 @@ else
   # if /config is attached, generate it there so it won't get regenerated in the future
   if [ -d "/config" ]; then
     echo "/config attached, generating cert and pointing config there"
-    sed -i 's/lndCertPath: \(.*\)/lndCertPath: "\/config\/lnd.cert",/g' $config
+    sed -i 's/lndCertPath: \(.*\)/lndCertPath: "\/config\/tls.cert",/g' $config
     cd /config
   fi
   openssl ecparam -genkey -name prime256v1 -out tls.key
   openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=*/O=lnd/'
-  openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out lnd.cert
+  openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out tls.cert
   rm csr.csr
 fi
 
