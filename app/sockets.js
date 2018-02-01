@@ -268,7 +268,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					var revFundingTxIdBuffer = BufferUtil.reverse(fundingTxIdBuffer);
 					var closeChannelRequest = {
 						channel_point: {
-							funding_txid: revFundingTxIdBuffer,
+							funding_txid_bytes: revFundingTxIdBuffer,
 							output_index: Number(data.output_index)
 						},
 						force: !!data.force

@@ -56,8 +56,9 @@ Lnd uses the `P-521` curve for its certificates but NodeJS gRPC module is only c
 You need to generate your own lnd certificates using the following commands (thanks to Alex Akselrod for helping me on this):
 
 ```
-# Enter the Lnd home directory, located by default at ~/.lnd on Linux or 
+# Enter the Lnd home directory, located by default at ~/.lnd on Linux or
 # /Users/[username]/Library/Application Support/Lnd/ on Mac OSX
+# $APPDATA/Local/Lnd on Windows. Also change '/CN=localhost/O=lnd' to '//CN=localhost\O=lnd' if you are using Git Bash.
 cd ~/.lnd
 openssl ecparam -genkey -name prime256v1 -out tls.key
 openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd'
@@ -107,6 +108,35 @@ Open your browser at the following address: [http://localhost:8280](http://local
 Enjoy!
 
 
+## Docker
+
+#### Build the container
+(from inside the lncli-web folder)
+```
+docker build . -t lncli-web
+```
+
+#### Run in a Docker container
+Mount your .lnd directory to the container:
+
+```
+docker run -v /path/to/.lnd/:/config lncli-web
+```
+
+The container will generate certs if necessary.
+
+Any commandline option (see below) can be overridden by setting an appropriate environment variable.
+
+Example: set `SET_LNDHOST` for `--lndhost`, or set `SET_LE_EMAIL` for `--le-email`
+
+#### Running in a Docker container connecting to a remote LND instance
+Copy the admin.macaroon, tls.key and tls.cert to your machine, for example in /tmp/config.
+
+Then, use `docker run` accordingly:
+```
+docker run -it -e SET_LNDHOST=[IP of lightning host]:10009 -v /tmp/config:/config --net=host lncli-web
+```
+Then just browse to http://127.0.0.1:8280. Note: this still requires you to re-generate your certificates as per above.
 
 ## Screenshots
 
