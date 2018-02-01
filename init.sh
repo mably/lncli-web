@@ -5,8 +5,6 @@ overrides=("SET_SERVERPORT" "SET_SERVERHOST" "SET_LNDHOST" "SET_USETLS" "SET_USE
 defaultopts=""
 config="/lncli-web/config/defaults.js"
 
-cd /lncli-web
-
 # if /config has any files in the array above, point config.js there.
 for file in ${files[@]}; do
   if [[ -f "/config/$file" ]]; then
