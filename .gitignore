@@ -52,3 +52,4 @@ jspm_packages
 # key
 tls.key
 lnd.cert
+tls.cert
