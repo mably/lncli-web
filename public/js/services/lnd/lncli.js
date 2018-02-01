@@ -611,8 +611,9 @@
 			return $http.post(serverUrl(API.SENDCOINS), data);
 		};
 
-		this.sendPayment = function (payreq) {
+		this.sendPayment = function (payreq, amount = null) {
 			var data = { payreq: payreq };
+			if (amount) { data.amt = amount; }
 			return $http.post(serverUrl(API.SENDPAYMENT), data);
 		};
 

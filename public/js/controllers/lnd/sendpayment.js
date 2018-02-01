@@ -12,7 +12,7 @@
 
 		$ctrl.ok = function () {
 			$ctrl.spinner++;
-			lncli.sendPayment($ctrl.values.payreq).then(function (response) {
+			lncli.sendPayment($ctrl.values.payreq, $ctrl.values.amount).then(function (response) {
 				$ctrl.spinner--;
 				console.log("SendPayment", response);
 				if (response.data.error) {

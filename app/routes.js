@@ -228,6 +228,9 @@ module.exports = function (app, lightning, db, config) {
 			return res.sendStatus(403); // forbidden
 		} else {
 			var paymentRequest = { payment_request: req.body.payreq };
+			if (req.body.amt) {
+				paymentRequest.amt = req.body.amt;
+			}
 			logger.debug("Sending payment", paymentRequest);
 			lightning.sendPaymentSync(paymentRequest, function (err, response) {
 				if (err) {
