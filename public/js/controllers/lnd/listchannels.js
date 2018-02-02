@@ -225,7 +225,7 @@
 		$scope.openChannelPointInExplorer = function (channel) {
 			if (channel.channel_point) {
 				var txId = channel.channel_point.split(":")[0];
-				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
+				$window.open(lncli.getTransactionURL(txId), "_blank");
 			}
 		};
 

@@ -11,9 +11,9 @@
 	  <dt>Active channels</dt>
 	  <dd>{{ info.num_active_channels }}</dd>
 	  <dt>Block height</dt>
-	  <dd><a ng-click="openBlockInExplorerByHeight(info.block_height)" title="Open block of height {{ info.block_height }} in explorer">{{ info.block_height }}</a> <button type="button" class="btn btn-default btn-xs" title="Open in block explorer" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHeight(info.block_height)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
+	  <dd><a ng-click="openBlockInExplorerByHeight(info.block_height)" title="View block of height {{ info.block_height }} in explorer">{{ info.block_height }}</a> <button type="button" class="btn btn-default btn-xs" title="View in block explorer" aria-label="View in block explorer" ng-click="openBlockInExplorerByHeight(info.block_height)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Block hash</dt>
-	  <dd><a ng-click="openBlockInExplorerByHash(info.block_hash)" title="Open block {{ info.block_hash }} in explorer">{{ info.block_hash }}</a> <button type="button" class="btn btn-default btn-xs" title="Open in block explorer" aria-label="Open in block explorer" ng-click="openBlockInExplorerByHash(info.block_hash)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
+	  <dd><a ng-click="openBlockInExplorerByHash(info.block_hash)" title="View block {{ info.block_hash }} in explorer">{{ info.block_hash }}</a> <button type="button" class="btn btn-default btn-xs" title="View in block explorer" aria-label="View in block explorer" ng-click="openBlockInExplorerByHash(info.block_hash)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Synced to chain</dt>
 	  <dd>{{ info.synced_to_chain }}</dd>
 	  <dt>Testnet</dt>

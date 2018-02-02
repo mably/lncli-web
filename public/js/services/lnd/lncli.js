@@ -671,6 +671,46 @@
 			}
 		};
 
+		var isTestnet = function () {
+			return (infoCache && infoCache.data) ? infoCache.data.testnet : true;
+		};
+
+		this.getTransactionURL = function (txId) {
+			var transactionUrl;
+			if (isTestnet()) {
+				transactionUrl = _this.getConfigValue(
+					config.keys.EXPLORER_TX_BITCOIN_TESTNET, config.defaults.EXPLORER_TX_BITCOIN_TESTNET);
+			} else {
+				transactionUrl = _this.getConfigValue(
+					config.keys.EXPLORER_TX_BITCOIN_MAINNET, config.defaults.EXPLORER_TX_BITCOIN_MAINNET);
+			}
+			return utils.format(transactionUrl, txId);
+		};
+
+		this.getBlockByHashURL = function (hash) {
+			var blockUrl;
+			if (isTestnet()) {
+				blockUrl = _this.getConfigValue(
+					config.keys.EXPLORER_BLKHASH_BITCOIN_TESTNET, config.defaults.EXPLORER_BLKHASH_BITCOIN_TESTNET);
+			} else {
+				blockUrl = _this.getConfigValue(
+					config.keys.EXPLORER_BLKHASH_BITCOIN_MAINNET, config.defaults.EXPLORER_BLKHASH_BITCOIN_MAINNET);
+			}
+			return utils.format(blockUrl, hash);
+		};
+
+		this.getBlockByHeightURL = function (height) {
+			var blockUrl;
+			if (isTestnet()) {
+				blockUrl = _this.getConfigValue(
+					config.keys.EXPLORER_BLKHEIGHT_BITCOIN_TESTNET, config.defaults.EXPLORER_BLKHEIGHT_BITCOIN_TESTNET);
+			} else {
+				blockUrl = _this.getConfigValue(
+					config.keys.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET, config.defaults.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET);
+			}
+			return utils.format(blockUrl, height);
+		};
+
 		Object.seal(this);
 	};
 

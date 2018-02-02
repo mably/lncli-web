@@ -60,7 +60,13 @@ lnwebcli.constant("config", {
 		LOG_FILTER_PATTERN: "logfilterpattern",
 		LOG_NOTIFY_PATTERN: "lognotifypattern",
 		INVOICE_EXPIRY: "invoiceexpiry",
-		PAGE_SIZES: "pagesizes"
+		PAGE_SIZES: "pagesizes",
+		EXPLORER_TX_BITCOIN_TESTNET: "explorertxbitcointestnet",
+		EXPLORER_TX_BITCOIN_MAINNET: "explorertxbitcoinmainnet",
+		EXPLORER_BLKHASH_BITCOIN_TESTNET: "explorerblkhashbitcointestnet",
+		EXPLORER_BLKHASH_BITCOIN_MAINNET: "explorerblkhashbitcoinmainnet",
+		EXPLORER_BLKHEIGHT_BITCOIN_TESTNET: "explorerblkheightbitcointestnet",
+		EXPLORER_BLKHEIGHT_BITCOIN_MAINNET: "explorerblkheightbitcoinmainnet"
 	},
 	defaults: {
 		AUTO_REFRESH: 60000, // 1 minute
@@ -69,7 +75,13 @@ lnwebcli.constant("config", {
 		LOG_FILTER_PATTERN: "\\[WRN\\]|\\[ERR\\]",
 		LOG_NOTIFY_PATTERN: "\\[ERR\\]",
 		INVOICE_EXPIRY: 3600,
-		PAGE_SIZES: [10, 25, 50, 100]
+		PAGE_SIZES: [10, 25, 50, 100],
+		EXPLORER_TX_BITCOIN_TESTNET: "https://testnet.smartbit.com.au/tx/{0}",
+		EXPLORER_TX_BITCOIN_MAINNET: "https://www.smartbit.com.au/tx/{0}",
+		EXPLORER_BLKHASH_BITCOIN_TESTNET: "https://testnet.smartbit.com.au/block/{0}",
+		EXPLORER_BLKHASH_BITCOIN_MAINNET: "https://www.smartbit.com.au/block/{0}",
+		EXPLORER_BLKHEIGHT_BITCOIN_TESTNET: "https://testnet.smartbit.com.au/block/{0}",
+		EXPLORER_BLKHEIGHT_BITCOIN_MAINNET: "https://www.smartbit.com.au/block/{0}"
 	},
 	notif: {
 		SUCCESS: "SUCCESS",
