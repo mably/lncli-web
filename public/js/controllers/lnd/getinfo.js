@@ -51,13 +51,13 @@
 
 		$scope.openBlockInExplorerByHash = function (blockHash) {
 			if (blockHash) {
-				$window.open("https://testnet.smartbit.com.au/block/" + blockHash, "_blank");
+				$window.open(lncli.getBlockByHashURL(blockHash), "_blank");
 			}
 		};
 
 		$scope.openBlockInExplorerByHeight = function (blockHeight) {
 			if (blockHeight) {
-				$window.open("https://testnet.smartbit.com.au/block/" + blockHeight, "_blank");
+				$window.open(lncli.getBlockByHeightURL(blockHeight), "_blank");
 			}
 		};
 
