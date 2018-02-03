@@ -90,7 +90,7 @@
 
 		$scope.channelPeerAlias = function (pendingChannel) {
 			var knownPeer = $scope.knownPeers[pendingChannel.channel.remote_node_pub];
-			return knownPeer ? knownPeer.alias : null;
+			return knownPeer ? knownPeer.custom_alias : null;
 		};
 
 		$scope.pubkeyCopied = function (channel) {
