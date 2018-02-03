@@ -17,7 +17,7 @@
 					<td class="pubkey"><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:16 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
 					<td>{{ peer.alias }}</td>
-					<td>{{ peer.lastseen | date:'shortDate' }}</td>
+					<td>{{ peer.lastseen | date:'short' }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">
 							<button type="button" class="btn btn-default btn-xs" title="Connect" aria-label="Connect" ng-click="connect(peer)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
