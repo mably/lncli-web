@@ -49,6 +49,13 @@
 			}, 500);
 		};
 
+		$scope.blockhashCopied = function (info) {
+			info.blockhashCopied = true;
+			$timeout(function () {
+				info.blockhashCopied = false;
+			}, 500);
+		};
+
 		$scope.openBlockInExplorerByHash = function (blockHash) {
 			if (blockHash) {
 				$window.open(lncli.getBlockByHashURL(blockHash), "_blank");
