@@ -195,6 +195,27 @@
 			}, 500);
 		};
 
+		$scope.showNodeInfo = function (peer) {
+			var modalCfg = angular.copy(config.modals.NODE_INFO);
+			modalCfg.resolve = {
+				defaults: {
+					pubkey: peer.pub_key,
+					hidesearch: true,
+				}
+			};
+			var modalInstance = $uibModal.open(modalCfg);
+
+			modalInstance.rendered.then(function () {
+				$("#getnodeinfo-pubkey").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+		};
+
 		$scope.$on(config.events.PEER_REFRESH, function (event, args) {
 			console.log("Received event PEER_REFRESH", event, args);
 			$scope.refresh();

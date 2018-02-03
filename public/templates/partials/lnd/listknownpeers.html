@@ -14,9 +14,10 @@
 			<tbody>
 				<tr ng-repeat="peer in st_peers">
 					<td><div class="abc-checkbox"><input type="checkbox" ng-model="peer.selected" class="form-check-input" id="peers_check_{{ $id }}" /><label class="form-check-label" for="peers_check_{{ $id }}"></div></td>
-					<td class="pubkey"><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:16 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
+					<td class="pubkey"><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:16 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+					<button type="button" class="btn btn-default btn-xs" title="Show node {{ peer.pub_key }} info" aria-label="Show node {{ peer.pub_key }} info" ng-click="showNodeInfo(peer)"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
-					<td>{{ peer.alias }}</td>
+					<td><span style="color:{{ peer.color }};" ng-show="peer.color">{{ peer.custom_alias }}</span><span ng-hide="peer.color">{{ peer.custom_alias }}</span></td>
 					<td>{{ peer.lastseen | date:'short' }}</td>
 					<td>
 						<div class="btn-toolbar pull-right">

@@ -306,29 +306,28 @@
 			addressesCache = addresses; // update cache
 		};
 
-		var updateKnownPeers = function (peers, fromPeers) {
+		var updateKnownPeers = function (peers, peersFromLnd) {
 			var knownPeers = fetchKnownPeers();
 			for (var i = 0; i < peers.length; i++) {
 				var peer = peers[i];
-				var knownPeer = knownPeers[peer.pub_key];
-				if (knownPeer) {
-					try {
-						if (knownPeer.alias && !peer.alias) {
-							peer.alias = knownPeer.alias; // to keep peer alias around
-						}
-						if (fromPeers && (knownPeer.address != peer.address)) {
-							var peerHostPort = peer.address.split(":");
-							var knownPeerHostPort = knownPeer.address.split(":");
-							peer.address = peerHostPort[0] + ":" + knownPeerHostPort[1]; // keep overriden port
-						}
-					} catch (err) {
-						console.log(err);
+				var knownPeer = knownPeers[peer.pub_key] || {};
+				var knownPeerAddress = knownPeer.address;
+				knownPeer = Object.assign(knownPeer, peer);
+				if (peersFromLnd) {
+					if (knownPeer.custom_alias && !peer.custom_alias) {
+						// inject custom alias into lnd peer for easy display use
+						peer.custom_alias = knownPeer.custom_alias;
+						// inject color into lnd peer for easy display use
+						peer.color = knownPeer.color;
 					}
+					if (knownPeerAddress && (knownPeerAddress != peer.address)) {
+						var peerHostPort = peer.address.split(":");
+						var knownPeerHostPort = knownPeer.address.split(":");
+						knownPeer.address = peerHostPort[0] + ":" + knownPeerHostPort[1]; // keep overriden port
+					}
+					knownPeer.lastseen = new Date().getTime();
 				}
-				if (fromPeers) {
-					peer.lastseen = new Date().getTime();
-				}
-				knownPeers[peer.pub_key] = peer;
+				knownPeers[knownPeer.pub_key] = knownPeer;
 			}
 			writeKnownPeers(knownPeers);
 			return knownPeers;
@@ -368,9 +367,52 @@
 			return deferred.promise;
 		};
 
+		var updateKnownPeerWithNodeInfo = function (response) {
+			if (response.data && response.data.node) {
+				var node = response.data.node;
+				_this.getKnownPeer(true, node.pub_key).then(function (knownPeer) {
+					knownPeer = knownPeer || {};
+					var previousKnownPeer = angular.copy(knownPeer);
+					knownPeer.pub_key = node.pub_key;
+					knownPeer.lastseen = new Date().getTime();
+					knownPeer.last_update = node.last_update;
+					knownPeer.alias = node.alias;
+					knownPeer.color = node.color;
+					if (node.addresses.length > 0) {
+						// use node public address by default
+						knownPeer.address = node.addresses[0].addr;
+					}
+					if (!knownPeer.custom_alias) {
+						// Define node alias as custom alias if not hexa string
+						var re = /[0-9A-Fa-f]{6}/g;
+						if (!re.test(node.alias)) {
+							knownPeer.custom_alias = node.alias;
+						}
+					}
+					// Save updated known peer
+					_this.editKnownPeer(knownPeer).then(function (knownPeer) {
+						if (!angular.equals(previousKnownPeer, knownPeer)) { // broadcast if known peer updated
+							$rootScope.$broadcast(config.events.PEER_REFRESH, knownPeer);
+						}
+					}, function (err) {
+						console.log(err);
+					});
+				}, function (err) {
+					console.log(err);
+				});
+			}
+		};
+
 		this.getNodeInfo = function (pubkey) {
+			var deferred = $q.defer();
 			var data = { pubkey: pubkey };
-			return $http.post(serverUrl(API.GETNODEINFO), data);
+			$http.post(serverUrl(API.GETNODEINFO), data).then(function (response) {
+				updateKnownPeerWithNodeInfo(response);
+				deferred.resolve(response);
+			}, function (err) {
+				deferred.reject(err);
+			});
+			return deferred.promise;
 		};
 
 		this.getNetworkInfo = function () {

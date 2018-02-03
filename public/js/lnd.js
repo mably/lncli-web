@@ -157,6 +157,15 @@ lnwebcli.constant("config", {
 					message: "lnd rocks!"
 				}
 			}
+		},
+		NODE_INFO: {
+			animation: true,
+			ariaLabelledBy: "getnodeinfo-modal-title",
+			ariaDescribedBy: "getnodeinfo-modal-body",
+			templateUrl: "templates/partials/lnd/getnodeinfo.html",
+			controller: "ModalGetNodeInfoCtrl",
+			controllerAs: "$ctrl",
+			size: "lg"
 		}
 	}
 });

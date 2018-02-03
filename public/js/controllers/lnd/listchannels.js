@@ -205,7 +205,7 @@
 
 		$scope.channelPeerAlias = function (channel) {
 			var knownPeer = $scope.knownPeers[channel.remote_pubkey];
-			return knownPeer ? knownPeer.alias : null;
+			return knownPeer ? knownPeer.custom_alias : null;
 		};
 
 		$scope.pubkeyCopied = function (channel) {
