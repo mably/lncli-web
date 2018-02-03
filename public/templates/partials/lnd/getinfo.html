@@ -2,7 +2,7 @@
 
 	<dl class="dl-horizontal" style="overflow-wrap: break-word;">
 	  <dt>Node pubkey</dt>
-	  <dd>{{ info.identity_pubkey | firstlast:12 }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.identity_pubkey }}" ngclipboard-success="pubkeyCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></dd>
+	  <dd><span ng-show="info && info.identity_pubkey">{{ info.identity_pubkey | firstlast:12 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.identity_pubkey }}" ngclipboard-success="pubkeyCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></dd>
 	  <dt ng-if="info.alias">Alias</dt>
 	  <dd ng-if="info.alias">{{ info.alias }}</dd>
 	  <dt ng-if="node_uri">Node URI</dt>
@@ -15,7 +15,7 @@
 	  <dt>Block height</dt>
 	  <dd><a ng-click="openBlockInExplorerByHeight(info.block_height)" title="View block of height {{ info.block_height }} in explorer">{{ info.block_height }}</a> <button type="button" class="btn btn-default btn-xs" title="View in block explorer" aria-label="View in block explorer" ng-click="openBlockInExplorerByHeight(info.block_height)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Block hash</dt>
-	  <dd><a ng-click="openBlockInExplorerByHash(info.block_hash)" title="View block {{ info.block_hash }} in explorer">{{ info.block_hash | firstlast:12 }}</a> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.block_hash }}" ngclipboard-success="blockhashCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.blockhashCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
+	  <dd><a ng-show="info && info.block_hash" ng-click="openBlockInExplorerByHash(info.block_hash)" title="View block {{ info.block_hash }} in explorer">{{ info.block_hash | firstlast:12 }}</a> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ info.block_hash }}" ngclipboard-success="blockhashCopied(info);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="info.blockhashCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 	  <button type="button" class="btn btn-default btn-xs" title="View in block explorer" aria-label="View in block explorer" ng-click="openBlockInExplorerByHash(info.block_hash)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></dd>
 	  <dt>Synced to chain</dt>
 	  <dd>{{ info.synced_to_chain }}</dd>
