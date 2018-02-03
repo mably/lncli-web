@@ -85,3 +85,6 @@ th[st-sort] {
 span.panel-title {
 	line-height: 2em;
 }
+#editsettings-modal-body > form {
+	margin-top: 1em;
+}
