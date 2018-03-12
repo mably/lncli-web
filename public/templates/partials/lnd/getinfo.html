@@ -23,8 +23,8 @@
 	  <dd>{{ info.testnet }}</dd>
 	  <dt>Chains</dt>
 	  <dd>{{ info.chains }}</dd>
-	  <!--<dt>Web Endpoint</dt>
-	  <dd>{{ endpoint }}</dd>-->
+	  <dt>Best header timestamp</dt>
+	  <dd>{{ info.best_header_timestamp * 1000 | date:'short' }}</dd>
 	</dl>
 
 	<div id="getinfo-data" class="collapse">

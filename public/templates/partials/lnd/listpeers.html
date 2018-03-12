@@ -5,8 +5,7 @@
 			<thead>
 				<tr>
 					<th class="abc-checkbox"><div class="abc-checkbox"><input type="checkbox" ng-model="form.checkbox" ng-change="selectAll(st_peers)" class="form-check-input" id="peers_checkall_{{ $id }}" /><label class="form-check-label" for="peers_checkall_{{ $id }}"></label></div></th>
-					<th st-sort="peer_id" st-sort-default="true">Id</th>
-					<th st-sort="pub_key">Pubkey</th>
+					<th st-sort="pub_key" st-sort-default="true">Pubkey</th>
 					<th st-sort="address">Address</th>
 					<th st-sort="alias">Alias</th>
 					<th st-sort="sat_sent">Sat<br/>sent</th>
@@ -20,7 +19,6 @@
 			<tbody>
 				<tr ng-repeat="peer in st_peers">
 					<td><div class="abc-checkbox"><input type="checkbox" ng-model="peer.selected" class="form-check-input" id="peers_check_{{ $id }}" /><label class="form-check-label" for="peers_check_{{ $id }}"></div></td>
-					<td>{{ peer.peer_id }}</td>
 					<td><span title="{{ peer.pub_key }}">{{ peer.pub_key | firstlast:6 }}</span> <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.pub_key }}" ngclipboard-success="pubkeyCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.pubkeyCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
 						<button type="button" class="btn btn-default btn-xs" title="Show node {{ peer.pub_key }} info" aria-label="Show node {{ peer.pub_key }} info" ng-click="showNodeInfo(peer)"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button></td>
 					<td>{{ peer.address }} <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ peer.address }}" ngclipboard-success="addressCopied(peer);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="peer.addressCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button></td>
@@ -40,10 +38,10 @@
 			</tbody>
 			<tfoot ng-if="numberOfPeers > 10">
 				<tr>
-					<td colspan="4" class="text-left">
+					<td colspan="5" class="text-left">
 						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
 					</td>
-					<td colspan="2" class="text-right">
+					<td colspan="5" class="text-right">
 						<span>Items per page&nbsp; </span>
 						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
 					</td>
