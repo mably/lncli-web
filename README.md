@@ -105,7 +105,15 @@ node server --help
 
 Open your browser at the following address: [http://localhost:8280](http://localhost:8280)
 
-Enjoy!
+If you want to access `lncli-web` using a domain, add the `--serverhost` flag like so:
+
+ ```
+ node server --serverhost <yourdomain>
+ ```
+ Open your browser at the following addres:
+ [http://yourdomain:8280](http://yourdomain:8280)
+
+ Enjoy!
 
 
 ## Docker

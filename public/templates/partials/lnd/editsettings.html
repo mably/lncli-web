@@ -7,26 +7,69 @@
 			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			{{ $ctrl.warning }}
 		</div>
+		<ul class="nav nav-tabs">
+			<li class="active">
+				<a  href="#{{ $id }}_1" data-toggle="tab">General</a>
+			</li>
+			<li>
+				<a href="#{{ $id }}_2" data-toggle="tab">Logs</a>
+			</li>
+			<li>
+				<a href="#{{ $id }}_3" data-toggle="tab">URLs</a>
+			</li>
+		</ul>
 		<form>
-			<div class="form-group">
-				<label for="editsettings-autorefresh">Auto-refresh delay (in milliseconds)</label>
-				<input type="numeric" class="form-control" id="editsettings-autorefresh" placeholder="auto-refresh delay" ng-model="$ctrl.values.autorefresh">
-			</div>
-			<div class="form-group">
-				<label for="editsettings-maxlogbuffer">Log display buffer (in number of lines)</label>
-				<input type="numeric" class="form-control" id="editsettings-maxlogbuffer" placeholder="maximum number of lines" ng-model="$ctrl.values.maxlogbuffer">
-			</div>
-			<div class="form-group">
-				<label for="editsettings-logfilterpattern">Log filter pattern (reg exp)</label>
-				<input type="text" class="form-control" id="editsettings-logfilterpattern" placeholder="log filter pattern" ng-model="$ctrl.values.logfilterpattern">
-			</div>
-			<div class="form-group">
-				<label for="editsettings-lognotifypattern">Log notification pattern (reg exp)</label>
-				<input type="text" class="form-control" id="editsettings-lognotifypattern" placeholder="log notification pattern" ng-model="$ctrl.values.lognotifypattern">
-			</div>
-			<div class="form-group">
-				<label for="editsettings-invoiceexpiry">Default invoice expiry time (in seconds)</label>
-				<input type="numeric" class="form-control" id="editsettings-invoiceexpiry" placeholder="expiry time in seconds" ng-model="$ctrl.values.invoiceexpiry">
+			<div class="tab-content">
+				<div class="tab-pane active" id="{{ $id }}_1">
+					<div class="form-group">
+						<label for="editsettings-autorefresh">Auto-refresh delay (in milliseconds)</label>
+						<input type="numeric" class="form-control" id="editsettings-autorefresh" placeholder="auto-refresh delay" ng-model="$ctrl.values.autorefresh">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-invoiceexpiry">Default invoice expiry time (in seconds)</label>
+						<input type="numeric" class="form-control" id="editsettings-invoiceexpiry" placeholder="expiry time in seconds" ng-model="$ctrl.values.invoiceexpiry">
+					</div>
+				</div>
+				<div class="tab-pane" id="{{ $id }}_2">
+					<div class="form-group">
+						<label for="editsettings-logfilterpattern">Log filter pattern (reg exp)</label>
+						<input type="text" class="form-control" id="editsettings-logfilterpattern" placeholder="log filter pattern" ng-model="$ctrl.values.logfilterpattern">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-lognotifypattern">Log notification pattern (reg exp)</label>
+						<input type="text" class="form-control" id="editsettings-lognotifypattern" placeholder="log notification pattern" ng-model="$ctrl.values.lognotifypattern">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-maxlogbuffer">Log display buffer (in number of lines)</label>
+						<input type="numeric" class="form-control" id="editsettings-maxlogbuffer" placeholder="maximum number of lines" ng-model="$ctrl.values.maxlogbuffer">
+					</div>
+				</div>
+				<div class="tab-pane" id="{{ $id }}_3">
+					<div class="form-group">
+						<label for="editsettings-explorertxbitcointestnet">Explorer transaction URL (bitcoin testnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorertxbitcointestnet" placeholder="explorer transaction URL (bitcoin testnet)" ng-model="$ctrl.values.explorertxbitcointestnet">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-explorertxbitcoinmainnet">Explorer transaction URL (bitcoin mainnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorertxbitcoinmainnet" placeholder="explorer transaction URL (bitcoin mainnet)" ng-model="$ctrl.values.explorertxbitcoinmainnet">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-explorerblkhashbitcointestnet">Explorer block by hash URL URL (bitcoin testnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorerblkhashbitcointestnet" placeholder="explorer block URL (bitcoin testnet)" ng-model="$ctrl.values.explorerblkhashbitcointestnet">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-explorerblkhashbitcoinmainnet">Explorer block by hash URL (bitcoin mainnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorerblkhashbitcoinmainnet" placeholder="explorer block URL (bitcoin mainnet)" ng-model="$ctrl.values.explorerblkhashbitcoinmainnet">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-explorerblkheightbitcointestnet">Explorer block by height URL (bitcoin testnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorerblkheightbitcointestnet" placeholder="explorer block URL (bitcoin testnet)" ng-model="$ctrl.values.explorerblkheightbitcointestnet">
+					</div>
+					<div class="form-group">
+						<label for="editsettings-explorerblkheightbitcoinmainnet">Explorer block by height URL (bitcoin mainnet)</label>
+						<input type="text" class="form-control" id="editsettings-explorerblkheightbitcoinmainnet" placeholder="explorer block URL (bitcoin mainnet)" ng-model="$ctrl.values.explorerblkheightbitcoinmainnet">
+					</div>
+				</div>
 			</div>
 		</form>
 	</div>

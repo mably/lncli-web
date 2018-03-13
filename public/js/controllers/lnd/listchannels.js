@@ -205,7 +205,7 @@
 
 		$scope.channelPeerAlias = function (channel) {
 			var knownPeer = $scope.knownPeers[channel.remote_pubkey];
-			return knownPeer ? knownPeer.alias : null;
+			return knownPeer ? knownPeer.custom_alias : null;
 		};
 
 		$scope.pubkeyCopied = function (channel) {
@@ -225,7 +225,7 @@
 		$scope.openChannelPointInExplorer = function (channel) {
 			if (channel.channel_point) {
 				var txId = channel.channel_point.split(":")[0];
-				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
+				$window.open(lncli.getTransactionURL(txId), "_blank");
 			}
 		};
 

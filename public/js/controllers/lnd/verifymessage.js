@@ -31,7 +31,7 @@
 						$ctrl.warning = null;
 						$ctrl.success = "Message signature successfully verified.";
 						lncli.getKnownPeer(true, response.data.pubkey).then(function (signingPeer) {
-							$ctrl.data.alias = signingPeer.alias;
+							$ctrl.data.custom_alias = signingPeer.custom_alias;
 						}, function (err) {
 							console.log(err);
 						});

@@ -174,21 +174,14 @@
 		};
 
 		$scope.showNodeInfo = function (peer) {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				ariaLabelledBy: "getnodeinfo-modal-title",
-				ariaDescribedBy: "getnodeinfo-modal-body",
-				templateUrl: "templates/partials/lnd/getnodeinfo.html",
-				controller: "ModalGetNodeInfoCtrl",
-				controllerAs: "$ctrl",
-				size: "lg",
-				resolve: {
-					defaults: {
-						pubkey: peer.pub_key,
-						hidesearch: true,
-					}
+			var modalCfg = angular.copy(config.modals.NODE_INFO);
+			modalCfg.resolve = {
+				defaults: {
+					pubkey: peer.pub_key,
+					hidesearch: true,
 				}
-			});
+			};
+			var modalInstance = $uibModal.open(modalCfg);
 
 			modalInstance.rendered.then(function () {
 				$("#getnodeinfo-pubkey").focus();

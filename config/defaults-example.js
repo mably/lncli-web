@@ -10,5 +10,5 @@ module.exports = {
 	dataPath: __dirname + "/../data",
 	loglevel: "info",
 	logfile: "lncliweb.log",
-	lndLogFile: require("os").homedir() + "/.lnd/logs/testnet3/lnd.log"
+	lndLogFile: require("os").homedir() + "/.lnd/logs/bitcoin/testnet/lnd.log"
 };

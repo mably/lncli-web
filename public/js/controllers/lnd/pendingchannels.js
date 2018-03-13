@@ -90,7 +90,7 @@
 
 		$scope.channelPeerAlias = function (pendingChannel) {
 			var knownPeer = $scope.knownPeers[pendingChannel.channel.remote_node_pub];
-			return knownPeer ? knownPeer.alias : null;
+			return knownPeer ? knownPeer.custom_alias : null;
 		};
 
 		$scope.pubkeyCopied = function (channel) {
@@ -110,7 +110,7 @@
 		$scope.openChannelPointInExplorer = function (channel) {
 			if (channel.channel_point) {
 				var txId = channel.channel_point.split(":")[0];
-				$window.open("https://testnet.smartbit.com.au/tx/" + txId, "_blank");
+				$window.open(lncli.getTransactionURL(txId), "_blank");
 			}
 		};
 
@@ -123,7 +123,7 @@
 
 		$scope.openClosingTxInExplorer = function (closingTxId) {
 			if (closingTxId) {
-				$window.open("https://testnet.smartbit.com.au/tx/" + closingTxId, "_blank");
+				$window.open(lncli.getTransactionURL(closingTxId), "_blank");
 			}
 		};
 
