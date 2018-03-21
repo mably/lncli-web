@@ -148,7 +148,7 @@ docker run -it -e SET_LNDHOST=[IP of lightning host]:10009 -v /tmp/config:/confi
 ```
 Then just browse to http://127.0.0.1:8280.
 
-**Note: Docker still requires you to re-generate your certificates as per above.**
+**Note: Using Docker still requires you to re-generate your certificates as per above.**
 
 ## Screenshots
 
