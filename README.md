@@ -66,6 +66,10 @@ openssl req -x509 -sha256 -days 36500 -key tls.key -in csr.csr -out tls.cert
 rm csr.csr
 ```
 
+If this generated certificate doesn't work, you may have to replace the middle command (`openssl req -new ...`) with this one:
+```
+openssl req -new -sha256 -key tls.key -out csr.csr -subj '/CN=localhost/O=lnd' -config <(cat /etc/ssl/openssl.cnf <(printf "[alt_names]\nIP.1=127.0.0.1\nDNS.1=localhost"))
+```
 
 ### Copy generated certificate file into lncli-web directory
 
@@ -131,8 +135,6 @@ Mount your .lnd directory to the container:
 docker run -v /path/to/.lnd/:/config lncli-web
 ```
 
-The container will generate certs if necessary.
-
 Any commandline option (see below) can be overridden by setting an appropriate environment variable.
 
 Example: set `SET_LNDHOST` for `--lndhost`, or set `SET_LE_EMAIL` for `--le-email`
@@ -144,7 +146,9 @@ Then, use `docker run` accordingly:
 ```
 docker run -it -e SET_LNDHOST=[IP of lightning host]:10009 -v /tmp/config:/config --net=host lncli-web
 ```
-Then just browse to http://127.0.0.1:8280. Note: this still requires you to re-generate your certificates as per above.
+Then just browse to http://127.0.0.1:8280.
+
+**Note: Docker still requires you to re-generate your certificates as per above.**
 
 ## Screenshots
 
