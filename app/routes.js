@@ -5,6 +5,8 @@ const logger = require("winston");
 const request = require("request");
 const graphviz = require("graphviz");
 
+const DEFAULT_MAX_NUM_ROUTES_TO_QUERY = 10;
+
 // expose the routes to our app with module.exports
 module.exports = function (app, lightning, db, config) {
 
@@ -261,7 +263,8 @@ module.exports = function (app, lightning, db, config) {
 
 	// queryroute
 	app.post("/api/lnd/queryroute", function (req, res) {
-		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt }, function (err, response) {
+		var numRoutes = config.maxNumRoutesToQuery || DEFAULT_MAX_NUM_ROUTES_TO_QUERY;
+		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt, num_routes: numRoutes }, function (err, response) {
 			if (err) {
 				logger.debug("QueryRoute Error:", err);
 				err.error = err.message;
