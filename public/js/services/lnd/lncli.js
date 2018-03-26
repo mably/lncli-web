@@ -384,7 +384,7 @@
 					}
 					if (!knownPeer.custom_alias) {
 						// Define node alias as custom alias if not hexa string
-						var re = /[0-9A-Fa-f]{6}/g;
+						var re = /^[a-fA-F0-9]+$/g;
 						if (!re.test(node.alias)) {
 							knownPeer.custom_alias = node.alias;
 						}
