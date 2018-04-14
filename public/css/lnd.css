@@ -64,6 +64,12 @@ select.itemsperpage {
 	}
 }
 
+div.form-group.abc-checkbox label {
+    margin-left: -8px;
+    padding-top: 3px;
+    padding-left: 10px;
+}
+
 th > div.abc-checkbox, td > div.abc-checkbox {
 	padding-left: 0px;
 }

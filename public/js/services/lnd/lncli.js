@@ -617,9 +617,9 @@
 			return $http.post(serverUrl(API.DISCONNECTPEER), data);
 		};
 
-		this.openChannel = function (pubkey, localamt, pushamt, numconf) {
+		this.openChannel = function (pubkey, localamt, pushamt, targetconf, remotecsvdelay, privatechan) {
 			var deferred = $q.defer();
-			var data = { rid: uuid.v4(), pubkey: pubkey, localamt: localamt, pushamt: pushamt, numconf: numconf };
+			var data = { rid: uuid.v4(), pubkey: pubkey, localamt: localamt, pushamt: pushamt, targetconf: targetconf, remotecsvdelay: remotecsvdelay, privatechan: privatechan };
 			socket.emit(config.events.OPENCHANNEL_WS, data, function (response) {
 				if (response.error) {
 					deferred.reject(response.error);

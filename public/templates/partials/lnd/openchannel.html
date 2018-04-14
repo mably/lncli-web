@@ -7,26 +7,38 @@
 			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			{{ $ctrl.warning }}
 		</div>
-		<form>
+		<form name="openchannel">
 			<div class="form-group">
 				<label for="openchannel-pubkey">Node pubkey</label>
-				<!--<input type="text" class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">-->
-				<select class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey">
+				<select class="form-control" id="openchannel-pubkey" placeholder="pubkey" ng-model="$ctrl.values.pubkey" required="true">
 					<option ng-repeat="peer in $ctrl.values.peers" value="{{ peer.pub_key }}">{{ peer.pub_key }} - {{ peer.custom_alias }}</option>
 				</select>
 			</div>
-			<div class="form-group">
+			<div class="form-group" ng-class="{ 'has-error' : openchannel.localamt.$invalid && !openchannel.localamt.$pristine }">
 				<label for="openchannel-local-amt">Local amount</label>
-				<input type="numeric" class="form-control" id="openchannel-local-amt" placeholder="local amount" ng-model="$ctrl.values.localamt">
+				<input type="number" min="0" class="form-control" id="openchannel-local-amt" name="localamt" placeholder="local amount" ng-model="$ctrl.values.localamt" required="true">
 			</div>
 			<div class="form-group">
 				<label for="openchannel-push-amt">Push amount</label>
-				<input type="numeric" class="form-control" id="openchannel-push-amt" placeholder="push amount" ng-model="$ctrl.values.pushamt">
+				<input type="number" min="0" class="form-control" id="openchannel-push-amt" placeholder="push amount" ng-model="$ctrl.values.pushamt" required="true">
 			</div>
-			<!--<div class="form-group">
-				<label for="openchannel-num-conf">Number of confirmations</label>
-				<input type="numeric" class="form-control" id="openchannel-num-conf" placeholder="number of confirmations required" ng-model="$ctrl.values.numconf">
-			</div>-->
+			<div class="form-group">
+				<button type="button" class="btn btn-default" title="Advanced options" aria-label="Advanced options" data-toggle="collapse" data-target="#openchannel-advanced-options">Advanced options</span></button>
+			</div>
+			<div id="openchannel-advanced-options" class="collapse">
+				<div class="form-group">
+					<label for="openchannel-target-conf">Number of confirmations</label>
+					<input type="number" min="0" class="form-control" id="openchannel-target-conf" placeholder="The target number of blocks that the funding transaction should be confirmed by." ng-model="$ctrl.values.targetconf">
+				</div>
+				<div class="form-group">
+					<label for="openchannel-remote-csv-delay">Remote CSV delay</label>
+					<input type="number" min="0" class="form-control" id="openchannel-remote-csv-delay" placeholder="The delay we require on the remote's commitment transaction." ng-model="$ctrl.values.remotecsvdelay">
+				</div>
+				<div class="form-group abc-checkbox">
+					<input type="checkbox" class="form-check-input" id="openchannel-private" ng-model="$ctrl.values.privatechan">
+					<label class="form-check-label" for="openchannel-private">Private channel</label>
+				</div>
+			</div>
 		</form>
 	</div>
 	<div class="modal-footer">

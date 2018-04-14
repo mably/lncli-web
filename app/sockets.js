@@ -225,6 +225,15 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 						local_funding_amount: Number(data.localamt),
 						push_sat: Number(data.pushamt)
 					};
+					if (data.targetconf) {
+						openChannelRequest.target_conf = Number(data.targetconf);
+					}
+					if (data.privatechan) {
+						openChannelRequest.private = !!data.privatechan;
+					}
+					if (data.remotecsvdelay) {
+						openChannelRequest.remote_csv_delay = Number(data.remotecsvdelay);
+					}
 					debug("openChannelRequest", openChannelRequest);
 
 					var call = lightning.openChannel(openChannelRequest);
