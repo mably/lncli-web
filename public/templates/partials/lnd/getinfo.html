@@ -25,6 +25,8 @@
 	  <dd>{{ info.chains }}</dd>
 	  <dt>Best header timestamp</dt>
 	  <dd>{{ info.best_header_timestamp * 1000 | date:'short' }}</dd>
+	  <dt>Version</dt>
+	  <dd>{{ info.version | firstlast:32:8 }}</dd>
 	</dl>
 
 	<div id="getinfo-data" class="collapse">
