@@ -4,6 +4,7 @@ const debug = require("debug")("lncliweb:routes");
 const logger = require("winston");
 const request = require("request");
 const graphviz = require("graphviz");
+const commandExistsSync = require("command-exists").sync;
 
 const DEFAULT_MAX_NUM_ROUTES_TO_QUERY = 10;
 
@@ -315,76 +316,81 @@ module.exports = function (app, lightning, db, config) {
 		if (req.limituser) {
 			return res.sendStatus(403); // forbidden
 		} else {
-			lightning.describeGraph({}, function (err, response) {
-				if (err) {
-					logger.debug("DescribeGraph Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("DescribeGraph:", response);
+			if (commandExistsSync("dot")) {
+				lightning.describeGraph({}, function (err, response) {
+					if (err) {
+						logger.debug("DescribeGraph Error:", err);
+						err.error = err.message;
+						res.send(err);
+					} else {
+						logger.debug("DescribeGraph:", response);
 
-					var peers = req.body.peers || {};
+						var peers = req.body.peers || {};
 
-					var nodesMap = {};
-					var nodes = response.nodes;
-					var i;
-					var node;
-					for (i = 0; i < nodes.length; i++) {
-						node = nodes[i];
-						nodesMap[node.pub_key] = node;
-					}
-
-					var channeledNodes = {};
-					var edges = response.edges;
-					var edge;
-					for (i = 0; i < edges.length; i++) {
-						edge = edges[i];
-						if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
-							channeledNodes[edge.node1_pub] = edge.node1_pub;
-							channeledNodes[edge.node2_pub] = edge.node2_pub;
+						var nodesMap = {};
+						var nodes = response.nodes;
+						var i;
+						var node;
+						for (i = 0; i < nodes.length; i++) {
+							node = nodes[i];
+							nodesMap[node.pub_key] = node;
 						}
-					}
 
-					// Create digraph
-					var graphName = "LightningNetwork";
-					var g = graphviz.graph(graphName);
-
-					for (var nodePubKey in channeledNodes) {
-						if (channeledNodes.hasOwnProperty(nodePubKey)) {
-							// Add node
-							node = nodesMap[nodePubKey];
-							var peer = peers[nodePubKey];
-							var nodeLabel;
-							if (peer && peer.alias) {
-								nodeLabel = peer.alias;
-							} else {
-								nodeLabel = node.pub_key.substr(0, 10);
+						var channeledNodes = {};
+						var edges = response.edges;
+						var edge;
+						for (i = 0; i < edges.length; i++) {
+							edge = edges[i];
+							if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
+								channeledNodes[edge.node1_pub] = edge.node1_pub;
+								channeledNodes[edge.node2_pub] = edge.node2_pub;
 							}
-							console.log(node, nodeLabel);
-							g.addNode(node.pub_key, { label: nodeLabel });
 						}
-					}
 
-					for (i = 0; i < edges.length; i++) {
-						// Add edge
-						edge = edges[i];
-						if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
-							var edgeLabel = " " + edge.channel_id.substr(0, 10);
-							g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: "12.0" });
+						// Create digraph
+						var graphName = "LightningNetwork";
+						var g = graphviz.graph(graphName);
+
+						for (var nodePubKey in channeledNodes) {
+							if (channeledNodes.hasOwnProperty(nodePubKey)) {
+								// Add node
+								node = nodesMap[nodePubKey];
+								var peer = peers[nodePubKey];
+								var nodeLabel;
+								if (peer && peer.alias) {
+									nodeLabel = peer.alias;
+								} else {
+									nodeLabel = node.pub_key.substr(0, 10);
+								}
+								console.log(node, nodeLabel);
+								g.addNode(node.pub_key, { label: nodeLabel });
+							}
 						}
+
+						for (i = 0; i < edges.length; i++) {
+							// Add edge
+							edge = edges[i];
+							if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
+								var edgeLabel = " " + edge.channel_id.substr(0, 10);
+								g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: "12.0" });
+							}
+						}
+
+						// Print the dot script
+						console.log(g.to_dot());
+
+						// Set GraphViz path (if not in your path)
+						//g.setGraphVizPath("/usr/local/bin");
+						// Generate a SVG output
+						g.output("svg", __dirname + "/../data/networkgraph.svg");
+
+						res.json(response);
 					}
-
-					// Print the dot script
-					console.log(g.to_dot());
-
-					// Set GraphViz path (if not in your path)
-					//g.setGraphVizPath("/usr/local/bin");
-					// Generate a SVG output
-					g.output("svg", __dirname + "/../data/networkgraph.svg");
-
-					res.json(response);
-				}
-			});
+				});
+			} else {
+				logger.debug("Missing graphviz");
+				return res.status(500).send("Missing graphviz");
+			}
 		}
 	});
 
