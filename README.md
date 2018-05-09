@@ -175,3 +175,7 @@ node server -s 443 --usetls . --user manager --pwd 33H966wG --limituser lnd --li
 ```
 
 Hoping that helps.
+
+## Network graph
+
+The lightning network graph rendering functionality requires to have `graphviz` installed on the server.
