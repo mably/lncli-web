@@ -100,6 +100,7 @@
 				window.open(lncli.getEndPoint() + "/api/lnd/networkgraph.svg", "_blank");
 			}, function (err) {
 				console.log(err);
+				lncli.alert(err.data || err.statusText);
 			});
 
 		};
