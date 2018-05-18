@@ -132,6 +132,20 @@ module.exports = function (app, lightning, db, config) {
 		});
 	});
 
+	// get lnd node forwarding history
+	app.get("/api/lnd/forwardinghistory", function (req, res) {
+		lightning.forwardingHistory({}, function (err, response) {
+			if (err) {
+				logger.debug("ForwardingHistory Error:", err);
+				err.error = err.message;
+				res.send(err);
+			} else {
+				logger.debug("ForwardingHistory:", response);
+				res.json(response);
+			}
+		});
+	});
+
 	// get the lnd node wallet balance
 	app.get("/api/lnd/walletbalance", function (req, res) {
 		lightning.walletBalance({}, function (err, response) {

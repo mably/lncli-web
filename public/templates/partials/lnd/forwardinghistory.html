@@ -1,0 +1,47 @@
+<div>
+
+	<div class="table-responsive">
+		<table class="table table-striped" st-table="st_forwards" st-safe-src="forwards" ng-if="forwards.length > 0">
+			<thead>
+				<tr>
+					<th st-sort="chan_id_in">Channel Id In</th>
+					<th st-sort="chan_id_out">Channel Id Out</th>
+					<th st-sort="value">Amt In</th>
+					<th st-sort="value">Amt Out</th>
+					<th st-sort="fee">Fee</th>
+					<th st-sort="timestamp" st-sort-default="reverse">Timestamp</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="forward in st_forwards">
+					<td>{{ forward.chan_id_in | firstlast:4 }}</td>
+					<td>{{ forward.chan_id_out | firstlast:4 }}</td>
+					<td>{{ forward.amt_in }}</td>
+					<td>{{ forward.amt_out }}</td>
+					<td>{{ forward.fee }}</td>
+					<td>{{ forward.timestamp * 1000 | date:'medium' }}</td>
+				</tr>
+			</tbody>
+			<tfoot ng-show="numberOfForwards > 10">
+				<tr>
+					<td colspan="3" class="text-left">
+						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
+					</td>
+					<td colspan="3" class="text-right">
+						<span>Items per page&nbsp; </span>
+						<select class="form-control itemsperpage" placeholder="Items per page" ng-model="cfg.itemsPerPage" ng-options="ps for ps in pageSizes" ng-change="pageSizeChanged()"></select>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+
+	<div ng-if="payments.length == 0">
+		<span>No forwarding history</span>
+	</div>
+
+	<div id="forwardinghistory-data" class="collapse">
+		<pre>{{ data }}</pre>
+	</div>
+
+</div>
