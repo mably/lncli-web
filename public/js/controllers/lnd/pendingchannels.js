@@ -9,6 +9,7 @@
 		$scope.numberOfOpeningChannels = 0;
 		$scope.numberOfClosingChannels = 0;
 		$scope.numberOfForceClosingChannels = 0;
+		$scope.numberOfWaitingCloseChannels = 0;
 		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
 		$scope.cfg = {};
 		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPENDINGCHANNELS_PAGESIZE, $scope.pageSizes[0]);
@@ -37,11 +38,16 @@
 							processPendingForceClosingChannels(
 								response.data.pending_force_closing_channels);
 						$scope.numberOfForceClosingChannels = $scope.pending_force_closing_channels.length;
+						$scope.waiting_close_channels =
+							processWaitingCloseChannels(
+								response.data.waiting_close_channels);
+						$scope.numberOfWaitingCloseChannels = $scope.waiting_close_channels.length;
 					}, function (err) {
 						$scope.spinner--;
 						$scope.numberOfOpeningChannels = 0;
 						$scope.numberOfClosingChannels = 0;
 						$scope.numberOfForceClosingChannels = 0;
+						$scope.numberOfWaitingCloseChannels = 0;
 						console.log("Error:", err);
 						lncli.alert(err.message || err.statusText);
 					});
@@ -75,6 +81,15 @@
 				pendingChannel.limbo_balance = parseInt(pendingChannel.limbo_balance);
 				pendingChannel.maturity_height = parseInt(pendingChannel.maturity_height);
 				pendingChannel.blocks_til_maturity = parseInt(pendingChannel.blocks_til_maturity);
+			});
+			return channels;
+		};
+
+		var processWaitingCloseChannels = function (channels) {
+			channels.forEach(function (pendingChannel) {
+				pendingChannel.channel.capacity = parseInt(pendingChannel.channel.capacity);
+				pendingChannel.channel.local_balance = parseInt(pendingChannel.channel.local_balance);
+				pendingChannel.channel.remote_balance = parseInt(pendingChannel.channel.remote_balance);
 			});
 			return channels;
 		};
