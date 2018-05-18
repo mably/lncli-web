@@ -1,6 +1,7 @@
 module.exports = function (lnwebcli) {
 
 	lnwebcli.directive("channelBalance", [require("./channelbalance")]);
+	lnwebcli.directive("forwardingHistory", [require("./forwardinghistory")]);
 	lnwebcli.directive("getInfo", [require("./getinfo")]);
 	lnwebcli.directive("getNetworkInfo", [require("./getnetworkinfo")]);
 	lnwebcli.directive("listChannels", [require("./listchannels")]);

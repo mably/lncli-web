@@ -16,6 +16,7 @@
 			PENDINGCHANNELS: "/api/lnd/pendingchannels",
 			LISTPAYMENTS: "/api/lnd/listpayments",
 			LISTINVOICES: "/api/lnd/listinvoices",
+			FORWARDINGHISTORY: "/api/lnd/forwardinghistory",
 			CONNECTPEER: "/api/lnd/connectpeer",
 			DISCONNECTPEER: "/api/lnd/disconnectpeer",
 			ADDINVOICE: "/api/lnd/addinvoice",
@@ -605,6 +606,10 @@
 
 		this.listInvoices = function () {
 			return $http.get(serverUrl(API.LISTINVOICES));
+		};
+
+		this.forwardingHistory = function () {
+			return $http.get(serverUrl(API.FORWARDINGHISTORY));
 		};
 
 		this.connectPeer = function (pubkey, host) {

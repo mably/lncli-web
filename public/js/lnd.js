@@ -45,6 +45,8 @@ lnwebcli.constant("config", {
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
+		FORWARDINGHISTORY_LISTVISIBLE: "forwardinghistorylistvisible",
+		FORWARDINGHISTORY_PAGESIZE: "forwardinghistorypagesize",
 		LISTCHANNELS_LISTVISIBLE: "listchannelslistvisible",
 		LISTCHANNELS_PAGESIZE: "listchannelspagesize",
 		LISTINVOICES_LISTVISIBLE: "listinvoiceslistvisible",
