@@ -205,7 +205,11 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 				callback({ rid: rid, error: "forbidden" });
 			} else {
 				if (data.logFilterPattern) {
-					socket._logFilter = new RegExp(data.logFilterPattern, "g");
+					try {
+						socket._logFilter = new RegExp(data.logFilterPattern, "g");
+					} catch (error) {
+						logger.info("logfilter", error);
+					}
 				}
 			}
 		});
