@@ -135,7 +135,6 @@
 					<th st-sort="channel.capacity">Capacity</th>
 					<th st-sort="channel.local_balance">Local<br/>balance</th>
 					<th st-sort="channel.remote_balance">Remote<br/>balance</th>
-					<th st-sort="closing_txid">Closing Tx Id</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -147,13 +146,11 @@
 					<td>{{ pending_channel.channel.capacity }}</td>
 					<td>{{ pending_channel.channel.local_balance }}</td>
 					<td>{{ pending_channel.channel.remote_balance }}</td>
-					<td><span title="{{ pending_channel.closing_txid }}"><a ng-click="openClosingTxInExplorer(pending_channel.closing_txid)" title="View transaction {{ pending_channel.closing_txid }} in explorer">{{ pending_channel.closing_txid | firstlast:4:6 }}</a></span> <button type="button" class="btn btn-default btn-xs" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ pending_channel.closing_txid }}" ngclipboard-success="closingTxCopied(pending_channel);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="pending_channel.closingTxCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>
-						<button type="button" class="btn btn-default btn-xs" aria-label="View in block explorer" ng-click="openClosingTxInExplorer(pending_channel.closing_txid)"><span class="glyphicon glyphicon-share" aria-hidden="true"></span></button></td>
 				</tr>
 			</tbody>
 			<tfoot ng-show="numberOfWaitingCloseChannels > 10">
 				<tr>
-					<td colspan="5" class="text-left">
+					<td colspan="4" class="text-left">
 						<div st-pagination="" st-items-by-page="cfg.itemsPerPage" st-displayed-pages="10"></div>
 					</td>
 					<td colspan="2" class="text-right">
