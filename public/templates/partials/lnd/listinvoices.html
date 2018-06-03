@@ -16,7 +16,7 @@
 				<tr ng-repeat="invoice in st_invoices">
 					<td>{{ invoice.creation_date * 1000 | date:'medium' }}</td>
 					<td>{{ invoice.memo }}</td>
-					<td>{{ invoice.value }}</td>
+					<td><amount base-value="invoice.value" /></td>
 					<td><span ng-hide="invoice.settled" class="fa fa-circle" title="Payment not received yet" aria-label="Payment not received yet" style="color:DarkOrange "/><span ng-show="invoice.settled" class="fa fa-circle" title="Payment received" aria-label="Payment received" style="color:lightgreen;"/></td>
 					<td><span ng-hide="invoice.settle_date == 0">{{ invoice.settle_date * 1000 | date:'medium' }}</span></td>
 					<td class="payreq">{{ invoice.payment_request | firstlast:20:10 }}  <button type="button" class="btn btn-default btn-xs" title="Copy to clipboard" aria-label="Copy to clipboard" ngclipboard data-clipboard-text="{{ invoice.payment_request }}" ngclipboard-success="payreqCopied(invoice);" uib-tooltip="Copied!" tooltip-placement="bottom" tooltip-trigger="'none'" tooltip-is-open="invoice.payreqCopied"><span class="glyphicon glyphicon-copy" aria-hidden="true"></span></button>

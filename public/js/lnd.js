@@ -42,6 +42,8 @@ lnwebcli.config(["ngToastProvider", function (ngToast) {
 
 lnwebcli.constant("config", {
 	keys: {
+		AMOUNT_ALT_UNIT: "amountaltunit",
+		AMOUNT_MAIN_UNIT: "amountmainunit",
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
@@ -71,6 +73,7 @@ lnwebcli.constant("config", {
 		EXPLORER_BLKHEIGHT_BITCOIN_MAINNET: "explorerblkheightbitcoinmainnet"
 	},
 	defaults: {
+		AMOUNT_UNITS: ["none", "sat", "bit", "mbtc", "btc", "usd", "eur"],
 		AUTO_REFRESH: 60000, // 1 minute
 		MAX_LOG_BUFFER: 500, // 500 lines of logs max
 		MAX_NOTIF_BUFFER: 500, // 500 lines of notifications max
@@ -174,6 +177,7 @@ lnwebcli.constant("config", {
 
 require("./filters")(lnwebcli);
 require("./factories")(lnwebcli);
-require("./controllers/lnd")(lnwebcli);
+require("./directives")(lnwebcli);
 require("./directives/lnd")(lnwebcli);
 require("./services/lnd")(lnwebcli);
+require("./controllers/lnd")(lnwebcli);

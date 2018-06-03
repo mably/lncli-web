@@ -1,11 +1,13 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($uibModalInstance, settings, lncli) {
+	module.exports = function ($uibModalInstance, settings, lncli, config) {
 
 		var $ctrl = this;
 
 		$ctrl.values = settings;
+		$ctrl.amountMainUnits = config.defaults.AMOUNT_UNITS;
+		$ctrl.amountAltUnits = config.defaults.AMOUNT_UNITS;
 
 		$ctrl.ok = function () {
 			lncli.setConfigValues($ctrl.values).then(function (response) {

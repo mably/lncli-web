@@ -40,6 +40,14 @@
 			format: function (str) {
 				var args = arguments;
 				return str.replace(/{[0-9]}/g, (matched) => args[parseInt(matched.replace(/[{}]/g, "")) + 1]);
+			},
+
+			/**
+			 * TODO
+			 */
+			toFixedWithoutTrailingZeroes: function (value, nbdec) {
+				var valueStr = value.toFixed(nbdec);
+				return valueStr.replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, "$1");
 			}
 
 		};
