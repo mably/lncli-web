@@ -94,3 +94,12 @@ span.panel-title {
 #editsettings-modal-body > form {
 	margin-top: 1em;
 }
+.amount {
+}
+.amount .amount-main {
+}
+.amount .amount-alt {
+	font-size: 75%;
+	font-style: italic;
+	line-height: 0.8em;
+}

@@ -16,9 +16,9 @@
 				<tr ng-repeat="forward in st_forwards">
 					<td>{{ forward.chan_id_in | firstlast:4 }}</td>
 					<td>{{ forward.chan_id_out | firstlast:4 }}</td>
-					<td>{{ forward.amt_in }}</td>
-					<td>{{ forward.amt_out }}</td>
-					<td>{{ forward.fee }}</td>
+					<td><amount base-value="forward.amt_in" /></td>
+					<td><amount base-value="forward.amt_out" /></td>
+					<td><amount base-value="forward.fee" /></td>
 					<td>{{ forward.timestamp * 1000 | date:'medium' }}</td>
 				</tr>
 			</tbody>
