@@ -34,7 +34,7 @@ module.exports = function (lncli, config, utils) {
 						case "eur":
 							lncli.getCoinPrice(true, mainUnit).then(function (price) {
 								mainValue = price * scope.baseValue / 100000000;
-								scope.mainValue = utils.toFixedWithoutTrailingZeroes(mainValue, 2);
+								scope.mainValue = utils.toFixedWithoutTrailingZeroes(mainValue, 4);
 								scope.mainUnit = mainUnit;
 							}, function (err) {
 								console.log("Error:", err);
@@ -73,7 +73,7 @@ module.exports = function (lncli, config, utils) {
 						case "eur":
 							lncli.getCoinPrice(true, altUnit).then(function (price) {
 								altValue = price * scope.baseValue / 100000000;
-								scope.altValue = utils.toFixedWithoutTrailingZeroes(altValue, 2);
+								scope.altValue = utils.toFixedWithoutTrailingZeroes(altValue, 4);
 								scope.altUnit = altUnit;
 							}, function (err) {
 								console.log("Error:", err);
