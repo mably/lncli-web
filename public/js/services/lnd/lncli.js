@@ -30,6 +30,8 @@
 			VERIFYMESSAGE: "/api/lnd/verifymessage"
 		};
 
+		var BLOCKCHAIN_INFO_TICKER_URL = "https://blockchain.info/ticker";
+
 		this.restrictedUser = false;
 
 		var infoCache = null;
@@ -38,6 +40,8 @@
 		var knownPeersCache = null;
 		var configCache = null;
 		var addressesCache = null;
+		var pricesCache = null;
+		var pricesWaiters = null;
 		var wsRequestListeners = {};
 
 		var endPoint = utils.getUrlParameterByName("endpoint") || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
@@ -756,6 +760,55 @@
 					config.keys.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET, config.defaults.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET);
 			}
 			return utils.format(blockUrl, height);
+		};
+
+		this.getCoinPrice = function (useCache, currency) {
+			var deferred = $q.defer();
+			var now = new Date().getTime();
+			if (useCache && pricesCache && (pricesCache.ts > (now - 30 * 1000))) {
+				try {
+					var price = pricesCache.data[currency.toUpperCase()].last;
+					deferred.resolve(price);
+				} catch (err) {
+					deferred.reject(err);
+				}
+			} else {
+				if (pricesWaiters) {
+					pricesWaiters.push(deferred);
+				} else {
+					pricesWaiters = [];
+					pricesWaiters.push(deferred);
+					$http.get(BLOCKCHAIN_INFO_TICKER_URL).then(function (response) {
+						try {
+							pricesCache = { data: response.data, ts: now };
+							var price = pricesCache.data[currency.toUpperCase()].last;
+							while (pricesWaiters.length) {
+								try {
+									pricesWaiters.pop().resolve(price);
+								} catch (e) {
+								}
+							}
+						} catch (err) {
+							while (pricesWaiters.length) {
+								try {
+									pricesWaiters.pop().reject(err);
+								} catch (e) {
+								}
+							}
+						}
+						pricesWaiters = null;
+					}, function (err) {
+						while (pricesWaiters.length) {
+							try {
+								pricesWaiters.pop().reject(err);
+							} catch (e) {
+							}
+						}
+						pricesWaiters = null;
+					});
+				}
+			}
+			return deferred.promise;
 		};
 
 		Object.seal(this);
