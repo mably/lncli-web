@@ -4,18 +4,24 @@
 		<table class="table table-striped" st-table="st_forwards" st-safe-src="forwards" ng-if="forwards.length > 0">
 			<thead>
 				<tr>
-					<th st-sort="chan_id_in">Channel Id In</th>
-					<th st-sort="chan_id_out">Channel Id Out</th>
-					<th st-sort="amt_in">Amt In</th>
-					<th st-sort="amt_out">Amt Out</th>
+					<th st-sort="chan_id_in">In: Channel Id / Alias</th>
+					<th st-sort="chan_id_out">Out: Channel Id / Alias </th>
+					<th st-sort="amt_in">Amount In</th>
+					<th st-sort="amt_out">Amount Out</th>
 					<th st-sort="fee">Fee</th>
 					<th st-sort="timestamp" st-sort-default="reverse">Timestamp</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="forward in st_forwards">
-					<td>{{ forward.chan_id_in | firstlast:4 }}</td>
-					<td>{{ forward.chan_id_out | firstlast:4 }}</td>
+					<td>
+						<div>{{ forward.chan_id_in }}</div>
+						<div>{{ channelPeerAlias(forward.chan_id_in) }}</div>
+					</td>
+					<td>
+						<div>{{ forward.chan_id_out }}</div>
+						<div>{{ channelPeerAlias(forward.chan_id_out) }}</div>
+					</td>
 					<td><amount base-value="forward.amt_in" /></td>
 					<td><amount base-value="forward.amt_out" /></td>
 					<td><amount base-value="forward.fee" /></td>
