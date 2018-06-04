@@ -14,22 +14,40 @@
 
 		$scope.refresh = function () {
 			if ($scope.cfg.listVisible) {
-				$scope.lastRefreshed = Date.now();
-				$scope.updateNextRefresh();
-				$scope.spinner++;
-				lncli.forwardingHistory().then(function (response) {
-					$scope.spinner--;
-					console.log(response);
-					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.forwards = processForwards(response.data.forwarding_events);
-					$scope.numberOfForwards = $scope.forwards.length;
-				}, function (err) {
-					$scope.spinner--;
-					$scope.numberOfForwards = 0;
-					console.log("Error:", err);
-					lncli.alert(err.message || err.statusText);
+				lncli.getKnownPeers(true).then(function (knownPeers) {
+					$scope.knownPeers = knownPeers;
+					lncli.listChannels(true).then(function (response) {
+
+						$scope.data = JSON.stringify(response.data, null, "\t");
+						$scope.channels = processChannels(response.data.channels);
+
+						$scope.lastRefreshed = Date.now();
+						$scope.updateNextRefresh();
+						$scope.spinner++;
+						lncli.forwardingHistory().then(function (response) {
+							$scope.spinner--;
+							console.log(response);
+							$scope.data = JSON.stringify(response.data, null, "\t");
+							$scope.forwards = processForwards(response.data.forwarding_events);
+							$scope.numberOfForwards = $scope.forwards.length;
+						}, function (err) {
+							$scope.spinner--;
+							$scope.numberOfForwards = 0;
+							console.log("Error:", err);
+							lncli.alert(err.message || err.statusText);
+						});
+
+					});
 				});
 			}
+		};
+
+		var processChannels = function (channels) {
+			var processedChannels = {};
+			channels.forEach(function (channel) {
+				processedChannels[channel.chan_id] = channel.remote_pubkey;
+			});
+			return processedChannels;
 		};
 
 		var processForwards = function (forwards) {
@@ -48,6 +66,18 @@
 		$scope.updateNextRefresh = function () {
 			$timeout.cancel($scope.nextRefresh);
 			$scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
+		};
+
+		$scope.channelPeerAlias = function (chanid) {
+			var alias;
+			var pubkey = $scope.channels[chanid];
+			if (pubkey) {
+				var knownPeer = $scope.knownPeers[pubkey];
+				alias = knownPeer ? knownPeer.custom_alias : null;
+			} else {
+				alias = null;
+			}
+			return alias;
 		};
 
 		$scope.pageSizeChanged = function () {
