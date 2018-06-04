@@ -30,6 +30,16 @@ module.exports = function (lncli, config, utils) {
 						case "none":
 							scope.mainValue = scope.baseValue;
 							break;
+						case "usd":
+						case "eur":
+							lncli.getCoinPrice(true, mainUnit).then(function (price) {
+								mainValue = price * scope.baseValue / 100000000;
+								scope.mainValue = utils.toFixedWithoutTrailingZeroes(mainValue, 2);
+								scope.mainUnit = mainUnit;
+							}, function (err) {
+								console.log("Error:", err);
+							});
+							break;
 						default:
 							scope.mainValue = scope.baseValue;
 							scope.mainUnit = "sat";
@@ -58,6 +68,16 @@ module.exports = function (lncli, config, utils) {
 							scope.altUnit = "bit";
 							break;
 						case "none":
+							break;
+						case "usd":
+						case "eur":
+							lncli.getCoinPrice(true, altUnit).then(function (price) {
+								altValue = price * scope.baseValue / 100000000;
+								scope.altValue = utils.toFixedWithoutTrailingZeroes(altValue, 2);
+								scope.altUnit = altUnit;
+							}, function (err) {
+								console.log("Error:", err);
+							});
 							break;
 						default:
 							scope.altValue = scope.baseValue;
