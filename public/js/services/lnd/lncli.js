@@ -31,6 +31,7 @@
 		};
 
 		var BLOCKCHAIN_INFO_TICKER_URL = "https://blockchain.info/ticker";
+		var PRICE_CACHE_MAXAGE = 30 * 1000;
 
 		this.restrictedUser = false;
 
@@ -40,8 +41,9 @@
 		var knownPeersCache = null;
 		var configCache = null;
 		var addressesCache = null;
+		var channelsFetchers = null;
 		var pricesCache = null;
-		var pricesWaiters = null;
+		var pricesFetchers = null;
 		var wsRequestListeners = {};
 
 		var endPoint = utils.getUrlParameterByName("endpoint") || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
@@ -590,12 +592,30 @@
 			if (useCache && channelsCache) {
 				deferred.resolve(channelsCache);
 			} else {
-				$http.get(serverUrl(API.LISTCHANNELS)).then(function (response) {
-					channelsCache = response;
-					deferred.resolve(response);
-				}, function (err) {
-					deferred.reject(err);
-				});
+				if (channelsFetchers) {
+					channelsFetchers.push(deferred);
+				} else {
+					channelsFetchers = [];
+					channelsFetchers.push(deferred);
+					$http.get(serverUrl(API.LISTCHANNELS)).then(function (response) {
+						channelsCache = response;
+						while (channelsFetchers.length) {
+							try {
+								channelsFetchers.pop().resolve(response);
+							} catch (e) {
+							}
+						}
+						channelsFetchers = null;
+					}, function (err) {
+						while (channelsFetchers.length) {
+							try {
+								channelsFetchers.pop().reject(err);
+							} catch (e) {
+							}
+						}
+						channelsFetchers = null;
+					});
+				}
 			}
 			return deferred.promise;
 		};
@@ -765,7 +785,7 @@
 		this.getCoinPrice = function (useCache, currency) {
 			var deferred = $q.defer();
 			var now = new Date().getTime();
-			if (useCache && pricesCache && (pricesCache.ts > (now - 30 * 1000))) {
+			if (useCache && pricesCache && (pricesCache.ts > (now - PRICE_CACHE_MAXAGE))) {
 				try {
 					var price = pricesCache.data[currency.toUpperCase()].last;
 					deferred.resolve(price);
@@ -773,38 +793,38 @@
 					deferred.reject(err);
 				}
 			} else {
-				if (pricesWaiters) {
-					pricesWaiters.push(deferred);
+				if (pricesFetchers) {
+					pricesFetchers.push(deferred);
 				} else {
-					pricesWaiters = [];
-					pricesWaiters.push(deferred);
+					pricesFetchers = [];
+					pricesFetchers.push(deferred);
 					$http.get(BLOCKCHAIN_INFO_TICKER_URL).then(function (response) {
 						try {
 							pricesCache = { data: response.data, ts: now };
 							var price = pricesCache.data[currency.toUpperCase()].last;
-							while (pricesWaiters.length) {
+							while (pricesFetchers.length) {
 								try {
-									pricesWaiters.pop().resolve(price);
+									pricesFetchers.pop().resolve(price);
 								} catch (e) {
 								}
 							}
 						} catch (err) {
-							while (pricesWaiters.length) {
+							while (pricesFetchers.length) {
 								try {
-									pricesWaiters.pop().reject(err);
+									pricesFetchers.pop().reject(err);
 								} catch (e) {
 								}
 							}
 						}
-						pricesWaiters = null;
+						pricesFetchers = null;
 					}, function (err) {
-						while (pricesWaiters.length) {
+						while (pricesFetchers.length) {
 							try {
-								pricesWaiters.pop().reject(err);
+								pricesFetchers.pop().reject(err);
 							} catch (e) {
 							}
 						}
-						pricesWaiters = null;
+						pricesFetchers = null;
 					});
 				}
 			}
