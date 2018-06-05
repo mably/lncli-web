@@ -14,7 +14,7 @@
 		$ctrl.ok = function () {
 			if (checkform()) {
 				$ctrl.spinner++;
-				lncli.openChannel($ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt,
+				lncli.openChannel($ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt, $ctrl.values.satperbyte,
 						$ctrl.values.targetconf, $ctrl.values.remotecsvdelay, $ctrl.values.privatechan).then(function (response) {
 					console.log("OpenChannel", response);
 					var requestId = response.rid;

@@ -229,6 +229,9 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 						local_funding_amount: Number(data.localamt),
 						push_sat: Number(data.pushamt)
 					};
+					if (data.satperbyte) {
+						openChannelRequest.sat_per_byte = Number(data.satperbyte);
+					}
 					if (data.targetconf) {
 						openChannelRequest.target_conf = Number(data.targetconf);
 					}
