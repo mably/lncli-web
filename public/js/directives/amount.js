@@ -6,7 +6,6 @@ module.exports = function (lncli, config, utils) {
 		scope: { baseValue: "=?baseValue", baseUnit: "=?baseUnit", mainUnit: "=?mainUnit", altUnit: "=?altUnit" },
 		templateUrl: "templates/partials/amount.html",
 		link: function (scope, elt, attrs) {
-			console.log(attrs);
 			if (!attrs.baseUnit || (attrs.baseUnit === "sat")) {
 				var mainUnit = attrs.mainUnit ? attrs.mainUnit : lncli.getConfigValue(config.keys.AMOUNT_MAIN_UNIT);
 				if (mainUnit) {
@@ -85,7 +84,6 @@ module.exports = function (lncli, config, utils) {
 					}
 				}
 			}
-			console.log(scope);
 		},
 	};
 };
