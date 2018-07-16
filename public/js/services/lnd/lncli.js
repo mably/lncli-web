@@ -329,7 +329,7 @@
 					}
 					if (knownPeerAddress && (knownPeerAddress != peer.address)) {
 						var peerHostPort = peer.address.split(":");
-						var knownPeerHostPort = knownPeer.address.split(":");
+						var knownPeerHostPort = knownPeerAddress.split(":");
 						knownPeer.address = peerHostPort[0] + ":" + knownPeerHostPort[1]; // keep overriden port
 					}
 					knownPeer.lastseen = new Date().getTime();
