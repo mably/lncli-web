@@ -62,6 +62,22 @@
 
 		};
 
+		$scope.sendToRoute = function () {
+
+			var modalInstance = $uibModal.open(config.modals.SEND_TO_ROUTE);
+
+			modalInstance.rendered.then(function () {
+				$("#sendtoroute-payhash").focus();
+			});
+
+			modalInstance.result.then(function (values) {
+				console.log("values", values);
+			}, function () {
+				console.log("Modal dismissed at: " + new Date());
+			});
+
+		};
+
 		$scope.newAddress = function () {
 
 			var modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);

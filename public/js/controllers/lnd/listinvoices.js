@@ -1,7 +1,7 @@
 (function () {
 	"use strict";
 
-	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
+	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config, utils) {
 
 		$scope.spinner = 0;
 		$scope.nextRefresh = null;
@@ -35,6 +35,7 @@
 		var processInvoices = function (invoices) {
 			invoices.forEach(function (invoice) {
 				invoice.value = parseInt(invoice.value);
+				invoice.hash = utils.buffer2hexa(invoice.r_hash.data, false);
 			});
 			return invoices;
 		};
