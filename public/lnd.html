@@ -38,6 +38,7 @@
 					<li><a ng-click="newAddress()">New Address</a></li>
 					<li><a ng-click="sendCoins()">Send Coins</a></li>
 					<li><a ng-click="queryRoute()">Query Routes</a></li>
+					<li><a ng-click="sendToRoute()">Send to route</a></li>
 					<li role="separator" class="divider"></li>
 					<li><a ng-click="signMessage()">Sign message</a></li>
 					<li><a ng-click="verifyMessage()">Verify message</a></li>
@@ -47,7 +48,7 @@
 					<li role="separator" class="divider"></li>
 					<li><a ng-click="editSettings()">Settings</a></li>
 				</ul>
-			  </li> 
+			  </li>
 		  </ul>
 		  <ul class="nav navbar-nav navbar-right">
 		  </ul>
@@ -68,7 +69,7 @@
 				<div class="btn-toolbar pull-right">
 					<button type="button" class="btn btn-default btn-sm" title="Refresh" aria-label="Refresh" ng-click="refresh()"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
 					<button type="button" class="btn btn-default btn-sm" title="Show JSON" aria-label="Show JSON data" data-toggle="collapse" data-target="#getinfo-data"><span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></button>
-				</div>			  
+				</div>
 			</div>
 			<div class="panel-body">
 			  <get-info info="info" />

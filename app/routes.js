@@ -7,6 +7,7 @@ const graphviz = require("graphviz");
 const commandExistsSync = require("command-exists").sync;
 
 const DEFAULT_MAX_NUM_ROUTES_TO_QUERY = 10;
+const DEFAULT_FINAL_CLTV_DELTA = 144;
 
 // expose the routes to our app with module.exports
 module.exports = function (app, lightning, db, config) {
@@ -279,7 +280,13 @@ module.exports = function (app, lightning, db, config) {
 	// queryroute
 	app.post("/api/lnd/queryroute", function (req, res) {
 		var numRoutes = config.maxNumRoutesToQuery || DEFAULT_MAX_NUM_ROUTES_TO_QUERY;
-		lightning.queryRoutes({ pub_key: req.body.pubkey, amt: req.body.amt, num_routes: numRoutes }, function (err, response) {
+		var finalCltvDelta = config.finalCltvDelta || DEFAULT_FINAL_CLTV_DELTA;
+		lightning.queryRoutes({
+			pub_key: req.body.pubkey,
+			amt: req.body.amt,
+			num_routes: numRoutes,
+			final_cltv_delta: finalCltvDelta
+		}, function (err, response) {
 			if (err) {
 				logger.debug("QueryRoute Error:", err);
 				err.error = err.message;
@@ -289,6 +296,29 @@ module.exports = function (app, lightning, db, config) {
 				res.json(response);
 			}
 		});
+	});
+
+	// sendtoroute
+	app.post("/api/lnd/sendtoroute", function (req, res) {
+		if (req.limituser) {
+			return res.sendStatus(403); // forbidden
+		} else {
+			var sendToRouteRequest = {
+				payment_hash_string: req.body.payhash,
+				routes: JSON.parse(req.body.routes)
+			};
+			logger.debug("SendToRoute", sendToRouteRequest);
+			lightning.sendToRouteSync(sendToRouteRequest, function (err, response) {
+				if (err) {
+					logger.debug("SendToRoute Error:", err);
+					err.error = err.message;
+					res.send(err);
+				} else {
+					logger.debug("SendToRoute:", response);
+					res.json(response);
+				}
+			});
+		}
 	});
 
 	// newaddress

@@ -135,6 +135,19 @@ lnwebcli.constant("config", {
 				}
 			}
 		},
+		SEND_TO_ROUTE: {
+			animation: true,
+			ariaLabelledBy: "sendtoroute-modal-title",
+			ariaDescribedBy: "sendtoroute-modal-body",
+			templateUrl: "templates/partials/lnd/sendtoroute.html",
+			controller: "ModalSendToRouteCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+				}
+			}
+		},
 		SIGN_MESSAGE: {
 			animation: true,
 			ariaLabelledBy: "signmessage-modal-title",

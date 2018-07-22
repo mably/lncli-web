@@ -1,0 +1,25 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title" id="sendtoroute-modal-title">Send to route <i class="fa fa-spinner fa-spin" ng-show="$ctrl.spinner > 0"></i></h3>
+	</div>
+	<div class="modal-body" id="sendtoroute-modal-body">
+		<div class="alert alert-warning" role="alert" ng-show="$ctrl.warning">
+			<button type="button" class="close" ng-click="$ctrl.dismissAlert()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			{{ $ctrl.warning }}
+		</div>
+		<form>
+			<div class="form-group">
+				<label for="sendtoroute-payhash">Payment hash</label>
+				<input type="text" class="form-control" id="sendtoroute-payhash" placeholder="invoice payment hash" ng-model="$ctrl.values.payhash">
+			</div>
+			<div class="form-group">
+				<label for="sendtoroute-routes">Route(s)</label>
+				<input type="text" class="form-control" id="sendtoroute-routes" placeholder="payment routes" ng-model="$ctrl.values.routes">
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">Send to route</button>
+		<button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Close</button>
+	</div>
+<div>
