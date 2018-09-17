@@ -36,8 +36,21 @@ module.exports = function (program) {
 
 	// setup lightning client =================
 	const lndHost = program.lndhost || defaults.lndHost;
+
+
+        // define macaroon configuration here.
 	const lndCertPath = program.lndCertPath || defaults.lndCertPath;
-	const macaroonPath = program.macaroonPath || defaults.macaroonPath;
+
+        // If `disableMacaroon` is set, ignore macaroon support for the session. Otherwise
+        // we read from `macarooonPath` variable and alternatively fallback to default `macaroonPath`.
+        var macaroonPath = null;
+        if (program.disableMacaroon) {
+            console.log("Macaroon support is disabled")
+        } else {
+            macaroonPath = program.macaroonPath || defaults.macaroonPath;
+            console.log("Macaroon support is enabled. Macaroon path is " + macaroonPath);
+        }
+        
 	const lightning = require("./lightning")(defaults.lndProto, lndHost, lndCertPath, macaroonPath);
 
 	// init lnd module =================
