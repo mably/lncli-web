@@ -15,6 +15,7 @@ program
 	.option("-r, --limituser [login]", "basic authentication login for readonly account")
 	.option("-w, --limitpwd [password]", "basic authentication password for readonly account")
 	.option("-m, --macaroon-path [file path]", "path to admin.macaroon file")
+	.option("-d, --disable-macaroon", "set this flag if you do not want to use macaroon files for auth", false)
 	.option("-f, --logfile [file path]", "path to file where to store the application logs")
 	.option("-e, --loglevel [level]", "level of logs to display (debug, info, warn, error)")
 	.option("-n, --lndlogfile <file path>", "path to lnd log file to send to browser")
