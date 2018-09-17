@@ -96,6 +96,7 @@ node server --help
     -p, --pwd [password]          basic authentication password
     -r, --limituser [login]       basic authentication login for readonly account
     -w, --limitpwd [password]     basic authentication password for readonly account
+    -d, --disable-macaroon        set this flag if you do not want to use macaroon files for auth
     -f, --logfile [file path]     path to file where to store the application logs
     -e, --loglevel [level]        level of logs to display (debug, info, warn, error)
     -n, --lndlogfile <file path>  path to lnd log file to send to browser
