@@ -30,7 +30,7 @@ module.exports = function (app, lightning, db, config) {
                     logger.info(methodName, params);
                     let response = await lightning.call(methodName, params);
                     if (options.postHook) {
-                        response = options.postHook(response);
+                        response = options.postHook(req, response);
                     }
                     res.json(response);
                 } catch(e) {
@@ -54,7 +54,7 @@ module.exports = function (app, lightning, db, config) {
 	app.get("/api/lnd/channelbalance", lightningRPCAdapter("channelBalance"));
 
 	app.get("/api/lnd/getinfo", lightningRPCAdapter("getInfo", {
-            postHook: (response) => {
+            postHook: (req, response) => {
                 if ((!response.uris || response.uris.length === 0) && (config.lndAddress)) {
                     response.uris = [response.identity_pubkey + "@" + config.lndAddress];
                 }
@@ -137,124 +137,78 @@ module.exports = function (app, lightning, db, config) {
                 return {type: req.body.type};
             }
         }));
-        /*
 
-	// newaddress
-	app.post("/api/lnd/newaddress", function (req, res) {
-		lightning.newAddress({ type: req.body.type }, function (err, response) {
-			if (err) {
-				logger.debug("NewAddress Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("NewAddress:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.post("/api/lnd/sendcoins", lightningRPCAdapter("sendCoins", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+		return {addr: req.body.addr, amount: req.body.amount};
+            }
+        }));
 
-	// sendcoins
-	app.post("/api/lnd/sendcoins", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var sendCoinsRequest = { addr: req.body.addr, amount: req.body.amount };
-			logger.debug("SendCoins", sendCoinsRequest);
-			lightning.sendCoins(sendCoinsRequest, function (err, response) {
-				if (err) {
-					logger.debug("SendCoins Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("SendCoins:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
+	app.post("/api/lnd/rendergraph", lightningRPCAdapter("describeGraph", {
+            isLimitedToAuthorizedUser: true,
+            postHook: (req, response) => {
+                var peers = req.body.peers || {};
 
-	// rendergraph
-	app.post("/api/lnd/rendergraph", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			if (commandExistsSync("dot")) {
-				lightning.describeGraph({}, function (err, response) {
-					if (err) {
-						logger.debug("DescribeGraph Error:", err);
-						err.error = err.message;
-						res.send(err);
-					} else {
-						logger.debug("DescribeGraph:", response);
+                var nodesMap = {};
+                var nodes = response.nodes;
+                var i;
+                var node;
+                for (i = 0; i < nodes.length; i++) {
+                    node = nodes[i];
+                    nodesMap[node.pub_key] = node;
+                }
 
-						var peers = req.body.peers || {};
+                var channeledNodes = {};
+                var edges = response.edges;
+                var edge;
+                for (i = 0; i < edges.length; i++) {
+                    edge = edges[i];
+                    if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
+                        channeledNodes[edge.node1_pub] = edge.node1_pub;
+                        channeledNodes[edge.node2_pub] = edge.node2_pub;
+                    }
+                }
 
-						var nodesMap = {};
-						var nodes = response.nodes;
-						var i;
-						var node;
-						for (i = 0; i < nodes.length; i++) {
-							node = nodes[i];
-							nodesMap[node.pub_key] = node;
-						}
+                // Create digraph
+                var graphName = "LightningNetwork";
+                var g = graphviz.graph(graphName);
 
-						var channeledNodes = {};
-						var edges = response.edges;
-						var edge;
-						for (i = 0; i < edges.length; i++) {
-							edge = edges[i];
-							if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
-								channeledNodes[edge.node1_pub] = edge.node1_pub;
-								channeledNodes[edge.node2_pub] = edge.node2_pub;
-							}
-						}
+                for (var nodePubKey in channeledNodes) {
+                    if (channeledNodes.hasOwnProperty(nodePubKey)) {
+                        // Add node
+                        node = nodesMap[nodePubKey];
+                        var peer = peers[nodePubKey];
+                        var nodeLabel;
+                        if (peer && peer.alias) {
+                            nodeLabel = peer.alias;
+                        } else {
+                            nodeLabel = node.pub_key.substr(0, 10);
+                        }
+                        console.log(node, nodeLabel);
+                        g.addNode(node.pub_key, { label: nodeLabel });
+                    }
+                }
 
-						// Create digraph
-						var graphName = "LightningNetwork";
-						var g = graphviz.graph(graphName);
+                for (i = 0; i < edges.length; i++) {
+                    // Add edge
+                    edge = edges[i];
+                    if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
+                        var edgeLabel = " " + edge.channel_id.substr(0, 10);
+                        g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: "12.0" });
+                    }
+                }
 
-						for (var nodePubKey in channeledNodes) {
-							if (channeledNodes.hasOwnProperty(nodePubKey)) {
-								// Add node
-								node = nodesMap[nodePubKey];
-								var peer = peers[nodePubKey];
-								var nodeLabel;
-								if (peer && peer.alias) {
-									nodeLabel = peer.alias;
-								} else {
-									nodeLabel = node.pub_key.substr(0, 10);
-								}
-								console.log(node, nodeLabel);
-								g.addNode(node.pub_key, { label: nodeLabel });
-							}
-						}
+                // Print the dot script
+                console.log(g.to_dot());
 
-						for (i = 0; i < edges.length; i++) {
-							// Add edge
-							edge = edges[i];
-							if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
-								var edgeLabel = " " + edge.channel_id.substr(0, 10);
-								g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: "12.0" });
-							}
-						}
+                // Set GraphViz path (if not in your path)
+                //g.setGraphVizPath("/usr/local/bin");
+                // Generate a SVG output
+                g.output("svg", __dirname + "/../data/networkgraph.svg");
 
-						// Print the dot script
-						console.log(g.to_dot());
-
-						// Set GraphViz path (if not in your path)
-						//g.setGraphVizPath("/usr/local/bin");
-						// Generate a SVG output
-						g.output("svg", __dirname + "/../data/networkgraph.svg");
-
-						res.json(response);
-					}
-				});
-			} else {
-				logger.debug("Missing graphviz");
-				return res.status(500).send("Missing graphviz");
-			}
-		}
-	});
+            }
+        }));
 
 	// networkgraph.svg
 	app.get("/api/lnd/networkgraph.svg", function (req, res) {
@@ -265,38 +219,22 @@ module.exports = function (app, lightning, db, config) {
 		}
 	});
 
-	// signmessage
-	app.post("/api/lnd/signmessage", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			lightning.signMessage({ msg: Buffer.from(req.body.msg, "utf8") }, function (err, response) {
-				if (err) {
-					logger.debug("SignMessage Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("SignMessage:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
+	app.post("/api/lnd/signmessage", lightningRPCAdapter("signMessage", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                return {msg: Buffer.from(req.body.msg, "utf8")};
+            }
+        }));
 
-	// verifymessage
-	app.post("/api/lnd/verifymessage", function (req, res) {
-		lightning.verifyMessage({ msg: Buffer.from(req.body.msg, "utf8"), signature: req.body.signature }, function (err, response) {
-			if (err) {
-				logger.debug("VerifyMessage Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("VerifyMessage:", response);
-				res.json(response);
-			}
-		});
-	});
-        */
+	app.post("/api/lnd/verifymessage", lightningRPCAdapter("verifyMessage", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                return {
+                    msg: Buffer.from(req.body.msg, "utf8"),
+                    signature: req.body.signature
+                };
+            }
+        }));
 
 	// ln-payreq-auth.html
 	app.get("/ln-payreq-auth.html", function (req, res) {
