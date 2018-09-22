@@ -4,6 +4,7 @@ const express  = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");         // pull information from HTML POST (express4)
 const methodOverride = require("method-override"); // simulate DELETE and PUT (express4)
+const LightningManager = require("./lightning");
 
 // expose the server to our app with module.exports
 module.exports = function (program) {
@@ -51,7 +52,7 @@ module.exports = function (program) {
             console.log("Macaroon support is enabled. Macaroon path is " + macaroonPath);
         }
         
-	const lightning = require("./lightning")(defaults.lndProto, lndHost, lndCertPath, macaroonPath);
+	var lightning = new LightningManager(defaults.lndProto, lndHost, lndCertPath, macaroonPath);
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);
