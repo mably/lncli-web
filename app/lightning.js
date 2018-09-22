@@ -72,6 +72,13 @@ class LightningManager {
         this.activeClient = null;
     }
 
+    /*
+     * Calls a Lightning gRPC method.
+     * @param {string} method - the gRPC method to call (ex. "getInfo")
+     * @param {Object} parameters - optional key/value parameters to supply for the API call
+     * @returns {Promise} - if successful, response if an Object containing API result payload, otherwise it will fail
+       with a LightningError.
+     */
     async call(method, parameters) {
         return new Promise((resolve, reject) => {
             let activeClient = this.getActiveClient();
@@ -79,7 +86,7 @@ class LightningManager {
                 if (err) {
 
                     // drop active client, so that it can be recreated
-                    this.activeClient = null
+                    this.activeClient = null;
 
                     switch(err.code) {
                         case grpc.status.UNIMPLEMENTED:
