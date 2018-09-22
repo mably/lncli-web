@@ -12,314 +12,132 @@ const DEFAULT_FINAL_CLTV_DELTA = 144;
 // expose the routes to our app with module.exports
 module.exports = function (app, lightning, db, config) {
 
+        var lightningRPCAdapter = function(methodName, options) {
+            return async function(req, res) {
+
+                options = options || {};
+
+                if (options.isLimitedToAuthorizedUser && req.limituser) {
+                    return res.sendStatus(403);
+                }
+
+                var params = {};
+                if (options.preHook) {
+                    params = options.preHook(req);
+                }
+
+                try {
+                    logger.info(methodName, params);
+                    let response = await lightning.call(methodName, params);
+                    if (options.postHook) {
+                        response = options.postHook(response);
+                    }
+                    res.json(response);
+                } catch(e) {
+                    res.json({ error: e });
+                }
+            }
+        };
+
 	// api ---------------------------------------------------------------------
+	app.get("/api/lnd/getnetworkinfo", lightningRPCAdapter("getNetworkInfo"));
+	app.post("/api/lnd/getnodeinfo", lightningRPCAdapter("getNodeInfo"));
+	app.get("/api/lnd/listpeers", lightningRPCAdapter("listPeers"));
+	app.get("/api/lnd/listhannels", lightningRPCAdapter("listChannels"));
+	app.get("/api/lnd/listpeers", lightningRPCAdapter("listPeers"));
+	app.get("/api/lnd/listchannels", lightningRPCAdapter("listChannels"));
+	app.get("/api/lnd/pendingchannels", lightningRPCAdapter("pendingChannels"));
+	app.get("/api/lnd/listpayments", lightningRPCAdapter("listPayments"));
+	app.get("/api/lnd/listinvoices", lightningRPCAdapter("listInvoices"));
+	app.get("/api/lnd/forwardinghistory", lightningRPCAdapter("forwardingHistory"));
+	app.get("/api/lnd/walletbalance", lightningRPCAdapter("walletBalance"));
+	app.get("/api/lnd/channelbalance", lightningRPCAdapter("channelBalance"));
 
-	// get lnd network info
-	app.get("/api/lnd/getnetworkinfo", function (req, res) {
-		lightning.getNetworkInfo({}, function (err, response) {
-			if (err) {
-				logger.debug("GetNetworkInfo Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("GetNetworkInfo:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.get("/api/lnd/getinfo", lightningRPCAdapter("getInfo", {
+            postHook: (response) => {
+                if ((!response.uris || response.uris.length === 0) && (config.lndAddress)) {
+                    response.uris = [response.identity_pubkey + "@" + config.lndAddress];
+                }
+                return response;
+            }
+        }));
 
-	// get lnd info
-	app.get("/api/lnd/getinfo", function (req, res) {
-		lightning.getInfo({}, function (err, response) {
-			if (err) {
-				logger.debug("GetInfo Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("GetInfo:", response);
-				if (!response.uris || response.uris.length === 0) {
-					if (config.lndAddress) {
-						response.uris = [
-							response.identity_pubkey + "@" + config.lndAddress
-						];
-					}
-				}
-				res.json(response);
-			}
-		});
-	});
+	app.get("/api/lnd/connectPeer", lightningRPCAdapter("connectPeer", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+	        return { addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true };
+            }
+        }));
 
-	// get lnd node info
-	app.post("/api/lnd/getnodeinfo", function (req, res) {
-		lightning.getNodeInfo({ pub_key: req.body.pubkey }, function (err, response) {
-			if (err) {
-				logger.debug("GetNodeInfo Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("GetNodeInfo:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.post("/api/lnd/disconnectPeer", lightningRPCAdapter("disconnectPeer", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+	        return {pub_key: req.body.pubkey};
+            }
+        }));
 
-	// get lnd node active channels list
-	app.get("/api/lnd/listpeers", function (req, res) {
-		lightning.listPeers({}, function (err, response) {
-			if (err) {
-				logger.debug("ListPeers Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ListPeers:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.post("/api/lnd/addinvoice", lightningRPCAdapter("addInvoice", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                var invoiceRequest = { memo: req.body.memo };
+                if (req.body.value) {
+                    invoiceRequest.value = req.body.value;
+                }
+                if (req.body.expiry) {
+                    invoiceRequest.expiry = req.body.expiry;
+                }
+                return invoiceRequest;
+            }
+        }));
 
-	// get lnd node opened channels list
-	app.get("/api/lnd/listchannels", function (req, res) {
-		lightning.listChannels({}, function (err, response) {
-			if (err) {
-				logger.debug("ListChannels Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ListChannels:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.post("/api/lnd/sendpayment", lightningRPCAdapter("addInvoice", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                var paymentRequest = { payment_request: req.body.payreq };
+                if (req.body.amt) {
+                    paymentRequest.amt = req.body.amt;
+                }
+                return paymentRequest;
+            }
+        }));
 
-	// get lnd node pending channels list
-	app.get("/api/lnd/pendingchannels", function (req, res) {
-		lightning.pendingChannels({}, function (err, response) {
-			if (err) {
-				logger.debug("PendingChannels Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("PendingChannels:", response);
-				res.json(response);
-			}
-		});
-	});
+	app.post("/api/lnd/decodepayreq", lightningRPCAdapter("decodePayReq", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                return {pay_req: req.body.payreq};
+            }
+        }));
 
-	// get lnd node payments list
-	app.get("/api/lnd/listpayments", function (req, res) {
-		lightning.listPayments({}, function (err, response) {
-			if (err) {
-				logger.debug("ListPayments Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ListPayments:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// get lnd node invoices list
-	app.get("/api/lnd/listinvoices", function (req, res) {
-		lightning.listInvoices({}, function (err, response) {
-			if (err) {
-				logger.debug("ListInvoices Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ListInvoices:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// get lnd node forwarding history
-	app.get("/api/lnd/forwardinghistory", function (req, res) {
-		lightning.forwardingHistory({}, function (err, response) {
-			if (err) {
-				logger.debug("ForwardingHistory Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ForwardingHistory:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// get the lnd node wallet balance
-	app.get("/api/lnd/walletbalance", function (req, res) {
-		lightning.walletBalance({}, function (err, response) {
-			if (err) {
-				logger.debug("WalletBalance Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("WalletBalance:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// get the lnd node channel balance
-	app.get("/api/lnd/channelbalance", function (req, res) {
-		lightning.channelBalance({}, function (err, response) {
-			if (err) {
-				logger.debug("ChannelBalance Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("ChannelBalance:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// connect peer to lnd node
-	app.post("/api/lnd/connectpeer", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var connectRequest = { addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true };
-			logger.debug("ConnectPeer Request:", connectRequest);
-			lightning.connectPeer(connectRequest, function (err, response) {
-				if (err) {
-					logger.debug("ConnectPeer Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("ConnectPeer:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
-
-	// disconnect peer from lnd node
-	app.post("/api/lnd/disconnectpeer", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var disconnectRequest = { pub_key: req.body.pubkey };
-			logger.debug("DisconnectPeer Request:", disconnectRequest);
-			lightning.disconnectPeer(disconnectRequest, function (err, response) {
-				if (err) {
-					logger.debug("DisconnectPeer Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("DisconnectPeer:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
-
-	// addinvoice
-	app.post("/api/lnd/addinvoice", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var invoiceRequest = { memo: req.body.memo };
-			if (req.body.value) {
-				invoiceRequest.value = req.body.value;
-			}
-			if (req.body.expiry) {
-				invoiceRequest.expiry = req.body.expiry;
-			}
-			lightning.addInvoice(invoiceRequest, function (err, response) {
-				if (err) {
-					logger.debug("AddInvoice Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("AddInvoice:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
-
-	// sendpayment
-	app.post("/api/lnd/sendpayment", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var paymentRequest = { payment_request: req.body.payreq };
-			if (req.body.amt) {
-				paymentRequest.amt = req.body.amt;
-			}
-			logger.debug("Sending payment", paymentRequest);
-			lightning.sendPaymentSync(paymentRequest, function (err, response) {
-				if (err) {
-					logger.debug("SendPayment Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("SendPayment:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
-
-	// decodepayreq
-	app.post("/api/lnd/decodepayreq", function (req, res) {
-		lightning.decodePayReq({ pay_req: req.body.payreq }, function (err, response) {
-			if (err) {
-				logger.debug("DecodePayReq Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("DecodePayReq:", response);
-				res.json(response);
-			}
-		});
-	});
-
-	// queryroute
-	app.post("/api/lnd/queryroute", function (req, res) {
+	app.post("/api/lnd/queryroute", lightningRPCAdapter("queryRoutes", {
+            preHook: (req) => {
 		var numRoutes = config.maxNumRoutesToQuery || DEFAULT_MAX_NUM_ROUTES_TO_QUERY;
 		var finalCltvDelta = config.finalCltvDelta || DEFAULT_FINAL_CLTV_DELTA;
-		lightning.queryRoutes({
-			pub_key: req.body.pubkey,
-			amt: req.body.amt,
-			num_routes: numRoutes,
-			final_cltv_delta: finalCltvDelta
-		}, function (err, response) {
-			if (err) {
-				logger.debug("QueryRoute Error:", err);
-				err.error = err.message;
-				res.send(err);
-			} else {
-				logger.debug("QueryRoute:", response);
-				res.json(response);
-			}
-		});
-	});
+                return {
+                    pub_key: req.body.pubkey,
+                    amt: req.body.amt,
+                    num_routes: numRoutes,
+                    final_cltv_delta: finalCltvDelta
+                };
+            }
+        }));
 
-	// sendtoroute
-	app.post("/api/lnd/sendtoroute", function (req, res) {
-		if (req.limituser) {
-			return res.sendStatus(403); // forbidden
-		} else {
-			var sendToRouteRequest = {
-				payment_hash_string: req.body.payhash,
-				routes: JSON.parse(req.body.routes)
-			};
-			logger.debug("SendToRoute", sendToRouteRequest);
-			lightning.sendToRouteSync(sendToRouteRequest, function (err, response) {
-				if (err) {
-					logger.debug("SendToRoute Error:", err);
-					err.error = err.message;
-					res.send(err);
-				} else {
-					logger.debug("SendToRoute:", response);
-					res.json(response);
-				}
-			});
-		}
-	});
+	app.post("/api/lnd/sendtoroute", lightningRPCAdapter("sendToRouteSync", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                return {
+                    payment_hash_string: req.body.payhash,
+                    routes: JSON.parse(req.body.routes)
+                };
+            }
+        }));
+
+	app.post("/api/lnd/newaddress", lightningRPCAdapter("newAddress", {
+            isLimitedToAuthorizedUser: true,
+            preHook: (req) => {
+                return {type: req.body.type};
+            }
+        }));
+        /*
 
 	// newaddress
 	app.post("/api/lnd/newaddress", function (req, res) {
@@ -478,6 +296,7 @@ module.exports = function (app, lightning, db, config) {
 			}
 		});
 	});
+        */
 
 	// ln-payreq-auth.html
 	app.get("/ln-payreq-auth.html", function (req, res) {
