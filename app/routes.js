@@ -12,23 +12,41 @@ const DEFAULT_FINAL_CLTV_DELTA = 144;
 // expose the routes to our app with module.exports
 module.exports = function (app, lightning, db, config) {
 
+        /*
+         * Creates an adapter between Express requests and Lightning gRPC requests via LightningManager.
+         *
+         * @param {string} methodName - the RPC call to perform on the Lightning service
+         * @param {?bool} options.isLimitedToAuthorizedUser - forces request to come from an autorized client
+         * @param {?function} options.preHook - if present, calls the function associated with this variable, and feeds
+                                                the result as parameters to the RPC call.
+         * @param {?function} options.postHook - if present, calls the function associated with this variable, and transforms
+                                                 the result from the RPC call. This function must return a valid Object
+         */
         var lightningRPCAdapter = function(methodName, options) {
             return async function(req, res) {
 
                 options = options || {};
 
+                // if isLimitedToAuthorizedUser is true, we check if the `limituser` flag
+                // is set on the request, and short-circuit the request if the user is not
+                // authorized.
                 if (options.isLimitedToAuthorizedUser && req.limituser) {
                     return res.sendStatus(403);
                 }
 
+                // By default, input parameters are empty. if preHook was defined, we call
+                // this and use the result and input parameters
                 var params = {};
                 if (options.preHook) {
                     params = options.preHook(req);
                 }
 
                 try {
-                    logger.info(methodName, params);
                     let response = await lightning.call(methodName, params);
+
+                    // If result needs to be manipulated before it's returned
+                    // to the client (because postHook is defined), call postHook
+                    // and use the result as payload to return via JSON
                     if (options.postHook) {
                         response = options.postHook(req, response);
                     }
@@ -62,7 +80,7 @@ module.exports = function (app, lightning, db, config) {
             }
         }));
 
-	app.get("/api/lnd/connectPeer", lightningRPCAdapter("connectPeer", {
+	app.get("/api/lnd/connectpeer", lightningRPCAdapter("connectPeer", {
             isLimitedToAuthorizedUser: true,
             preHook: (req) => {
 	        return { addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true };
