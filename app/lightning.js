@@ -96,7 +96,7 @@ class LightningManager {
                             reject(LightningError.NODE_UNREACHABLE);
                             break;
                         default:
-                            logger.error("Unrecognized gRPC error: " + err.code);
+                            logger.error("Unrecognized gRPC error: " + err);
                             reject(LightningError.UNCATEGORIZED);
                     }
                 } else {
