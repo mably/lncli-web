@@ -180,3 +180,7 @@ Hoping that helps.
 ## Network graph
 
 The lightning network graph rendering functionality requires to have `graphviz` installed on the server.
+
+## See also
+
+[bitcoin-kit-makefile](https://github.com/Perlover/bitcoin-kit-makefile) - The easy scripts (Makefile) for full compilation from sources under `$HOME` directory: **bitcoind**, **lnd**, **lncli-web**. All Unix system supported, minimum requirements, no root access, auto creation config files and UPnP supporting!
