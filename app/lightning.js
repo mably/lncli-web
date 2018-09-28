@@ -1,4 +1,3 @@
-// app/lightning.js
 const grpc = require('grpc');
 const fs = require('fs');
 const logger = require('winston');
@@ -43,7 +42,7 @@ class LightningManager {
         credentials = grpc.credentials.combineChannelCredentials(credentials, macaroonCreds);
       } else {
         logger.error(`The specified macaroon file ${options.macaroonPath} was not found.\n`
-                             + 'Please add the missing lnd macaroon file or update/remove the path in the application configuration.');
+                     + 'Please add the missing lnd macaroon file or update/remove the path in the application configuration.');
         process.exit(1);
       }
     }
