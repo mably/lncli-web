@@ -180,3 +180,17 @@ Hoping that helps.
 ## Network graph
 
 The lightning network graph rendering functionality requires to have `graphviz` installed on the server.
+
+
+### Contributing to the project
+
+As of September 27th, all new code that is created or refactored should abide by the [Airbnb JS Style guide](https://github.com/airbnb/javascript). You can use automated tooling to maintain the style guide using [eslint](https://eslint.org). For simplicity, I have outlined a suggested workflow:
+
+
+#### Suggested Workflow
+
+1. write your code changes. For example, you are fixing a bug in `app/lightning.js`
+2. once you are finished your patch, run `eslint app/lightning.js`. This will show you the errors in the source code
+3. optionally, you can also run `eslint --fix app/lightning.js` to let eslint fix errors that it can fix without human intervention
+4. fix the remainig style issues. You are only required to change and commit style for the code you changed (although the more, the merrier!)
+5. commit your clean code
