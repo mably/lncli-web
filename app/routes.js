@@ -20,7 +20,7 @@ module.exports = function (app, lightning, db, config) {
    */
   const lightningRPCAdapter = function (methodName, options) {
     return async function (req, res) {
-      const options = options || {};
+      options = options || {};
 
       // if isLimitedToAuthorizedUser is true, we check if the `limituser` flag
       // is set on the request, and short-circuit the request if the user is not
