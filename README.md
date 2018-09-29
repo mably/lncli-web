@@ -30,7 +30,7 @@ npm install
 If not started automatically, run the following command to build the application:
 
 ```
-"./node_modules/.bin/gulp" bundle
+"./node_modules/.bin/gulp" bundles
 ```
 
 ## Execution
