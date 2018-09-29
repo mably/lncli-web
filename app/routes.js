@@ -113,7 +113,7 @@ module.exports = function (app, lightning, db, config) {
             }
         }));
 
-	app.post("/api/lnd/sendpayment", lightningRPCAdapter("addInvoice", {
+	app.post("/api/lnd/sendpayment", lightningRPCAdapter("sendPaymentSync", {
             isLimitedToAuthorizedUser: true,
             preHook: (req) => {
                 var paymentRequest = { payment_request: req.body.payreq };
