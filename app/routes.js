@@ -59,7 +59,6 @@ module.exports = function (app, lightning, db, config) {
 
 	// api ---------------------------------------------------------------------
 	app.get("/api/lnd/getnetworkinfo", lightningRPCAdapter("getNetworkInfo"));
-	app.post("/api/lnd/getnodeinfo", lightningRPCAdapter("getNodeInfo"));
 	app.get("/api/lnd/listpeers", lightningRPCAdapter("listPeers"));
 	app.get("/api/lnd/listhannels", lightningRPCAdapter("listChannels"));
 	app.get("/api/lnd/listpeers", lightningRPCAdapter("listPeers"));
@@ -71,21 +70,27 @@ module.exports = function (app, lightning, db, config) {
 	app.get("/api/lnd/walletbalance", lightningRPCAdapter("walletBalance"));
 	app.get("/api/lnd/channelbalance", lightningRPCAdapter("channelBalance"));
 
-	app.get("/api/lnd/getinfo", lightningRPCAdapter("getInfo", {
-            postHook: (req, response) => {
-                if ((!response.uris || response.uris.length === 0) && (config.lndAddress)) {
-                    response.uris = [response.identity_pubkey + "@" + config.lndAddress];
-                }
-                return response;
-            }
-        }));
+	app.post("/api/lnd/getnodeinfo", lightningRPCAdapter("getNodeInfo", {
+		preHook: (req) => {
+			return {pub_key: req.body.pubkey};
+		}
+	}));
 
-	app.get("/api/lnd/connectpeer", lightningRPCAdapter("connectPeer", {
-            isLimitedToAuthorizedUser: true,
-            preHook: (req) => {
-	        return { addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true };
-            }
-        }));
+	app.get("/api/lnd/getinfo", lightningRPCAdapter("getInfo", {
+		postHook: (req, response) => {
+			if ((!response.uris || response.uris.length === 0) && (config.lndAddress)) {
+				response.uris = [response.identity_pubkey + "@" + config.lndAddress];
+			}
+			return response;
+		}
+	}));
+
+	app.post("/api/lnd/connectpeer", lightningRPCAdapter("connectPeer", {
+		isLimitedToAuthorizedUser: true,
+		preHook: (req) => {
+			return {addr: {pubkey: req.body.pubkey, host: req.body.host}, perm: true};
+		}
+	}));
 
 	app.post("/api/lnd/disconnectPeer", lightningRPCAdapter("disconnectPeer", {
             isLimitedToAuthorizedUser: true,
