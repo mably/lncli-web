@@ -17,7 +17,7 @@ class LightningManager {
   getActiveClient() {
     if (!this.activeClient) {
       logger.info('Recreating active client');
-      this.credentials = this.generateCredentials(this.lndCert, {
+      this.credentials = LightningManager.generateCredentials(this.lndCert, {
         macaroonPath: this.macaroonPath,
       });
       this.activeClient = new this.lnrpcDescriptor.lnrpc.Lightning(
