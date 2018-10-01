@@ -28,7 +28,7 @@ class LightningManager {
     return this.activeClient;
   }
 
-  generateCredentials(lndCert, options) {
+  static generateCredentials(lndCert, options) {
     let credentials = grpc.credentials.createSsl(lndCert);
 
     // If macaroon path was specified load credentials using macaroon metadata.
