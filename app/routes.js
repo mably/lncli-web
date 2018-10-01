@@ -57,8 +57,6 @@ module.exports = function (app, lightning, db, config) {
   // api ---------------------------------------------------------------------
   app.get('/api/lnd/getnetworkinfo', lightningRPCAdapter('getNetworkInfo'));
   app.get('/api/lnd/listpeers', lightningRPCAdapter('listPeers'));
-  app.get('/api/lnd/listhannels', lightningRPCAdapter('listChannels'));
-  app.get('/api/lnd/listpeers', lightningRPCAdapter('listPeers'));
   app.get('/api/lnd/listchannels', lightningRPCAdapter('listChannels'));
   app.get('/api/lnd/pendingchannels', lightningRPCAdapter('pendingChannels'));
   app.get('/api/lnd/listpayments', lightningRPCAdapter('listPayments'));
@@ -85,7 +83,7 @@ module.exports = function (app, lightning, db, config) {
     preHook: req => ({ addr: { pubkey: req.body.pubkey, host: req.body.host }, perm: true }),
   }));
 
-  app.post('/api/lnd/disconnectPeer', lightningRPCAdapter('disconnectPeer', {
+  app.post('/api/lnd/disconnectpeer', lightningRPCAdapter('disconnectPeer', {
     isLimitedToAuthorizedUser: true,
     preHook: req => ({ pub_key: req.body.pubkey }),
   }));
