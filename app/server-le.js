@@ -37,11 +37,7 @@ module.exports = function (program) {
 	// db init =================
 	const db = require("./database")(defaults.dataPath);
 
-	// setup lightning client =================
-	const lndHost = program.lndhost || defaults.lndHost;
-	const lndCertPath = program.lndCertPath || defaults.lndCertPath;
-	const macaroonPath = program.macaroonPath || defaults.macaroonPath;
-	const lightning = require("./lightning")(defaults.lndProto, lndHost, lndCertPath, macaroonPath);
+	var lightning = module.makeLightningManager(program);
 
 	// init lnd module =================
 	const lnd = require("./lnd")(lightning);

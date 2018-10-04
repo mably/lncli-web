@@ -28,7 +28,7 @@ module.exports = function (lightning, config) {
 
 		debug("payreq.signature:", user.name);
 
-		lightning.verifyMessage({ msg: Buffer.from(config.defaultAuthPayReq, "utf8"), signature: user.name }, function (err, verifMsgResponse) {
+		lightning.getActiveClient().verifyMessage({ msg: Buffer.from(config.defaultAuthPayReq, "utf8"), signature: user.name }, function (err, verifMsgResponse) {
 			if (err) {
 				debug("VerifyMessage Error:", err);
 				unauthorized(res);

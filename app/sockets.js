@@ -205,7 +205,11 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 				callback({ rid: rid, error: "forbidden" });
 			} else {
 				if (data.logFilterPattern) {
-					socket._logFilter = new RegExp(data.logFilterPattern, "g");
+					try {
+						socket._logFilter = new RegExp(data.logFilterPattern, "g");
+					} catch (error) {
+						logger.info("logfilter", error);
+					}
 				}
 			}
 		});
@@ -225,6 +229,9 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 						local_funding_amount: Number(data.localamt),
 						push_sat: Number(data.pushamt)
 					};
+					if (data.satperbyte) {
+						openChannelRequest.sat_per_byte = Number(data.satperbyte);
+					}
 					if (data.targetconf) {
 						openChannelRequest.target_conf = Number(data.targetconf);
 					}
@@ -236,7 +243,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					}
 					debug("openChannelRequest", openChannelRequest);
 
-					var call = lightning.openChannel(openChannelRequest);
+					var call = lightning.getActiveClient().openChannel(openChannelRequest);
 					call.on("data", function (data) {
 						logger.debug("OpenChannel Data", data);
 						socket.emit(OPENCHANNEL_EVENT, { rid: rid, evt: "data", data: data });
@@ -284,7 +291,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 					};
 					debug("closeChannelRequest", closeChannelRequest);
 
-					var call = lightning.closeChannel(closeChannelRequest);
+					var call = lightning.getActiveClient().closeChannel(closeChannelRequest);
 					call.on("data", function (data) {
 						logger.debug("CloseChannel Data", data);
 						socket.emit(CLOSECHANNEL_EVENT, { rid: rid, evt: "data", data: data });

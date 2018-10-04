@@ -42,9 +42,13 @@ lnwebcli.config(["ngToastProvider", function (ngToast) {
 
 lnwebcli.constant("config", {
 	keys: {
+		AMOUNT_ALT_UNIT: "amountaltunit",
+		AMOUNT_MAIN_UNIT: "amountmainunit",
 		AUTO_REFRESH: "autorefresh",
 		MAX_LOG_BUFFER: "maxlogbuffer",
 		MAX_NOTIF_BUFFER: "maxnotifbuffer",
+		FORWARDINGHISTORY_LISTVISIBLE: "forwardinghistorylistvisible",
+		FORWARDINGHISTORY_PAGESIZE: "forwardinghistorypagesize",
 		LISTCHANNELS_LISTVISIBLE: "listchannelslistvisible",
 		LISTCHANNELS_PAGESIZE: "listchannelspagesize",
 		LISTINVOICES_LISTVISIBLE: "listinvoiceslistvisible",
@@ -69,6 +73,7 @@ lnwebcli.constant("config", {
 		EXPLORER_BLKHEIGHT_BITCOIN_MAINNET: "explorerblkheightbitcoinmainnet"
 	},
 	defaults: {
+		AMOUNT_UNITS: ["none", "sat", "bit", "mbtc", "btc", "usd", "eur"],
 		AUTO_REFRESH: 60000, // 1 minute
 		MAX_LOG_BUFFER: 500, // 500 lines of logs max
 		MAX_NOTIF_BUFFER: 500, // 500 lines of notifications max
@@ -130,6 +135,19 @@ lnwebcli.constant("config", {
 				}
 			}
 		},
+		SEND_TO_ROUTE: {
+			animation: true,
+			ariaLabelledBy: "sendtoroute-modal-title",
+			ariaDescribedBy: "sendtoroute-modal-body",
+			templateUrl: "templates/partials/lnd/sendtoroute.html",
+			controller: "ModalSendToRouteCtrl",
+			controllerAs: "$ctrl",
+			size: "lg",
+			resolve: {
+				defaults: {
+				}
+			}
+		},
 		SIGN_MESSAGE: {
 			animation: true,
 			ariaLabelledBy: "signmessage-modal-title",
@@ -172,6 +190,7 @@ lnwebcli.constant("config", {
 
 require("./filters")(lnwebcli);
 require("./factories")(lnwebcli);
-require("./controllers/lnd")(lnwebcli);
+require("./directives")(lnwebcli);
 require("./directives/lnd")(lnwebcli);
 require("./services/lnd")(lnwebcli);
+require("./controllers/lnd")(lnwebcli);

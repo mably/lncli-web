@@ -27,6 +27,10 @@
 			</div>
 			<div id="openchannel-advanced-options" class="collapse">
 				<div class="form-group">
+					<label for="openchannel-sat-per-byte">Satoshis per byte</label>
+					<input type="number" min="0" class="form-control" id="openchannel-sat-per-byte" placeholder="A manual fee rate set in sat/byte that should be used when crafting the funding transaction." ng-model="$ctrl.values.satperbyte">
+				</div>
+				<div class="form-group">
 					<label for="openchannel-target-conf">Number of confirmations</label>
 					<input type="number" min="0" class="form-control" id="openchannel-target-conf" placeholder="The target number of blocks that the funding transaction should be confirmed by." ng-model="$ctrl.values.targetconf">
 				</div>

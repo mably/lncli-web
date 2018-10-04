@@ -23,7 +23,7 @@ module.exports = function (lightning, config) {
 
 		debug("sessionID.signature:", user.name);
 
-		lightning.verifyMessage({ msg: Buffer.from(req.sessionID, "utf8"), signature: user.name }, function (err, response) {
+		lightning.getActiveClient().verifyMessage({ msg: Buffer.from(req.sessionID, "utf8"), signature: user.name }, function (err, response) {
 			if (err) {
 				debug("VerifyMessage Error:", err);
 				unauthorized(res);

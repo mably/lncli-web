@@ -17,7 +17,7 @@ module.exports = function (lightning) {
 			logger.debug("Lnd invoices subscription stream already opened.");
 		} else {
 			logger.debug("Opening lnd invoices subscription stream...");
-			lndInvoicesStream = lightning.subscribeInvoices({});
+			lndInvoicesStream = lightning.getActiveClient().subscribeInvoices({});
 			logger.debug("Lnd invoices subscription stream opened.");
 			lndInvoicesStream.on("data", function (data) {
 				logger.debug("SubscribeInvoices Data", data);

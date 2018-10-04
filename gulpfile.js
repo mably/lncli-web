@@ -29,7 +29,7 @@ gulp.task("jscs-fix", () => {
         .pipe(gulp.dest("."));
 });
 
-gulp.task("lint", function() {
+gulp.task("lint", () => {
     return gulp.src(["app/**/*.js","config/**/*.js","lib/**/*.js","public/js/**/*.js"])
         .pipe(jshint({
             laxbreak: true,
@@ -40,7 +40,7 @@ gulp.task("lint", function() {
         }));
 });
 
-gulp.task("js-dist", function() {
+gulp.task("js-dist", (done) => {
     fs.readdirSync("config")
         .filter(function(file) {
             return file.substr(-11) === "-example.js";
@@ -55,11 +55,12 @@ gulp.task("js-dist", function() {
                     fs.readFileSync("config/" + filename + "-example.js"));
             }
         });
+    done();
 });
 
-gulp.task("install", ["js-dist"]);
+gulp.task("install", gulp.series("js-dist"));
 
-gulp.task("check", ["jscs", "lint"]);
+gulp.task("check", gulp.series("jscs", "lint"));
 
 var config = {
     js: {
@@ -73,12 +74,12 @@ var config = {
 };
 
 // This method makes it easy to use common bundling options in different tasks
-var bundle = function (bundler, entryPointName) {
+var bundle = (bundler, entryPointName) => {
 
     var sourcePath = config.js.srcDir + entryPointName + ".js";
     var outputFilename = entryPointName + config.js.outputSuffix;
     // Add options to add to "base" bundler passed as parameter
-    bundler
+    return bundler
         .bundle()                                    // Start bundle
         .pipe(source(sourcePath))                    // Entry point
         .pipe(buffer())                              // Convert to gulp pipeline
@@ -138,22 +139,22 @@ var bundleTask = function (entryPointName) {
         bundler.on("update", updateBundle);
     }
 
-    bundle(bundler, entryPointName);  // Chain other options -- sourcemaps, rename, etc.
+    return bundle(bundler, entryPointName);  // Chain other options -- sourcemaps, rename, etc.
 };
 
-gulp.task("bundlelnd", ["install", "check"], function () {
-    bundleTask("lnd");
+gulp.task("lndbundler", () => {
+    return bundleTask("lnd");
 });
 
-gulp.task("bundle", ["bundlelnd"], function () {
-});
+gulp.task("bundlelnd", gulp.series("install", "check", "lndbundler"));
 
-gulp.task("setWatch", function() {
+gulp.task("bundles", gulp.series("bundlelnd"));
+
+gulp.task("setWatch", (done) => {
     global.isWatching = true;
+    done();
 });
 
-gulp.task("watchify", ["setWatch", "bundle"], function() {
-    //your watch functions...
-});
+gulp.task("watchify", gulp.series("setWatch", "bundles"));
 
-gulp.task("default", ["bundle"]);
+gulp.task("default", gulp.series("bundles"));

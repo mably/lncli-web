@@ -49,3 +49,5 @@ jspm_packages
 /*.cert
 /*.macaroon
 /*.key
+/.idea
+/.scannerwork

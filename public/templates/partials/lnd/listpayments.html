@@ -13,8 +13,8 @@
 			<tbody>
 				<tr ng-repeat="payment in st_payments">
 					<td>{{ payment.creation_date * 1000 | date:'medium' }}</td>
-					<td>{{ payment.value }}</td>
-					<td>{{ payment.fee }}</td>
+					<td><amount base-value="payment.value" /></td>
+					<td><amount base-value="payment.fee" /></td>
 					<td>{{ payment.payment_hash }}</td>
 				</tr>
 			</tbody>

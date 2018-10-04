@@ -29,6 +29,14 @@
 						<label for="editsettings-invoiceexpiry">Default invoice expiry time (in seconds)</label>
 						<input type="numeric" class="form-control" id="editsettings-invoiceexpiry" placeholder="expiry time in seconds" ng-model="$ctrl.values.invoiceexpiry">
 					</div>
+					<div class="form-group">
+						<label for="editsettings-amountmainunit">Amounts main display unit</label>
+						<select class="form-control" id="editsettings-amountmainunit"placeholder="Amount main unit" ng-model="$ctrl.values.amountmainunit" ng-options="unit for unit in $ctrl.amountMainUnits"></select>
+					</div>
+					<div class="form-group">
+						<label for="editsettings-amountaltunit">Amounts secondary display unit</label>
+						<select class="form-control" id="editsettings-amountaltunit" placeholder="Amount alt unit" ng-model="$ctrl.values.amountaltunit" ng-options="unit for unit in $ctrl.amountAltUnits"></select>
+					</div>
 				</div>
 				<div class="tab-pane" id="{{ $id }}_2">
 					<div class="form-group">

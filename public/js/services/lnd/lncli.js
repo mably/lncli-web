@@ -16,11 +16,13 @@
 			PENDINGCHANNELS: "/api/lnd/pendingchannels",
 			LISTPAYMENTS: "/api/lnd/listpayments",
 			LISTINVOICES: "/api/lnd/listinvoices",
+			FORWARDINGHISTORY: "/api/lnd/forwardinghistory",
 			CONNECTPEER: "/api/lnd/connectpeer",
 			DISCONNECTPEER: "/api/lnd/disconnectpeer",
 			ADDINVOICE: "/api/lnd/addinvoice",
 			SENDCOINS: "/api/lnd/sendcoins",
 			SENDPAYMENT: "/api/lnd/sendpayment",
+			SENDTOROUTE: "/api/lnd/sendtoroute",
 			DECODEPAYREQ: "/api/lnd/decodepayreq",
 			QUERYROUTE: "/api/lnd/queryroute",
 			NEWADDRESS: "/api/lnd/newaddress",
@@ -28,6 +30,9 @@
 			SIGNMESSAGE: "/api/lnd/signmessage",
 			VERIFYMESSAGE: "/api/lnd/verifymessage"
 		};
+
+		var BLOCKCHAIN_INFO_TICKER_URL = "https://blockchain.info/ticker";
+		var PRICE_CACHE_MAXAGE = 30 * 1000;
 
 		this.restrictedUser = false;
 
@@ -37,6 +42,9 @@
 		var knownPeersCache = null;
 		var configCache = null;
 		var addressesCache = null;
+		var channelsFetchers = null;
+		var pricesCache = null;
+		var pricesFetchers = null;
 		var wsRequestListeners = {};
 
 		var endPoint = utils.getUrlParameterByName("endpoint") || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
@@ -322,7 +330,7 @@
 					}
 					if (knownPeerAddress && (knownPeerAddress != peer.address)) {
 						var peerHostPort = peer.address.split(":");
-						var knownPeerHostPort = knownPeer.address.split(":");
+						var knownPeerHostPort = knownPeerAddress.split(":");
 						knownPeer.address = peerHostPort[0] + ":" + knownPeerHostPort[1]; // keep overriden port
 					}
 					knownPeer.lastseen = new Date().getTime();
@@ -585,12 +593,30 @@
 			if (useCache && channelsCache) {
 				deferred.resolve(channelsCache);
 			} else {
-				$http.get(serverUrl(API.LISTCHANNELS)).then(function (response) {
-					channelsCache = response;
-					deferred.resolve(response);
-				}, function (err) {
-					deferred.reject(err);
-				});
+				if (channelsFetchers) {
+					channelsFetchers.push(deferred);
+				} else {
+					channelsFetchers = [];
+					channelsFetchers.push(deferred);
+					$http.get(serverUrl(API.LISTCHANNELS)).then(function (response) {
+						channelsCache = response;
+						while (channelsFetchers.length) {
+							try {
+								channelsFetchers.pop().resolve(response);
+							} catch (e) {
+							}
+						}
+						channelsFetchers = null;
+					}, function (err) {
+						while (channelsFetchers.length) {
+							try {
+								channelsFetchers.pop().reject(err);
+							} catch (e) {
+							}
+						}
+						channelsFetchers = null;
+					});
+				}
 			}
 			return deferred.promise;
 		};
@@ -607,6 +633,10 @@
 			return $http.get(serverUrl(API.LISTINVOICES));
 		};
 
+		this.forwardingHistory = function () {
+			return $http.get(serverUrl(API.FORWARDINGHISTORY));
+		};
+
 		this.connectPeer = function (pubkey, host) {
 			var data = { pubkey: pubkey, host: host };
 			return $http.post(serverUrl(API.CONNECTPEER), data);
@@ -617,9 +647,14 @@
 			return $http.post(serverUrl(API.DISCONNECTPEER), data);
 		};
 
-		this.openChannel = function (pubkey, localamt, pushamt, targetconf, remotecsvdelay, privatechan) {
+		this.openChannel = function (pubkey, localamt, pushamt, satperbyte, targetconf, remotecsvdelay, privatechan) {
 			var deferred = $q.defer();
-			var data = { rid: uuid.v4(), pubkey: pubkey, localamt: localamt, pushamt: pushamt, targetconf: targetconf, remotecsvdelay: remotecsvdelay, privatechan: privatechan };
+			var data = {
+				rid: uuid.v4(),
+				pubkey: pubkey, localamt: localamt, pushamt: pushamt,
+				satperbyte: satperbyte, targetconf: targetconf,
+				remotecsvdelay: remotecsvdelay, privatechan: privatechan
+			};
 			socket.emit(config.events.OPENCHANNEL_WS, data, function (response) {
 				if (response.error) {
 					deferred.reject(response.error);
@@ -657,6 +692,11 @@
 			var data = { payreq: payreq };
 			if (amount) { data.amt = amount; }
 			return $http.post(serverUrl(API.SENDPAYMENT), data);
+		};
+
+		this.sendToRoute = function (payhash, routes) {
+			var data = { payhash: payhash, routes: routes };
+			return $http.post(serverUrl(API.SENDTOROUTE), data);
 		};
 
 		this.decodePayReq = function (payreq) {
@@ -751,6 +791,55 @@
 					config.keys.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET, config.defaults.EXPLORER_BLKHEIGHT_BITCOIN_MAINNET);
 			}
 			return utils.format(blockUrl, height);
+		};
+
+		this.getCoinPrice = function (useCache, currency) {
+			var deferred = $q.defer();
+			var now = new Date().getTime();
+			if (useCache && pricesCache && (pricesCache.ts > (now - PRICE_CACHE_MAXAGE))) {
+				try {
+					var price = pricesCache.data[currency.toUpperCase()].last;
+					deferred.resolve(price);
+				} catch (err) {
+					deferred.reject(err);
+				}
+			} else {
+				if (pricesFetchers) {
+					pricesFetchers.push(deferred);
+				} else {
+					pricesFetchers = [];
+					pricesFetchers.push(deferred);
+					$http.get(BLOCKCHAIN_INFO_TICKER_URL).then(function (response) {
+						try {
+							pricesCache = { data: response.data, ts: now };
+							var price = pricesCache.data[currency.toUpperCase()].last;
+							while (pricesFetchers.length) {
+								try {
+									pricesFetchers.pop().resolve(price);
+								} catch (e) {
+								}
+							}
+						} catch (err) {
+							while (pricesFetchers.length) {
+								try {
+									pricesFetchers.pop().reject(err);
+								} catch (e) {
+								}
+							}
+						}
+						pricesFetchers = null;
+					}, function (err) {
+						while (pricesFetchers.length) {
+							try {
+								pricesFetchers.pop().reject(err);
+							} catch (e) {
+							}
+						}
+						pricesFetchers = null;
+					});
+				}
+			}
+			return deferred.promise;
 		};
 
 		Object.seal(this);
