@@ -98,6 +98,10 @@ class LightningManager {
             case grpc.status.UNAVAILABLE:
               reject(LightningError.NODE_UNREACHABLE);
               break;
+            case grpc.status.UNKNOWN:
+              logger.debug(`gRPC API error: ${err}`);
+              reject(err.message);
+              break;
             default:
               logger.error(`Unrecognized gRPC error: ${err}`);
               reject(LightningError.UNCATEGORIZED);
