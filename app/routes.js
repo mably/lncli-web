@@ -60,10 +60,13 @@ module.exports = function (app, lightning, db, config) {
   app.get('/api/lnd/listchannels', lightningRPCAdapter('listChannels'));
   app.get('/api/lnd/pendingchannels', lightningRPCAdapter('pendingChannels'));
   app.get('/api/lnd/listpayments', lightningRPCAdapter('listPayments'));
-  app.get('/api/lnd/listinvoices', lightningRPCAdapter('listInvoices'));
   app.get('/api/lnd/walletbalance', lightningRPCAdapter('walletBalance'));
   app.get('/api/lnd/channelbalance', lightningRPCAdapter('channelBalance'));
 
+  app.get('/api/lnd/listinvoices', lightningRPCAdapter('listInvoices', {
+    preHook: req => ({reversed: true, num_max_invoices: 100000})
+  }));
+		
   app.get('/api/lnd/forwardinghistory', lightningRPCAdapter('forwardingHistory', {
     preHook: req => ({num_max_events: 100000 })
   }));		
