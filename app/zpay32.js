@@ -1,20 +1,38 @@
 // app/zpay32.js
+/* eslint-disable no-bitwise */
 
-const debug = require('debug')('lncliweb:zpay32');
-const logger = require('winston');
-const Promise = require('promise');
-const crypto = require('crypto');
+// const debug = require('debug')('lncliweb:zpay32');
+// const logger = require('winston');
 const zbase32 = require('zbase32');
 const fastcrc32 = require('fast-crc32c');
 
+const convertLongToBigEndianBuffer = (longValue) => {
+  const byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
+  for (let index = 0; index < byteArray.length; index++) {
+    const byte = longValue & 0xff;
+    byteArray[index] = byte;
+    longValue = (longValue - byte) / 256;
+  }
+  return Buffer.from(byteArray).swap64();
+};
+
+const convertBigEndianBufferToLong = (longBuffer) => {
+  let longValue = 0;
+  const byteArray = Buffer.from(longBuffer).swap64();
+  for (let i = byteArray.length - 1; i >= 0; i--) {
+    longValue = (longValue * 256) + byteArray[i];
+  }
+  return longValue;
+};
+
 // TODO
-module.exports = function () {
+module.exports = function factory() {
   const module = {};
 
-  module.encode = function (paymentRequest) {
-    const pubKeyHex = paymentRequest.pubKeyHex;
+  module.encode = function encode(paymentRequest) {
+    const { pubKeyHex } = paymentRequest;
     const pubKeyBuffer = Buffer.from(pubKeyHex, 'hex');
-    const paymentHashHex = paymentRequest.paymentHashHex;
+    const { paymentHashHex } = paymentRequest;
     const paymentHashBuffer = Buffer.from(paymentHashHex, 'hex');
     const amountValueHex = convertLongToBigEndianBuffer(paymentRequest.value).toString('hex');
     const valueBuffer = Buffer.from(amountValueHex, 'hex');
@@ -30,15 +48,15 @@ module.exports = function () {
     return zbase32.encode(Buffer.from(bufferHexRotated, 'hex'));
   };
 
-  module.decode = function (paymentRequestBase32) {
+  module.decode = function decode(paymentRequestBase32) {
     const decodedPaymentRequest = zbase32.decode(paymentRequestBase32);
-    if (decodedPaymentRequest.length != 77) {
-      throw 'Invalid payment request, decoded length should be 77 bytes.';
+    if (decodedPaymentRequest.length !== 77) {
+      throw Error('Invalid payment request, decoded length should be 77 bytes.');
     }
     const bufferHexRotated = Buffer.from(decodedPaymentRequest).toString('hex');
     // console.log(bufferHexRotated);
     const bufferHex = bufferHexRotated.substr(bufferHexRotated.length - 1, bufferHexRotated.length)
-				+ bufferHexRotated.substr(0, bufferHexRotated.length - 1);
+      + bufferHexRotated.substr(0, bufferHexRotated.length - 1);
     // console.log(bufferHex);
     const buffer = Buffer.from(bufferHex, 'hex');
     // console.log(buffer);
@@ -59,39 +77,19 @@ module.exports = function () {
     const calculatedcrc32 = fastcrc32.calculate(dataBuffer);
     // console.log(crc32, calculatedcrc32);
     if (crc32 === calculatedcrc32) {
-      const paymentRequest = {
+      return {
         pubKeyHex,
         paymentHashHex,
         value,
       };
-      return paymentRequest;
     }
-    throw 'Payment request CRC32C check failed!';
+    throw Error('Payment request CRC32C check failed!');
   };
 
   return module;
 };
 
 const zpay32 = module.exports();
-
-var convertLongToBigEndianBuffer = function (longValue) {
-  const byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
-  for (let index = 0; index < byteArray.length; index++) {
-    const byte = longValue & 0xff;
-    byteArray[index] = byte;
-    longValue = (longValue - byte) / 256;
-  }
-  return Buffer.from(byteArray).swap64();
-};
-
-var convertBigEndianBufferToLong = function (longBuffer) {
-  let longValue = 0;
-  const byteArray = Buffer.from(longBuffer).swap64();
-  for (let i = byteArray.length - 1; i >= 0; i--) {
-    longValue = (longValue * 256) + byteArray[i];
-  }
-  return longValue;
-};
 
 const pubKeyHex = '0315976de23b04f363f6b3a23cb7263c1fe98b5de18e4210fb67c52c810df1b04b';
 // var paymentHashHex = crypto.randomBytes(32).toString("hex");

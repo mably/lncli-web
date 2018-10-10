@@ -1,4 +1,4 @@
-module.exports = function (lncli, config, utils) {
+module.exports = function factory(lncli, config, utils) {
   return {
     restrict: 'E',
     replace: true,
@@ -8,9 +8,12 @@ module.exports = function (lncli, config, utils) {
     },
     templateUrl: 'templates/partials/amount.html',
     link(scope, elt, attrs) {
+      // eslint-disable-next-line no-unused-vars
       scope.$watch('baseValue', (baseValue, oldBaseValue) => {
         if (!attrs.baseUnit || (attrs.baseUnit === 'sat')) {
-          const mainUnit = attrs.mainUnit ? attrs.mainUnit : lncli.getConfigValue(config.keys.AMOUNT_MAIN_UNIT);
+          const mainUnit = attrs.mainUnit
+            ? attrs.mainUnit
+            : lncli.getConfigValue(config.keys.AMOUNT_MAIN_UNIT);
           if (mainUnit) {
             let mainValue;
             switch (mainUnit) {
@@ -50,7 +53,9 @@ module.exports = function (lncli, config, utils) {
             scope.mainValue = scope.baseValue;
             scope.mainUnit = 'sat';
           }
-          const altUnit = attrs.altUnit ? attrs.altUnit : lncli.getConfigValue(config.keys.AMOUNT_ALT_UNIT);
+          const altUnit = attrs.altUnit
+            ? attrs.altUnit
+            : lncli.getConfigValue(config.keys.AMOUNT_ALT_UNIT);
           if (altUnit) {
             let altValue;
             switch (altUnit) {

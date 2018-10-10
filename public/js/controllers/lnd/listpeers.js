@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
+  module.exports = function factory($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
     const $ctrl = this;
 
     $scope.spinner = 0;
@@ -17,16 +17,16 @@
       if ($scope.cfg.listVisible) {
         $scope.lastRefreshed = Date.now();
         $scope.updateNextRefresh();
-        $scope.spinner++;
+        $scope.spinner += 1;
         lncli.listPeers().then((response) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           console.log(response);
           $scope.data = JSON.stringify(response.data, null, '\t');
           $scope.peers = processPeers(response.data.peers);
           $scope.numberOfPeers = $scope.peers.length;
           $scope.form.checkbox = false;
         }, (err) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           $scope.numberOfPeers = 0;
           console.log('Error:', err);
           lncli.alert(err.message || err.statusText);
@@ -88,9 +88,9 @@
     $scope.disconnect = function (peer) {
       bootbox.confirm('Do you really want to disconnect from that peer?', (result) => {
         if (result) {
-          $scope.spinner++;
+          $scope.spinner += 1;
           lncli.disconnectPeer(peer.pub_key).then((response) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log('DisconnectPeer', response);
             if (response.data.error) {
               lncli.alert(response.data.error);
@@ -98,7 +98,7 @@
               $rootScope.$broadcast(config.events.PEER_REFRESH, response);
             }
           }, (err) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log(err);
             lncli.alert(err.message || err.statusText);
           });
@@ -113,9 +113,9 @@
           promises.push(lncli.disconnectPeer(peer.pub_key));
         }
         if (promises.length > 0) {
-          $scope.spinner++;
+          $scope.spinner += 1;
           $q.all(promises).then((responses) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log('DisconnectPeerBatch', responses);
             const okResponses = [];
             responses.forEach((response) => {
@@ -129,7 +129,7 @@
               $rootScope.$broadcast(config.events.PEER_REFRESH, okResponses);
             }
           }, (err) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log(err);
             $scope.refresh();
             lncli.alert(err.message);

@@ -5,16 +5,17 @@ const crypto = require('crypto');
 const zpay32 = require('./zpay32.js')();
 
 // expose the routes to our app with module.exports
-module.exports = function (lightning, config) {
+module.exports = function factory(lightning, config) {
   const module = {};
 
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', `Basic realm=lnpayreq:${config.defaultAuthPayReq}`);
+    return res.sendStatus(401);
+  }
+
   // configure basic authentification for express
-  module.filter = function (req, res, next) {
+  module.filter = function filter(req, res, next) {
     debug(`url: ${req.originalUrl}`);
-    function unauthorized(res) {
-      res.set('WWW-Authenticate', `Basic realm=lnpayreq:${config.defaultAuthPayReq}`);
-      return res.sendStatus(401);
-    }
 
     const user = basicAuth(req);
     if (!user || !user.name) {
@@ -33,10 +34,10 @@ module.exports = function (lightning, config) {
 
     if (decodedPayReq.paymentHashHex === preimageHash) {
       req.limituser = false;
-      next();
-    } else {
-      unauthorized(res);
+      return next();
     }
+
+    return unauthorized(res);
   };
 
   return module;

@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($scope, $timeout, $uibModal, $, lncli, config, utils) {
+  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config, utils) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;
@@ -13,15 +13,15 @@
       if ($scope.cfg.listVisible) {
         $scope.lastRefreshed = Date.now();
         $scope.updateNextRefresh();
-        $scope.spinner++;
+        $scope.spinner += 1;
         lncli.listInvoices().then((response) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           console.log(response);
           $scope.data = JSON.stringify(response.data, null, '\t');
           $scope.invoices = processInvoices(response.data.invoices);
           $scope.numberOfInvoices = $scope.invoices.length;
         }, (err) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           $scope.numberOfInvoices = 0;
           console.log('Error:', err);
           lncli.alert(err.message || err.statusText);

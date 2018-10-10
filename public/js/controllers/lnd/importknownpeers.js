@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($uibModalInstance, defaults, lncli) {
+  module.exports = function factory($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.values = defaults;

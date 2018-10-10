@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
+  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
     const $ctrl = this;
 
     $scope.getNodeInfo = function () {

@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($rootScope, $scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config) {
+  module.exports = function factory($rootScope, $scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;
@@ -17,16 +17,16 @@
           $scope.knownPeers = knownPeers;
           $scope.lastRefreshed = Date.now();
           $scope.updateNextRefresh();
-          $scope.spinner++;
+          $scope.spinner += 1;
           lncli.listChannels().then((response) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log(response);
             $scope.data = JSON.stringify(response.data, null, '\t');
             $scope.channels = processChannels(response.data.channels);
             $scope.numberOfChannels = $scope.channels.length;
             $scope.form.checkbox = false;
           }, (err) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             $scope.numberOfChannels = 0;
             console.log('Error:', err);
             lncli.alert(err.message || err.statusText);
@@ -121,7 +121,7 @@
 
     const closeChannelBatch = function () {
       const promises = [];
-      $scope.spinner++;
+      $scope.spinner += 1;
       $scope.channels.forEach((channel) => {
         if (channel.selected) {
           const deferred = $q.defer();
@@ -156,16 +156,16 @@
       if (promises.length > 0) {
         $q.all(promises).then((responses) => {
           console.log('All promises - ok', responses);
-          $scope.spinner--;
+          $scope.spinner -= 1;
           $rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
         }, (err) => {
           console.log('All promises - error', err);
-          $scope.spinner--;
+          $scope.spinner -= 1;
           $rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
         });
       } else {
         console.log('No promises');
-        $scope.spinner--;
+        $scope.spinner -= 1;
       }
     };
 

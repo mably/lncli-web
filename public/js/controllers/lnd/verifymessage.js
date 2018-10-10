@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($uibModalInstance, defaults, lncli) {
+  module.exports = function factory($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -10,9 +10,9 @@
     $ctrl.data = null;
 
     $ctrl.ok = function () {
-      $ctrl.spinner++;
+      $ctrl.spinner += 1;
       lncli.verifyMessage($ctrl.values.message, $ctrl.values.signature).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('VerifyMessage', response);
         if (response.data.error) {
           $ctrl.data = null;
@@ -38,7 +38,7 @@
           }
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         $ctrl.data = null;
         const errmsg = err.message || err.statusText;

@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($uibModalInstance, defaults, lncli) {
+  module.exports = function factory($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -8,9 +8,9 @@
     $ctrl.signature = null;
 
     $ctrl.ok = function () {
-      $ctrl.spinner++;
+      $ctrl.spinner += 1;
       lncli.signMessage($ctrl.values.message).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('SignMessage', response);
         if (response.data.error) {
           $ctrl.signature = null;
@@ -24,7 +24,7 @@
           $ctrl.signature = response.data.signature;
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         $ctrl.signature = null;
         const errmsg = err.message || err.statusText;

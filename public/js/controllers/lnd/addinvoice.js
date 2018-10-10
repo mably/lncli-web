@@ -1,15 +1,19 @@
-(function () {
-  module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+(function addInvoice() {
+  module.exports = function factory($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
 
     $ctrl.values = defaults;
 
-    $ctrl.ok = function () {
-      $ctrl.spinner++;
-      lncli.addInvoice($ctrl.values.memo, $ctrl.values.value, $ctrl.values.expiry).then((response) => {
-        $ctrl.spinner--;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
+      lncli.addInvoice(
+        $ctrl.values.memo,
+        $ctrl.values.value,
+        $ctrl.values.expiry,
+      ).then((response) => {
+        $ctrl.spinner -= 1;
         console.log('AddInvoice', response);
         if (response.data.error) {
           if ($ctrl.isClosed) {
@@ -22,7 +26,7 @@
           $uibModalInstance.close($ctrl.values);
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         const errmsg = err.message || err.statusText;
         if ($ctrl.isClosed) {
@@ -33,11 +37,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

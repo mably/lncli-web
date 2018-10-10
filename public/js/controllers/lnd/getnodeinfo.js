@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+  module.exports = function factory($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -8,9 +8,9 @@
     $ctrl.nodeInfo = null;
 
     $ctrl.getNodeInfo = function () {
-      $ctrl.spinner++;
+      $ctrl.spinner += 1;
       lncli.getNodeInfo($ctrl.values.pubkey).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('NodeInfo', response);
         if (response.data.error) {
           $ctrl.nodeInfo = null;
@@ -24,7 +24,7 @@
           $ctrl.nodeInfo = angular.toJson(response.data, 4);
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         $ctrl.nodeInfo = null;
         const errmsg = err.message || err.statusText;

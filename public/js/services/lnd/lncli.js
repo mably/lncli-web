@@ -1,5 +1,5 @@
 (function lncli() {
-  module.exports = function exports(
+  module.exports = function factory(
     $rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService,
     $, config, uuid, webNotification, iosocket, utils,
   ) {
@@ -47,7 +47,8 @@
     let pricesFetchers = null;
     const wsRequestListeners = {};
 
-    const endPoint = utils.getUrlParameterByName('endpoint') || window.serverRootPath; // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
+    // endpoint parameter -> LND Chrome Extension, window.serverRootPath -> Electron
+    const endPoint = utils.getUrlParameterByName('endpoint') || window.serverRootPath;
 
     const serverUrl = path => (endPoint ? endPoint + path : path);
 

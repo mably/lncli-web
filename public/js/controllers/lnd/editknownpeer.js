@@ -1,10 +1,10 @@
-(function () {
-  module.exports = function ($rootScope, $uibModalInstance, knownpeer, lncli, config) {
+(function editKnownPeer() {
+  module.exports = function factory($rootScope, $uibModalInstance, knownpeer, lncli, config) {
     const $ctrl = this;
 
     $ctrl.values = knownpeer;
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       lncli.editKnownPeer($ctrl.values).then((response) => {
         console.log('EditKnownPeer', response);
         $ctrl.warning = null;
@@ -15,11 +15,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
   };

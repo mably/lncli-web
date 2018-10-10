@@ -3,7 +3,7 @@
 const winston = require('winston');
 require('winston-daily-rotate-file');
 
-module.exports = function (logFileName, logLevel) {
+module.exports = function factory(logFileName, logLevel) {
   winston.cli();
 
   winston.level = logLevel;

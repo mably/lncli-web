@@ -1,3 +1,3 @@
-module.exports = function (app) {
+module.exports = (app) => {
   app.filter('firstlast', [require('./firstlast')]);
 };

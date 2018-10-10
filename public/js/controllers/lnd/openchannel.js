@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function ($scope, $timeout, $uibModalInstance, defaults, lncli) {
+(function openChannel() {
+  module.exports = function factory($scope, $timeout, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     const listenersIds = [];
@@ -8,16 +8,38 @@
 
     $ctrl.values = defaults;
 
-    $ctrl.ok = function () {
+    const checkform = () => {
+      $ctrl.warning = null;
+      if (!$ctrl.values.pubkey) {
+        $ctrl.warning = 'Remote node pubkey is required.';
+        return false;
+      }
+      if (!$ctrl.values.localamt || $ctrl.values.localamt <= 0) {
+        $ctrl.warning = 'A non-zero local amount is required.';
+        return false;
+      }
+      return true;
+    };
+
+    const unregisterWSRequestListeners = () => {
+      for (let i = 0; i < listenersIds.length; i++) {
+        lncli.unregisterWSRequestListener(listenersIds[i]);
+      }
+      listenersIds.length = 0;
+    };
+
+    $ctrl.ok = () => {
       if (checkform()) {
-        $ctrl.spinner++;
-        lncli.openChannel($ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt, $ctrl.values.satperbyte,
-          $ctrl.values.targetconf, $ctrl.values.remotecsvdelay, $ctrl.values.privatechan).then((response) => {
-          console.log('OpenChannel', response);
-          const requestId = response.rid;
+        $ctrl.spinner += 1;
+        lncli.openChannel(
+          $ctrl.values.pubkey, $ctrl.values.localamt, $ctrl.values.pushamt, $ctrl.values.satperbyte,
+          $ctrl.values.targetconf, $ctrl.values.remotecsvdelay, $ctrl.values.privatechan,
+        ).then((openChannelResponse) => {
+          console.log('OpenChannel', openChannelResponse);
+          const requestId = openChannelResponse.rid;
           // timer to not wait indefinitely for first websocket event
           const waitTimer = $timeout(() => {
-            $ctrl.spinner--;
+            $ctrl.spinner -= 1;
             listenersIds.splice(listenersIds.indexOf(requestId), 1);
             lncli.unregisterWSRequestListener(requestId);
             $uibModalInstance.close($ctrl.values);
@@ -25,7 +47,7 @@
           listenersIds.push(requestId);
           // We wait for first websocket event to check for errors
           lncli.registerWSRequestListener(requestId, (response) => {
-            $ctrl.spinner--;
+            $ctrl.spinner -= 1;
             $timeout.cancel(waitTimer);
             listenersIds.splice(listenersIds.indexOf(requestId), 1);
             lncli.unregisterWSRequestListener(requestId);
@@ -42,7 +64,7 @@
             return true;
           });
         }, (err) => {
-          $ctrl.spinner--;
+          $ctrl.spinner -= 1;
           console.log(err);
           const errmsg = err.message || err.statusText;
           if ($ctrl.isClosed) {
@@ -54,32 +76,12 @@
       }
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
-    };
-
-    var checkform = function () {
-      $ctrl.warning = null;
-      if (!$ctrl.values.pubkey) {
-        $ctrl.warning = 'Remote node pubkey is required.';
-        return false;
-      }
-      if (!$ctrl.values.localamt || $ctrl.values.localamt <= 0) {
-        $ctrl.warning = 'A non-zero local amount is required.';
-        return false;
-      }
-      return true;
-    };
-
-    const unregisterWSRequestListeners = function () {
-      for (let i = 0; i < listenersIds.length; i++) {
-        lncli.unregisterWSRequestListener(listenersIds[i]);
-      }
-      listenersIds.length = 0;
     };
 
     $scope.$on('modal.closing', (event, reason, closed) => {

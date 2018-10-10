@@ -113,6 +113,10 @@ class LightningManager {
       });
     });
   }
+
+  async verifyMessage(data) {
+    return this.call('verifyMessage', data);
+  }
 }
 
 

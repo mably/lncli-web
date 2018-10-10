@@ -1,15 +1,17 @@
-(function () {
-  module.exports = function ($rootScope, $scope, $uibModalInstance, defaults, lncli, config) {
+(function addPeer() {
+  module.exports = function factory(
+    $rootScope, $scope, $uibModalInstance, defaults, lncli, config,
+  ) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
 
     $ctrl.values = defaults;
 
-    $ctrl.ok = function () {
-      $ctrl.spinner++;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
       lncli.connectPeer($ctrl.values.pubkey, $ctrl.values.host).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('AddPeer', response);
         if (response.data.error) {
           if ($ctrl.isClosed) {
@@ -23,7 +25,7 @@
           $uibModalInstance.close($ctrl.values);
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         const errmsg = err.message || err.statusText;
         if ($ctrl.isClosed) {
@@ -34,11 +36,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

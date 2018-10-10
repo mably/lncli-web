@@ -1,12 +1,12 @@
-(function () {
-  module.exports = function ($uibModalInstance, settings, lncli, config) {
+(function editSettings() {
+  module.exports = function factory($uibModalInstance, settings, lncli, config) {
     const $ctrl = this;
 
     $ctrl.values = settings;
     $ctrl.amountMainUnits = config.defaults.AMOUNT_UNITS;
     $ctrl.amountAltUnits = config.defaults.AMOUNT_UNITS;
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       lncli.setConfigValues($ctrl.values).then((response) => {
         console.log('EditConfig', response);
         $ctrl.warning = null;
@@ -16,11 +16,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
   };

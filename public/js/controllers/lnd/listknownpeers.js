@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
+  module.exports = function factory($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
     const $ctrl = this;
 
     $scope.spinner = 0;
@@ -12,16 +12,16 @@
     $scope.form.checkbox = false;
 
     $scope.refresh = function () {
-      $scope.spinner++;
+      $scope.spinner += 1;
       lncli.listKnownPeers().then((response) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         console.log(response);
         $scope.data = JSON.stringify(response, null, '\t');
         $scope.peers = response;
         $scope.numberOfPeers = $scope.peers.length;
         $scope.form.checkbox = false;
       }, (err) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         $scope.numberOfPeers = 0;
         console.log('Error:', err);
         lncli.alert(err.message || err.statusText);
@@ -29,9 +29,9 @@
     };
 
     $scope.connect = function (peer) {
-      $scope.spinner++;
+      $scope.spinner += 1;
       lncli.connectPeer(peer.pub_key, peer.address).then((response) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         console.log('ConnectKnownPeer', response);
         if (response.data.error) {
           lncli.alert(response.data.error);
@@ -41,7 +41,7 @@
           }, 500);
         }
       }, (err) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         console.log(err);
         lncli.alert(err.message || err.statusText);
       });

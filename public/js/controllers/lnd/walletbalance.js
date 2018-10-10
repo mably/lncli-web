@@ -1,18 +1,18 @@
-(function () {
-  module.exports = function ($scope, $timeout, $uibModal, $, lncli, config) {
+(function walletbalance() {
+  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
 
     $scope.refresh = function () {
-      $scope.spinner++;
+      $scope.spinner += 1;
       $scope.updateNextRefresh();
       lncli.walletBalance().then((response) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         console.log(response);
         $scope.data = JSON.stringify(response.data, null, '\t');
         $scope.info = response.data;
       }, (err) => {
-        $scope.spinner--;
+        $scope.spinner -= 1;
         console.log('Error:', err);
         lncli.alert(err.message || err.statusText);
       });

@@ -1,4 +1,4 @@
-module.exports = function (lnwebcli) {
+module.exports = (lnwebcli) => {
   lnwebcli.controller('ChannelBalanceCtrl', ['$scope', '$timeout', 'lncli', 'config', require('./channelbalance')]);
   lnwebcli.controller('ForwardingHistoryCtrl', ['$scope', '$timeout', '$uibModal', 'jQuery', 'lncli', 'config', require('./forwardinghistory')]);
   lnwebcli.controller('GetInfoCtrl', ['$scope', '$timeout', '$window', '$uibModal', 'lncli', 'config', require('./getinfo')]);

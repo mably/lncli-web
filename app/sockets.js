@@ -31,7 +31,9 @@ class SocketAdapter {
 }
 
 // TODO
-module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile) {
+module.exports = function factory(
+  io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile,
+) {
   const clients = [];
 
   const authEnabled = (login && pass) || (limitlogin && limitpass);
@@ -49,7 +51,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
   let tailProcessTimeoutId = null;
   let tailProcessLastDataReceived = null;
 
-  const filterLogData = function (logData, logPatternRE) {
+  const filterLogData = function filterLogData(logData, logPatternRE) {
     let filteredLogData = '';
     let index = -1;
     let prevIndex = 0;
@@ -67,7 +69,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
     return filteredLogData;
   };
 
-  const registerGlobalListeners = function () {
+  const registerGlobalListeners = function registerGlobalListeners() {
     if (!tailProcess) {
       tailProcess = spawn('tail', ['-F', '--sleep-interval=2', lndLogfile]);
       tailProcess.on('error', (err) => {
@@ -134,7 +136,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
   registerGlobalListeners();
 
   // register the lnd invoices listener
-  const registerLndInvoiceListener = function (client) {
+  const registerLndInvoiceListener = (client) => {
     client.setInvoiceListener({
       dataReceived(data) {
         client.socket.emit('invoice', data);
@@ -144,13 +146,13 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
   };
 
   // unregister the lnd invoices listener
-  const unregisterLndInvoiceListener = function (client) {
+  const unregisterLndInvoiceListener = (client) => {
     lnd.unregisterInvoiceListener(client.invoiceListener);
   };
 
   // logfilter
   const LOGFILTER_EVENT = 'logfilter';
-  const registerLogFilterListener = function (client) {
+  const registerLogFilterListener = (client) => {
     const { socket } = client;
     socket.on(LOGFILTER_EVENT, (data, callback) => {
       logger.debug('logfilter', data);
@@ -169,7 +171,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 
   // openchannel
   const OPENCHANNEL_EVENT = 'openchannel';
-  const registerOpenChannelListener = function (client) {
+  const registerOpenChannelListener = (client) => {
     const { socket } = client;
     socket.on(OPENCHANNEL_EVENT, (data, callback) => {
       const { rid } = data; // request ID
@@ -226,7 +228,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
 
   // closechannel
   const CLOSECHANNEL_EVENT = 'closechannel';
-  const registerCloseChannelListener = function (client) {
+  const registerCloseChannelListener = (client) => {
     const { socket } = client;
     socket.on(CLOSECHANNEL_EVENT, (data, callback) => {
       const { rid } = data; // request ID
@@ -273,7 +275,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
   };
 
   // register the socket listeners
-  const registerSocketListeners = function (client) {
+  const registerSocketListeners = (client) => {
     registerLndInvoiceListener(client);
     registerCloseChannelListener(client);
     registerOpenChannelListener(client);
@@ -281,7 +283,7 @@ module.exports = function (io, lightning, lnd, login, pass, limitlogin, limitpas
   };
 
   // unregister the socket listeners
-  const unregisterSocketListeners = function (client) {
+  const unregisterSocketListeners = (client) => {
     unregisterLndInvoiceListener(client);
     // unregisterCloseChannelListener(client);
     // unregisterOpenChannelListener(client);

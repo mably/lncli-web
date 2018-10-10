@@ -1,5 +1,5 @@
 (function () {
-  module.exports = function ($uibModalInstance, qrcode, lncli) {
+  module.exports = function factory($uibModalInstance, qrcode, lncli) {
     const $ctrl = this;
 
     $ctrl.qrcode = qrcode;

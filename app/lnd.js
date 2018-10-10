@@ -4,14 +4,14 @@
 const logger = require('winston');
 
 // TODO
-module.exports = function (lightning) {
+module.exports = function factory(lightning) {
   const module = {};
 
   const invoiceListeners = [];
 
   let lndInvoicesStream = null;
 
-  const openLndInvoicesStream = function () {
+  const openLndInvoicesStream = function olndis() {
     if (lndInvoicesStream) {
       logger.debug('Lnd invoices subscription stream already opened.');
     } else {
@@ -47,13 +47,13 @@ module.exports = function (lightning) {
   };
 
   // register invoice listener
-  module.registerInvoiceListener = function (listener) {
+  module.registerInvoiceListener = (listener) => {
     invoiceListeners.push(listener);
     logger.debug(`New lnd invoice listener registered, ${invoiceListeners.length} listening now`);
   };
 
   // unregister invoice listener
-  module.unregisterInvoiceListener = function (listener) {
+  module.unregisterInvoiceListener = (listener) => {
     invoiceListeners.splice(invoiceListeners.indexOf(listener), 1);
     logger.debug(`Lnd invoice listener unregistered, ${invoiceListeners.length} still listening`);
   };

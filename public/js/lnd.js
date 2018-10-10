@@ -15,7 +15,7 @@ window.webNotification = require('simple-web-notification'); // required by angu
 require('angular-web-notification');
 require('angular-base64');
 const qrcode = require('qrcode-generator');
-const css = require('../css/lnd.css');
+require('../css/lnd.css');
 
 window.qrcode = qrcode;
 require('angular-qrcode');
@@ -26,14 +26,14 @@ const lnwebcli = angular.module('lnwebcli', ['ui.bootstrap', 'LocalStorageModule
 lnwebcli.value('jQuery', window.jQuery);
 lnwebcli.value('bootbox', bootbox);
 
-lnwebcli.config(['localStorageServiceProvider', function (localStorageServiceProvider) {
+lnwebcli.config(['localStorageServiceProvider', (localStorageServiceProvider) => {
   localStorageServiceProvider
     .setPrefix('lnwebcli')
     .setStorageType('localStorage')
     .setNotify(true, true);
 }]);
 
-lnwebcli.config(['ngToastProvider', function (ngToast) {
+lnwebcli.config(['ngToastProvider', (ngToast) => {
   ngToast.configure({
     // verticalPosition: "bottom",
     // horizontalPosition: "center"
