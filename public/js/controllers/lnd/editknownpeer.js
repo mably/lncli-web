@@ -1,31 +1,26 @@
 (function () {
-	"use strict";
+  module.exports = function ($rootScope, $uibModalInstance, knownpeer, lncli, config) {
+    const $ctrl = this;
 
-	module.exports = function ($rootScope, $uibModalInstance, knownpeer, lncli, config) {
+    $ctrl.values = knownpeer;
 
-		var $ctrl = this;
+    $ctrl.ok = function () {
+      lncli.editKnownPeer($ctrl.values).then((response) => {
+        console.log('EditKnownPeer', response);
+        $ctrl.warning = null;
+        $rootScope.$broadcast(config.events.PEER_REFRESH, response);
+        $uibModalInstance.close($ctrl.values);
+      }, (err) => {
+        $ctrl.warning = err;
+      });
+    };
 
-		$ctrl.values = knownpeer;
+    $ctrl.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		$ctrl.ok = function () {
-			lncli.editKnownPeer($ctrl.values).then(function (response) {
-				console.log("EditKnownPeer", response);
-				$ctrl.warning = null;
-				$rootScope.$broadcast(config.events.PEER_REFRESH, response);
-				$uibModalInstance.close($ctrl.values);
-			}, function (err) {
-				$ctrl.warning = err;
-			});
-		};
-
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-	};
-
-})();
+    $ctrl.dismissAlert = function () {
+      $ctrl.warning = null;
+    };
+  };
+}());

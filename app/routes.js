@@ -64,13 +64,13 @@ module.exports = function (app, lightning, db, config) {
   app.get('/api/lnd/channelbalance', lightningRPCAdapter('channelBalance'));
 
   app.get('/api/lnd/listinvoices', lightningRPCAdapter('listInvoices', {
-    preHook: req => ({reversed: true, num_max_invoices: 100000})
+    preHook: (/* req */) => ({ reversed: true, num_max_invoices: 100000 }),
   }));
-		
+
   app.get('/api/lnd/forwardinghistory', lightningRPCAdapter('forwardingHistory', {
-    preHook: req => ({num_max_events: 100000 })
-  }));		
-	
+    preHook: (/* req */) => ({ num_max_events: 100000 }),
+  }));
+
   app.post('/api/lnd/getnodeinfo', lightningRPCAdapter('getNodeInfo', {
     preHook: req => ({ pub_key: req.body.pubkey }),
   }));
