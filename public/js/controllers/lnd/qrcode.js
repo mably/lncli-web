@@ -1,20 +1,15 @@
 (function () {
-	"use strict";
+  module.exports = function ($uibModalInstance, qrcode, lncli) {
+    const $ctrl = this;
 
-	module.exports = function ($uibModalInstance, qrcode, lncli) {
+    $ctrl.qrcode = qrcode;
 
-		var $ctrl = this;
+    $ctrl.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		$ctrl.qrcode = qrcode;
-
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-	};
-
-})();
+    $ctrl.dismissAlert = function () {
+      $ctrl.warning = null;
+    };
+  };
+}());

@@ -1,32 +1,27 @@
 (function () {
-	"use strict";
+  module.exports = function ($uibModalInstance, settings, lncli, config) {
+    const $ctrl = this;
 
-	module.exports = function ($uibModalInstance, settings, lncli, config) {
+    $ctrl.values = settings;
+    $ctrl.amountMainUnits = config.defaults.AMOUNT_UNITS;
+    $ctrl.amountAltUnits = config.defaults.AMOUNT_UNITS;
 
-		var $ctrl = this;
+    $ctrl.ok = function () {
+      lncli.setConfigValues($ctrl.values).then((response) => {
+        console.log('EditConfig', response);
+        $ctrl.warning = null;
+        $uibModalInstance.close($ctrl.values);
+      }, (err) => {
+        $ctrl.warning = err;
+      });
+    };
 
-		$ctrl.values = settings;
-		$ctrl.amountMainUnits = config.defaults.AMOUNT_UNITS;
-		$ctrl.amountAltUnits = config.defaults.AMOUNT_UNITS;
+    $ctrl.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		$ctrl.ok = function () {
-			lncli.setConfigValues($ctrl.values).then(function (response) {
-				console.log("EditConfig", response);
-				$ctrl.warning = null;
-				$uibModalInstance.close($ctrl.values);
-			}, function (err) {
-				$ctrl.warning = err;
-			});
-		};
-
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-	};
-
-})();
+    $ctrl.dismissAlert = function () {
+      $ctrl.warning = null;
+    };
+  };
+}());
