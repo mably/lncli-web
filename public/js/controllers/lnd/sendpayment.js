@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function factory($scope, $uibModalInstance, defaults, lncli) {
+(function sendPayments() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -7,7 +7,7 @@
     $ctrl.values = defaults;
     $ctrl.decodedPayment = null;
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       $ctrl.spinner += 1;
       lncli.sendPayment($ctrl.values.payreq, $ctrl.values.amount).then((response) => {
         $ctrl.spinner -= 1;
@@ -40,7 +40,7 @@
       });
     };
 
-    $ctrl.decode = function () {
+    $ctrl.decode = () => {
       $ctrl.spinner += 1;
       lncli.decodePayReq($ctrl.values.payreq).then((response) => {
         $ctrl.spinner -= 1;
@@ -69,11 +69,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

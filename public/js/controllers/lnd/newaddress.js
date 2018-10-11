@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function factory($uibModalInstance, defaults, lncli) {
+(function newAddress() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.values = defaults;
@@ -9,7 +9,7 @@
       // { name: "PUBKEY_HASH", id: 2 },
     ];
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       lncli.newAddress($ctrl.values.type).then((response) => {
         console.log('NewAddress', response);
         $ctrl.warning = null;
@@ -24,15 +24,15 @@
       });
     };
 
-    $ctrl.close = function () {
+    $ctrl.close = () => {
       $uibModalInstance.close($ctrl.values);
     };
 
-    $ctrl.dismissWarning = function () {
+    $ctrl.dismissWarning = () => {
       $ctrl.warning = null;
     };
 
-    $ctrl.dismissSuccess = function () {
+    $ctrl.dismissSuccess = () => {
       $ctrl.success = null;
     };
   };

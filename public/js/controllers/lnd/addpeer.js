@@ -1,5 +1,5 @@
 (function addPeer() {
-  module.exports = function factory(
+  module.exports = function controller(
     $rootScope, $scope, $uibModalInstance, defaults, lncli, config,
   ) {
     const $ctrl = this;

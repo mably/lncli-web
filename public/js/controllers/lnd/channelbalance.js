@@ -1,5 +1,5 @@
 (function channelBalance() {
-  module.exports = function factory($scope, $timeout, lncli, config) {
+  module.exports = function controller($scope, $timeout, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
 

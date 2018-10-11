@@ -1,10 +1,10 @@
-(function () {
-  module.exports = function factory($uibModalInstance, defaults, lncli) {
+(function importKnownPeers() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.values = defaults;
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       try {
         const peersObj = JSON.parse($ctrl.values.peersjson);
         lncli.importKnownPeers(peersObj).then((response) => {
@@ -21,11 +21,11 @@
       }
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
   };

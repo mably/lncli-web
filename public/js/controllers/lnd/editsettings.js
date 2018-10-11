@@ -1,5 +1,5 @@
 (function editSettings() {
-  module.exports = function factory($uibModalInstance, settings, lncli, config) {
+  module.exports = function controller($uibModalInstance, settings, lncli, config) {
     const $ctrl = this;
 
     $ctrl.values = settings;

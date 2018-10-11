@@ -1,15 +1,25 @@
-(function () {
-  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
+(function listPayments() {
+  module.exports = function controller($scope, $timeout, $uibModal, $, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;
     $scope.numberOfPayments = 0;
     $scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
     $scope.cfg = {};
-    $scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPAYMENTS_PAGESIZE, $scope.pageSizes[0]);
+    $scope.cfg.itemsPerPage = lncli.getConfigValue(
+      config.keys.LISTPAYMENTS_PAGESIZE, $scope.pageSizes[0],
+    );
     $scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTPAYMENTS_LISTVISIBLE, true);
 
-    $scope.refresh = function () {
+    const processPayments = (payments) => {
+      payments.forEach((payment) => {
+        payment.value = parseInt(payment.value, 10);
+        payment.fee = parseInt(payment.fee, 10);
+      });
+      return payments;
+    };
+
+    $scope.refresh = () => {
       if ($scope.cfg.listVisible) {
         $scope.lastRefreshed = Date.now();
         $scope.updateNextRefresh();
@@ -29,24 +39,16 @@
       }
     };
 
-    var processPayments = function (payments) {
-      payments.forEach((payment) => {
-        payment.value = parseInt(payment.value);
-        payment.fee = parseInt(payment.fee);
-      });
-      return payments;
-    };
+    const getRefreshPeriod = () => lncli.getConfigValue(
+      config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH,
+    );
 
-    const getRefreshPeriod = function () {
-      return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
-    };
-
-    $scope.updateNextRefresh = function () {
+    $scope.updateNextRefresh = () => {
       $timeout.cancel($scope.nextRefresh);
       $scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
     };
 
-    $scope.add = function () {
+    $scope.add = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'sendpayment-modal-title',
@@ -76,11 +78,11 @@
       });
     };
 
-    $scope.pageSizeChanged = function () {
+    $scope.pageSizeChanged = () => {
       lncli.setConfigValue(config.keys.LISTPAYMENTS_PAGESIZE, $scope.cfg.itemsPerPage);
     };
 
-    $scope.toggle = function () {
+    $scope.toggle = () => {
       $scope.cfg.listVisible = !$scope.cfg.listVisible;
       lncli.setConfigValue(config.keys.LISTPAYMENTS_LISTVISIBLE, $scope.cfg.listVisible);
       if ($scope.cfg.listVisible) {

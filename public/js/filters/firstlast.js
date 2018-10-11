@@ -1,4 +1,4 @@
-(function firstlast() {
+(function firstLast() {
   module.exports = () => (input, first, last, separator) => {
     let filtered;
     last = last || first;

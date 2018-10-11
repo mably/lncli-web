@@ -17,7 +17,7 @@ module.exports = (lnwebcli) => {
   lnwebcli.controller('ModalImportKnownPeersCtrl', ['$uibModalInstance', 'defaults', 'lncli', require('./importknownpeers')]);
   lnwebcli.controller('ModalNewAddressCtrl', ['$uibModalInstance', 'defaults', 'lncli', require('./newaddress')]);
   lnwebcli.controller('ModalOpenChannelCtrl', ['$scope', '$timeout', '$uibModalInstance', 'defaults', 'lncli', require('./openchannel')]);
-  lnwebcli.controller('ModalQRCodeCtrl', ['$uibModalInstance', 'qrcode', 'lncli', require('./qrcode')]);
+  lnwebcli.controller('ModalQRCodeCtrl', ['$uibModalInstance', 'qrcode', require('./qrcode')]);
   lnwebcli.controller('ModalQueryRouteCtrl', ['$scope', '$uibModalInstance', 'defaults', 'lncli', require('./queryroute')]);
   lnwebcli.controller('ModalSendCoinsCtrl', ['$scope', '$uibModalInstance', 'defaults', 'lncli', require('./sendcoins')]);
   lnwebcli.controller('ModalSendPaymentCtrl', ['$scope', '$uibModalInstance', 'defaults', 'lncli', require('./sendpayment')]);

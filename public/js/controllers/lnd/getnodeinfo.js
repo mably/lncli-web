@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function factory($scope, $uibModalInstance, defaults, lncli) {
+(function getNodeInfo() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -7,7 +7,7 @@
     $ctrl.values = defaults;
     $ctrl.nodeInfo = null;
 
-    $ctrl.getNodeInfo = function () {
+    $ctrl.getNodeInfo = () => {
       $ctrl.spinner += 1;
       lncli.getNodeInfo($ctrl.values.pubkey).then((response) => {
         $ctrl.spinner -= 1;
@@ -40,11 +40,11 @@
       $ctrl.getNodeInfo();
     }
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

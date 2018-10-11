@@ -1,5 +1,5 @@
 (function pendingChannels() {
-  module.exports = function factory($scope, $timeout, $window, lncli, config) {
+  module.exports = function controller($scope, $timeout, $window, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;

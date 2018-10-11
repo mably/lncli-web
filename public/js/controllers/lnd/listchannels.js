@@ -1,17 +1,33 @@
-(function () {
-  module.exports = function factory($rootScope, $scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config) {
+(function listChannels() {
+  module.exports = function controller(
+    $rootScope, $scope, $timeout, $window, $uibModal, $, $q, bootbox, lncli, config,
+  ) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;
     $scope.numberOfChannels = 0;
     $scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
     $scope.cfg = {};
-    $scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTCHANNELS_PAGESIZE, $scope.pageSizes[0]);
+    $scope.cfg.itemsPerPage = lncli.getConfigValue(
+      config.keys.LISTCHANNELS_PAGESIZE, $scope.pageSizes[0],
+    );
     $scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTCHANNELS_LISTVISIBLE, true);
     $scope.form = {};
     $scope.form.checkbox = false;
 
-    $scope.refresh = function () {
+    const processChannels = (channels) => {
+      channels.forEach((channel) => {
+        channel.capacity = parseInt(channel.capacity, 10);
+        channel.local_balance = parseInt(channel.local_balance, 10);
+        channel.remote_balance = parseInt(channel.remote_balance, 10);
+        channel.total_satoshis_sent = parseInt(channel.total_satoshis_sent, 10);
+        channel.total_satoshis_received = parseInt(channel.total_satoshis_received, 10);
+        channel.num_updates = parseInt(channel.num_updates, 10);
+      });
+      return channels;
+    };
+
+    $scope.refresh = () => {
       if ($scope.cfg.listVisible) {
         lncli.getKnownPeers(true).then((knownPeers) => {
           $scope.knownPeers = knownPeers;
@@ -35,30 +51,21 @@
       }
     };
 
-    var processChannels = function (channels) {
-      channels.forEach((channel) => {
-        channel.capacity = parseInt(channel.capacity);
-        channel.local_balance = parseInt(channel.local_balance);
-        channel.remote_balance = parseInt(channel.remote_balance);
-        channel.total_satoshis_sent = parseInt(channel.total_satoshis_sent);
-        channel.total_satoshis_received = parseInt(channel.total_satoshis_received);
-        channel.num_updates = parseInt(channel.num_updates);
-      });
-      return channels;
-    };
+    const getRefreshPeriod = () => lncli.getConfigValue(
+      config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH,
+    );
 
-    const getRefreshPeriod = function () {
-      return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
-    };
-
-    $scope.updateNextRefresh = function () {
+    $scope.updateNextRefresh = () => {
       $timeout.cancel($scope.nextRefresh);
       $scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
     };
 
-    $scope.add = function () {
+    $scope.add = () => {
       lncli.listPeers(true).then((peersResponse) => {
-        if (peersResponse && peersResponse.data && peersResponse.data.peers && peersResponse.data.peers.length > 0) {
+        if (peersResponse
+          && peersResponse.data
+          && peersResponse.data.peers
+          && peersResponse.data.peers.length > 0) {
           const modalInstance = $uibModal.open({
             animation: true,
             ariaLabelledBy: 'openchannel-modal-title',
@@ -94,7 +101,7 @@
       });
     };
 
-    $scope.close = function (channel) {
+    $scope.close = (channel) => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'closechannel-modal-title',
@@ -119,7 +126,7 @@
       });
     };
 
-    const closeChannelBatch = function () {
+    const closeChannelBatch = () => {
       const promises = [];
       $scope.spinner += 1;
       $scope.channels.forEach((channel) => {
@@ -127,9 +134,9 @@
           const deferred = $q.defer();
           promises.push(deferred.promise);
           const channelPoint = channel.channel_point.split(':');
-          lncli.closeChannel(channelPoint[0], channelPoint[1], false).then((response) => {
-            console.log('CloseChannelBatch', response);
-            const requestId = response.rid;
+          lncli.closeChannel(channelPoint[0], channelPoint[1], false).then((closeChanResponse) => {
+            console.log('CloseChannelBatch', closeChanResponse);
+            const requestId = closeChanResponse.rid;
             // timer to not wait indefinitely for first websocket event
             const waitTimer = $timeout(() => {
               lncli.unregisterWSRequestListener(requestId);
@@ -161,7 +168,7 @@
         }, (err) => {
           console.log('All promises - error', err);
           $scope.spinner -= 1;
-          $rootScope.$broadcast(config.events.CHANNEL_REFRESH, responses);
+          $rootScope.$broadcast(config.events.CHANNEL_REFRESH, err);
         });
       } else {
         console.log('No promises');
@@ -169,7 +176,9 @@
       }
     };
 
-    $scope.closeBatch = function (confirm = true) {
+    const hasSelected = () => $scope.channels.some(channel => channel.selected);
+
+    $scope.closeBatch = (confirm = true) => {
       if (hasSelected()) {
         if (confirm) {
           bootbox.confirm('Do you really want to cooperatively close those selected channels?', (result) => {
@@ -185,30 +194,30 @@
       }
     };
 
-    $scope.dismissWarning = function () {
+    $scope.dismissWarning = () => {
       $scope.warning = null;
     };
 
-    $scope.channelPeerAlias = function (channel) {
+    $scope.channelPeerAlias = (channel) => {
       const knownPeer = $scope.knownPeers[channel.remote_pubkey];
       return knownPeer ? knownPeer.custom_alias : null;
     };
 
-    $scope.pubkeyCopied = function (channel) {
+    $scope.pubkeyCopied = (channel) => {
       channel.pubkeyCopied = true;
       $timeout(() => {
         channel.pubkeyCopied = false;
       }, 500);
     };
 
-    $scope.chanpointCopied = function (channel) {
+    $scope.chanpointCopied = (channel) => {
       channel.chanpointCopied = true;
       $timeout(() => {
         channel.chanpointCopied = false;
       }, 500);
     };
 
-    $scope.openChannelPointInExplorer = function (channel) {
+    $scope.openChannelPointInExplorer = (channel) => {
       if (channel.channel_point) {
         const txId = channel.channel_point.split(':')[0];
         $window.open(lncli.getTransactionURL(txId), '_blank');
@@ -220,21 +229,17 @@
       $scope.refresh();
     });
 
-    $scope.pageSizeChanged = function () {
+    $scope.pageSizeChanged = () => {
       lncli.setConfigValue(config.keys.LISTCHANNELS_PAGESIZE, $scope.cfg.itemsPerPage);
     };
 
-    var hasSelected = function () {
-      return $scope.channels.some(channel => channel.selected);
-    };
-
-    $scope.selectAll = function (stChannels) {
+    $scope.selectAll = (stChannels) => {
       stChannels.forEach((channel) => {
         channel.selected = $scope.form.checkbox;
       });
     };
 
-    $scope.toggle = function () {
+    $scope.toggle = () => {
       $scope.cfg.listVisible = !$scope.cfg.listVisible;
       lncli.setConfigValue(config.keys.LISTCHANNELS_LISTVISIBLE, $scope.cfg.listVisible);
       if ($scope.cfg.listVisible) {

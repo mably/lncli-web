@@ -162,7 +162,7 @@ module.exports = function factory(app, lightning, db, config) {
       const { nodes } = response;
       let i;
       let node;
-      for (i = 0; i < nodes.length; i++) {
+      for (i = 0; i < nodes.length; i += 1) {
         node = nodes[i];
         nodesMap[node.pub_key] = node;
       }
@@ -170,7 +170,7 @@ module.exports = function factory(app, lightning, db, config) {
       const channeledNodes = {};
       const { edges } = response;
       let edge;
-      for (i = 0; i < edges.length; i++) {
+      for (i = 0; i < edges.length; i += 1) {
         edge = edges[i];
         if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
           channeledNodes[edge.node1_pub] = edge.node1_pub;
@@ -196,7 +196,7 @@ module.exports = function factory(app, lightning, db, config) {
         g.addNode(node.pub_key, { label: nodeLabel });
       });
 
-      for (i = 0; i < edges.length; i++) {
+      for (i = 0; i < edges.length; i += 1) {
         // Add edge
         edge = edges[i];
         if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges

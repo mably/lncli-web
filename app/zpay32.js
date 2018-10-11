@@ -8,7 +8,7 @@ const fastcrc32 = require('fast-crc32c');
 
 const convertLongToBigEndianBuffer = (longValue) => {
   const byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
-  for (let index = 0; index < byteArray.length; index++) {
+  for (let index = 0; index < byteArray.length; index += 1) {
     const byte = longValue & 0xff;
     byteArray[index] = byte;
     longValue = (longValue - byte) / 256;
@@ -19,7 +19,7 @@ const convertLongToBigEndianBuffer = (longValue) => {
 const convertBigEndianBufferToLong = (longBuffer) => {
   let longValue = 0;
   const byteArray = Buffer.from(longBuffer).swap64();
-  for (let i = byteArray.length - 1; i >= 0; i--) {
+  for (let i = byteArray.length - 1; i >= 0; i -= 1) {
     longValue = (longValue * 256) + byteArray[i];
   }
   return longValue;

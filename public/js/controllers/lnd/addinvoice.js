@@ -1,5 +1,5 @@
 (function addInvoice() {
-  module.exports = function factory($scope, $uibModalInstance, defaults, lncli) {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;

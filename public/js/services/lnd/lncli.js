@@ -1,5 +1,5 @@
-(function lncli() {
-  module.exports = function factory(
+(function lnCli() {
+  module.exports = function service(
     $rootScope, $filter, $http, $timeout, $interval, $q, ngToast, bootbox, localStorageService,
     $, config, uuid, webNotification, iosocket, utils,
   ) {

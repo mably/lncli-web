@@ -1,5 +1,5 @@
 (function getInfo() {
-  module.exports = function factory($scope, $timeout, $window, $uibModal, lncli, config) {
+  module.exports = function controller($scope, $timeout, $window, $uibModal, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
 

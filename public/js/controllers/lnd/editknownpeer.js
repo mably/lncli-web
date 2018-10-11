@@ -1,5 +1,5 @@
 (function editKnownPeer() {
-  module.exports = function factory($rootScope, $uibModalInstance, knownpeer, lncli, config) {
+  module.exports = function controller($rootScope, $uibModalInstance, knownpeer, lncli, config) {
     const $ctrl = this;
 
     $ctrl.values = knownpeer;

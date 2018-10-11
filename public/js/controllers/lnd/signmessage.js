@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function factory($uibModalInstance, defaults, lncli) {
+(function signMessage() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -7,7 +7,7 @@
     $ctrl.values = defaults;
     $ctrl.signature = null;
 
-    $ctrl.ok = function () {
+    $ctrl.ok = () => {
       $ctrl.spinner += 1;
       lncli.signMessage($ctrl.values.message).then((response) => {
         $ctrl.spinner -= 1;
@@ -36,15 +36,15 @@
       });
     };
 
-    $ctrl.close = function () {
+    $ctrl.close = () => {
       $uibModalInstance.close($ctrl.values);
     };
 
-    $ctrl.dismissWarning = function () {
+    $ctrl.dismissWarning = () => {
       $ctrl.warning = null;
     };
 
-    $ctrl.dismissSuccess = function () {
+    $ctrl.dismissSuccess = () => {
       $ctrl.success = null;
     };
   };

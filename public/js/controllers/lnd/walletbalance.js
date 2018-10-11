@@ -1,9 +1,9 @@
-(function walletbalance() {
-  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
+(function walletBalance() {
+  module.exports = function controller($scope, $timeout, $uibModal, $, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
 
-    $scope.refresh = function () {
+    $scope.refresh = () => {
       $scope.spinner += 1;
       $scope.updateNextRefresh();
       lncli.walletBalance().then((response) => {
@@ -18,13 +18,13 @@
       });
     };
 
-    $scope.updateNextRefresh = function () {
+    $scope.updateNextRefresh = () => {
       $timeout.cancel($scope.nextRefresh);
       $scope.nextRefresh = $timeout($scope.refresh,
         lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
     };
 
-    $scope.newAddress = function () {
+    $scope.newAddress = () => {
       const modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);
 
       modalInstance.rendered.then(() => {
@@ -38,7 +38,7 @@
       });
     };
 
-    $scope.sendCoins = function () {
+    $scope.sendCoins = () => {
       const modalInstance = $uibModal.open(config.modals.SEND_COINS);
 
       modalInstance.rendered.then(() => {

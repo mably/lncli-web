@@ -1,17 +1,21 @@
-(function () {
-  module.exports = function factory($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
-    const $ctrl = this;
+(function listKnownPeers() {
+  module.exports = function controller(
+    $rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config,
+  ) {
+    // const $ctrl = this;
 
     $scope.spinner = 0;
     $scope.numberOfPeers = 0;
     $scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
     $scope.cfg = {};
-    $scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.pageSizes[0]);
+    $scope.cfg.itemsPerPage = lncli.getConfigValue(
+      config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.pageSizes[0],
+    );
     $scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTKNOWNPEERS_LISTVISIBLE, true);
     $scope.form = {};
     $scope.form.checkbox = false;
 
-    $scope.refresh = function () {
+    $scope.refresh = () => {
       $scope.spinner += 1;
       lncli.listKnownPeers().then((response) => {
         $scope.spinner -= 1;
@@ -28,7 +32,7 @@
       });
     };
 
-    $scope.connect = function (peer) {
+    $scope.connect = (peer) => {
       $scope.spinner += 1;
       lncli.connectPeer(peer.pub_key, peer.address).then((response) => {
         $scope.spinner -= 1;
@@ -47,7 +51,9 @@
       });
     };
 
-    $scope.connectBatch = function () {
+    const hasSelected = () => $scope.peers.some(peer => peer.selected);
+
+    $scope.connectBatch = () => {
       if (hasSelected()) {
         bootbox.confirm('Do you really want to connect to those selected peers?', (result) => {
           if (result) {
@@ -63,7 +69,7 @@
       }
     };
 
-    $scope.edit = function (peer) {
+    $scope.edit = (peer) => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'editknownpeer-modal-title',
@@ -93,7 +99,7 @@
       });
     };
 
-    const removePeer = function (peer) {
+    const removePeer = (peer) => {
       lncli.removeKnownPeer(peer.pub_key).then((response) => {
         console.log('RemoveKnownPeer removed=', response);
         $scope.refresh();
@@ -103,7 +109,7 @@
       });
     };
 
-    $scope.remove = function (peer, confirm = true) {
+    $scope.remove = (peer, confirm = true) => {
       if (confirm) {
         bootbox.confirm('Do you really want to remove that peer?', (result) => {
           if (result) {
@@ -115,7 +121,7 @@
       }
     };
 
-    const removePeerBatch = function () {
+    const removePeerBatch = () => {
       $scope.peers.forEach((peer) => {
         const promises = [];
         if (peer.selected) {
@@ -134,7 +140,7 @@
       });
     };
 
-    $scope.removeBatch = function (confirm = true) {
+    $scope.removeBatch = (confirm = true) => {
       if (hasSelected()) {
         if (confirm) {
           bootbox.confirm('Do you really want to remove those selected peers?', (result) => {
@@ -150,7 +156,7 @@
       }
     };
 
-    $scope.import = function () {
+    $scope.import = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'importknownpeers-modal-title',
@@ -178,21 +184,21 @@
       });
     };
 
-    $scope.pubkeyCopied = function (peer) {
+    $scope.pubkeyCopied = (peer) => {
       peer.pubkeyCopied = true;
       $timeout(() => {
         peer.pubkeyCopied = false;
       }, 500);
     };
 
-    $scope.addressCopied = function (peer) {
+    $scope.addressCopied = (peer) => {
       peer.addressCopied = true;
       $timeout(() => {
         peer.addressCopied = false;
       }, 500);
     };
 
-    $scope.showNodeInfo = function (peer) {
+    $scope.showNodeInfo = (peer) => {
       const modalCfg = angular.copy(config.modals.NODE_INFO);
       modalCfg.resolve = {
         defaults: {
@@ -218,21 +224,17 @@
       $scope.refresh();
     });
 
-    $scope.pageSizeChanged = function () {
+    $scope.pageSizeChanged = () => {
       lncli.setConfigValue(config.keys.LISTKNOWNPEERS_PAGESIZE, $scope.cfg.itemsPerPage);
     };
 
-    var hasSelected = function () {
-      return $scope.peers.some(peer => peer.selected);
-    };
-
-    $scope.selectAll = function (stPeers) {
+    $scope.selectAll = (stPeers) => {
       stPeers.forEach((peer) => {
         peer.selected = $scope.form.checkbox;
       });
     };
 
-    $scope.toggle = function () {
+    $scope.toggle = () => {
       $scope.cfg.listVisible = !$scope.cfg.listVisible;
       lncli.setConfigValue(config.keys.LISTKNOWNPEERS_LISTVISIBLE, $scope.cfg.listVisible);
     };

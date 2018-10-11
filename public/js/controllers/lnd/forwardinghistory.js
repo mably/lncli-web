@@ -1,5 +1,5 @@
 (function forwardHistory() {
-  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
+  module.exports = function controller($scope, $timeout, $uibModal, $, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
     $scope.lastRefreshed = null;

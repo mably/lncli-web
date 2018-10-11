@@ -1,8 +1,8 @@
-(function () {
-  module.exports = function factory($scope, $timeout, $uibModal, $, lncli, config) {
-    const $ctrl = this;
+(function navBar() {
+  module.exports = function controller($scope, $timeout, $uibModal, $, lncli, config) {
+    // const $ctrl = this;
 
-    $scope.getNodeInfo = function () {
+    $scope.getNodeInfo = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'getnodeinfo-modal-title',
@@ -28,7 +28,7 @@
       });
     };
 
-    $scope.queryRoute = function () {
+    $scope.queryRoute = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'queryroute-modal-title',
@@ -55,7 +55,7 @@
       });
     };
 
-    $scope.sendToRoute = function () {
+    $scope.sendToRoute = () => {
       const modalInstance = $uibModal.open(config.modals.SEND_TO_ROUTE);
 
       modalInstance.rendered.then(() => {
@@ -69,7 +69,7 @@
       });
     };
 
-    $scope.newAddress = function () {
+    $scope.newAddress = () => {
       const modalInstance = $uibModal.open(config.modals.NEW_ADDRESS);
 
       modalInstance.rendered.then(() => {
@@ -83,7 +83,7 @@
       });
     };
 
-    $scope.sendCoins = function () {
+    $scope.sendCoins = () => {
       const modalInstance = $uibModal.open(config.modals.SEND_COINS);
 
       modalInstance.rendered.then(() => {
@@ -97,8 +97,8 @@
       });
     };
 
-    $scope.renderGraph = function () {
-      lncli.renderGraph().then((response) => {
+    $scope.renderGraph = () => {
+      lncli.renderGraph().then(() => {
         window.open(`${lncli.getEndPoint()}/api/lnd/networkgraph.svg`, '_blank');
       }, (err) => {
         console.log(err);
@@ -106,7 +106,7 @@
       });
     };
 
-    $scope.signMessage = function () {
+    $scope.signMessage = () => {
       const modalInstance = $uibModal.open(config.modals.SIGN_MESSAGE);
 
       modalInstance.rendered.then(() => {
@@ -120,7 +120,7 @@
       });
     };
 
-    $scope.verifyMessage = function () {
+    $scope.verifyMessage = () => {
       const modalInstance = $uibModal.open(config.modals.VERIFY_MESSAGE);
 
       modalInstance.rendered.then(() => {
@@ -134,7 +134,7 @@
       });
     };
 
-    $scope.editSettings = function () {
+    $scope.editSettings = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'editsettings-modal-title',

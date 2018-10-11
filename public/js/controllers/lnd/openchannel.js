@@ -1,5 +1,5 @@
 (function openChannel() {
-  module.exports = function factory($scope, $timeout, $uibModalInstance, defaults, lncli) {
+  module.exports = function controller($scope, $timeout, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     const listenersIds = [];
@@ -22,7 +22,7 @@
     };
 
     const unregisterWSRequestListeners = () => {
-      for (let i = 0; i < listenersIds.length; i++) {
+      for (let i = 0; i < listenersIds.length; i += 1) {
         lncli.unregisterWSRequestListener(listenersIds[i]);
       }
       listenersIds.length = 0;

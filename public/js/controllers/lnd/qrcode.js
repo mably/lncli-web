@@ -1,14 +1,14 @@
-(function () {
-  module.exports = function factory($uibModalInstance, qrcode, lncli) {
+(function qrCode() {
+  module.exports = function controller($uibModalInstance, qrcode) {
     const $ctrl = this;
 
     $ctrl.qrcode = qrcode;
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
   };

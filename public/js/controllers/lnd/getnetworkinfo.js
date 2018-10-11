@@ -1,9 +1,9 @@
-(function () {
-  module.exports = function factory($scope, $timeout, lncli, config) {
+(function getNetworkInfo() {
+  module.exports = function controller($scope, $timeout, lncli, config) {
     $scope.spinner = 0;
     $scope.nextRefresh = null;
 
-    $scope.refresh = function () {
+    $scope.refresh = () => {
       $scope.spinner += 1;
       $scope.updateNextRefresh();
       lncli.getNetworkInfo().then((response) => {
@@ -18,7 +18,7 @@
       });
     };
 
-    $scope.updateNextRefresh = function () {
+    $scope.updateNextRefresh = () => {
       $timeout.cancel($scope.nextRefresh);
       $scope.nextRefresh = $timeout($scope.refresh,
         lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH));
