@@ -1,3 +1,3 @@
-module.exports = function (lnwebcli) {
+module.exports = (lnwebcli) => {
   lnwebcli.directive('amount', ['lncli', 'config', 'lnwebcliUtils', require('./amount')]);
 };

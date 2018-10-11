@@ -1,5 +1,5 @@
 // set up ========================
-const debug = require('debug')('lncliweb:server');
+// const debug = require('debug')('lncliweb:server');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser'); // pull information from HTML POST (express4)
@@ -7,7 +7,7 @@ const methodOverride = require('method-override'); // simulate DELETE and PUT (e
 const LE = require('greenlock');
 
 // expose the server to our app with module.exports
-module.exports = function (program) {
+module.exports = function factory(program) {
   const module = {};
 
   const lePath = `${require('os').homedir()}/letsencrypt`;
@@ -25,13 +25,17 @@ module.exports = function (program) {
   module.serverHost = program.serverhost;
 
   // setup winston logging ==========
-  const logger = require('../config/log')((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel));
+  const logger = require('../config/log')(
+    (program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel),
+  );
 
   // utilities functions =================
-  const utils = require('./server-utils')(module);
+  require('./server-utils')(module);
 
   // setup basic authentication =================
-  const basicauth = require('./basicauth')(program.user, program.pwd, program.limituser, program.limitpwd).filter;
+  const basicauth = require('./basicauth')(
+    program.user, program.pwd, program.limituser, program.limitpwd,
+  ).filter;
 
   // db init =================
   const db = require('./database')(defaults.dataPath);
@@ -110,7 +114,7 @@ module.exports = function (program) {
       agreeTos: true,
       rsaKeySize: 2048,
       challengeType: 'http-01',
-    }).then((results) => {
+    }).then((/* results */) => {
       console.log('success');
     }, (err) => {
       console.error(err.stack);
@@ -120,7 +124,11 @@ module.exports = function (program) {
   // app creation =================
   const app = express(); // create our app w/ express
   app.use(session({
-    secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, rolling: true, saveUninitialized: true,
+    secret: config.sessionSecret,
+    cookie: { maxAge: config.sessionMaxAge },
+    resave: true,
+    rolling: true,
+    saveUninitialized: true,
   }));
 
   // app configuration =================
@@ -135,6 +143,7 @@ module.exports = function (program) {
   app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
   app.use(methodOverride());
   // error handler
+  // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     // Do logging and user-friendly error message display
     logger.error(err);
@@ -144,7 +153,9 @@ module.exports = function (program) {
   // init server =================
 
   // handles acme-challenge and redirects to https
-  require('http').createServer(le.middleware(require('redirect-https')())).listen(module.serverPort, module.serverHost, function () {
+  require('http').createServer(
+    le.middleware(require('redirect-https')()),
+  ).listen(module.serverPort, module.serverHost, function listener() {
     console.log('Listening for ACME http-01 challenges on', this.address());
   });
 

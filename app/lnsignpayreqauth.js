@@ -5,18 +5,18 @@ const crypto = require('crypto');
 const zpay32 = require('./zpay32.js')();
 
 // expose the routes to our app with module.exports
-module.exports = function (lightning, config) {
+module.exports = function factory(lightning, config) {
   const module = {};
 
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', `Basic realm=lnsignpayreq:${config.defaultAuthPayReq}`);
+    return res.sendStatus(401);
+  }
+
   // configure basic authentification for express
-  module.filter = function (req, res, next) {
+  module.filter = async function filter(req, res, next) {
     debug('req:', req);
     debug('url:', req.originalUrl);
-
-    function unauthorized(res) {
-      res.set('WWW-Authenticate', `Basic realm=lnsignpayreq:${config.defaultAuthPayReq}`);
-      return res.sendStatus(401);
-    }
 
     const user = basicAuth(req);
     debug('user:', user);
@@ -26,35 +26,33 @@ module.exports = function (lightning, config) {
 
     debug('payreq.signature:', user.name);
 
-    lightning.getActiveClient().verifyMessage({ msg: Buffer.from(config.defaultAuthPayReq, 'utf8'), signature: user.name }, (err, verifMsgResponse) => {
-      if (err) {
-        debug('VerifyMessage Error:', err);
-        unauthorized(res);
-      } else {
-        debug('VerifyMessage:', verifMsgResponse);
-        if (verifMsgResponse.valid) {
-          debug('payment.preimage', user.pass);
+    const msg = { msg: Buffer.from(config.defaultAuthPayReq, 'utf8'), signature: user.name };
+    try {
+      const verifMsgResponse = await lightning.verifyMessage(msg);
+      debug('VerifyMessage:', verifMsgResponse);
+      if (verifMsgResponse.valid) {
+        debug('payment.preimage', user.pass);
 
-          const preimageHash = crypto.createHash('sha256').update(Buffer.from(user.pass, 'hex')).digest('hex');
+        const preimageHash = crypto.createHash('sha256').update(Buffer.from(user.pass, 'hex')).digest('hex');
 
-          debug('payment.preimage.hash', preimageHash);
+        debug('payment.preimage.hash', preimageHash);
 
-          const decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
+        const decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
 
-          debug('decodedPayReq', decodedPayReq);
+        debug('decodedPayReq', decodedPayReq);
 
-          if (decodedPayReq.paymentHashHex === preimageHash) {
-            req.userpubkey = verifMsgResponse.pubkey;
-            req.limituser = false;
-            next();
-          } else {
-            unauthorized(res);
-          }
-        } else {
-          unauthorized(res);
+        if (decodedPayReq.paymentHashHex === preimageHash) {
+          req.userpubkey = verifMsgResponse.pubkey;
+          req.limituser = false;
+          return next();
         }
+        return unauthorized(res);
       }
-    });
+      return unauthorized(res);
+    } catch (err) {
+      debug('VerifyMessage Error:', err);
+      return unauthorized(res);
+    }
   };
 
   return module;

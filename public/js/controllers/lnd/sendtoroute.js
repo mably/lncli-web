@@ -1,15 +1,15 @@
-(function () {
-  module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+(function sendToRoute() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
 
     $ctrl.values = defaults;
 
-    $ctrl.ok = function () {
-      $ctrl.spinner++;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
       lncli.sendToRoute($ctrl.values.payhash, $ctrl.values.routes).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('SendToRoute', response);
         if (response.data.error) {
           if ($ctrl.isClosed) {
@@ -28,7 +28,7 @@
           $uibModalInstance.close($ctrl.values);
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         const errmsg = err.message || err.statusText;
         if ($ctrl.isClosed) {
@@ -39,11 +39,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

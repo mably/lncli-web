@@ -1,5 +1,5 @@
-(function queryroute() {
-  module.exports = function exports($scope, $uibModalInstance, defaults, lncli) {
+(function queryRoute() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;

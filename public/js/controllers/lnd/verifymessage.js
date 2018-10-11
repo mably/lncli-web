@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function ($uibModalInstance, defaults, lncli) {
+(function verifyMessage() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -9,10 +9,10 @@
     $ctrl.warning = null;
     $ctrl.data = null;
 
-    $ctrl.ok = function () {
-      $ctrl.spinner++;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
       lncli.verifyMessage($ctrl.values.message, $ctrl.values.signature).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('VerifyMessage', response);
         if (response.data.error) {
           $ctrl.data = null;
@@ -38,7 +38,7 @@
           }
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         $ctrl.data = null;
         const errmsg = err.message || err.statusText;
@@ -51,15 +51,15 @@
       });
     };
 
-    $ctrl.close = function () {
+    $ctrl.close = () => {
       $uibModalInstance.close($ctrl.values);
     };
 
-    $ctrl.dismissWarning = function () {
+    $ctrl.dismissWarning = () => {
       $ctrl.warning = null;
     };
 
-    $ctrl.dismissSuccess = function () {
+    $ctrl.dismissSuccess = () => {
       $ctrl.success = null;
     };
   };

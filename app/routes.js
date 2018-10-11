@@ -6,7 +6,7 @@ const DEFAULT_MAX_NUM_ROUTES_TO_QUERY = 10;
 const DEFAULT_FINAL_CLTV_DELTA = 144;
 
 // expose the routes to our app with module.exports
-module.exports = function (app, lightning, db, config) {
+module.exports = function factory(app, lightning, db, config) {
   /*
    * Creates an adapter between Express requests and Lightning gRPC requests via LightningManager.
    *
@@ -20,38 +20,36 @@ module.exports = function (app, lightning, db, config) {
    *                                       variable, and transforms the result from the RPC call.
    *                                       This function must return a valid Object.
    */
-  const lightningRPCAdapter = function (methodName, options) {
-    return async function (req, res) {
-      options = options || {};
+  const lightningRPCAdapter = (methodName, options) => async (req, res) => {
+    options = options || {};
 
-      // if isLimitedToAuthorizedUser is true, we check if the `limituser` flag
-      // is set on the request, and short-circuit the request if the user is not
-      // authorized.
-      if (options.isLimitedToAuthorizedUser && req.limituser) {
-        return res.sendStatus(403);
+    // if isLimitedToAuthorizedUser is true, we check if the `limituser` flag
+    // is set on the request, and short-circuit the request if the user is not
+    // authorized.
+    if (options.isLimitedToAuthorizedUser && req.limituser) {
+      res.sendStatus(403);
+    }
+
+    // By default, input parameters are empty. if preHook was defined, we call
+    // this and use the result and input parameters
+    let params = {};
+    if (options.preHook) {
+      params = options.preHook(req);
+    }
+
+    try {
+      let response = await lightning.call(methodName, params);
+
+      // If result needs to be manipulated before it's returned
+      // to the client (because postHook is defined), call postHook
+      // and use the result as payload to return via JSON
+      if (options.postHook) {
+        response = options.postHook(req, response);
       }
-
-      // By default, input parameters are empty. if preHook was defined, we call
-      // this and use the result and input parameters
-      let params = {};
-      if (options.preHook) {
-        params = options.preHook(req);
-      }
-
-      try {
-        let response = await lightning.call(methodName, params);
-
-        // If result needs to be manipulated before it's returned
-        // to the client (because postHook is defined), call postHook
-        // and use the result as payload to return via JSON
-        if (options.postHook) {
-          response = options.postHook(req, response);
-        }
-        res.json(response);
-      } catch (e) {
-        res.json({ error: e });
-      }
-    };
+      res.json(response);
+    } catch (e) {
+      res.json({ error: e });
+    }
   };
 
   // api ---------------------------------------------------------------------
@@ -161,18 +159,18 @@ module.exports = function (app, lightning, db, config) {
       const peers = req.body.peers || {};
 
       const nodesMap = {};
-      const nodes = response.nodes;
+      const { nodes } = response;
       let i;
       let node;
-      for (i = 0; i < nodes.length; i++) {
+      for (i = 0; i < nodes.length; i += 1) {
         node = nodes[i];
         nodesMap[node.pub_key] = node;
       }
 
       const channeledNodes = {};
-      const edges = response.edges;
+      const { edges } = response;
       let edge;
-      for (i = 0; i < edges.length; i++) {
+      for (i = 0; i < edges.length; i += 1) {
         edge = edges[i];
         if (nodesMap[edge.node1_pub] && nodesMap[edge.node2_pub]) { // skip buggy edges
           channeledNodes[edge.node1_pub] = edge.node1_pub;
@@ -184,27 +182,25 @@ module.exports = function (app, lightning, db, config) {
       const graphName = 'LightningNetwork';
       const g = graphviz.graph(graphName);
 
-      for (const nodePubKey in channeledNodes) {
-        if (channeledNodes.hasOwnProperty(nodePubKey)) {
-          // Add node
-          node = nodesMap[nodePubKey];
-          const peer = peers[nodePubKey];
-          let nodeLabel;
-          if (peer && peer.alias) {
-            nodeLabel = peer.alias;
-          } else {
-            nodeLabel = node.pub_key.substr(0, 10);
-          }
-          console.log(node, nodeLabel);
-          g.addNode(node.pub_key, { label: nodeLabel });
+      Object.keys(channeledNodes).forEach((nodePubKey) => {
+        // Add node
+        node = nodesMap[nodePubKey];
+        const peer = peers[nodePubKey];
+        let nodeLabel;
+        if (peer && peer.alias) {
+          nodeLabel = peer.alias;
+        } else {
+          nodeLabel = node.pub_key.substr(0, 10);
         }
-      }
+        console.log(node, nodeLabel);
+        g.addNode(node.pub_key, { label: nodeLabel });
+      });
 
-      for (i = 0; i < edges.length; i++) {
+      for (i = 0; i < edges.length; i += 1) {
         // Add edge
         edge = edges[i];
         if (channeledNodes[edge.node1_pub] && channeledNodes[edge.node2_pub]) { // skip buggy edges
-          const edgeLabel = ` ${edge.channel_id.substr(0, 10)}`;
+          const edgeLabel = `${edge.channel_id.substr(0, 10)}`;
           g.addEdge(edge.node1_pub, edge.node2_pub, { label: edgeLabel, fontsize: '12.0' });
         }
       }
@@ -224,7 +220,7 @@ module.exports = function (app, lightning, db, config) {
     if (req.limituser) {
       return res.sendStatus(403); // forbidden
     }
-    res.sendFile('networkgraph.svg', { root: `${__dirname}/../data/` });
+    return res.sendFile('networkgraph.svg', { root: `${__dirname}/../data/` });
   });
 
   app.post('/api/lnd/signmessage', lightningRPCAdapter('signMessage', {

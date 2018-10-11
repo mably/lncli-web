@@ -1,5 +1,5 @@
-(function () {
-  module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+(function sendPayments() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
     const $ctrl = this;
 
     $ctrl.spinner = 0;
@@ -7,10 +7,10 @@
     $ctrl.values = defaults;
     $ctrl.decodedPayment = null;
 
-    $ctrl.ok = function () {
-      $ctrl.spinner++;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
       lncli.sendPayment($ctrl.values.payreq, $ctrl.values.amount).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('SendPayment', response);
         if (response.data.error) {
           if ($ctrl.isClosed) {
@@ -29,7 +29,7 @@
           $uibModalInstance.close($ctrl.values);
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         const errmsg = err.message || err.statusText;
         if ($ctrl.isClosed) {
@@ -40,10 +40,10 @@
       });
     };
 
-    $ctrl.decode = function () {
-      $ctrl.spinner++;
+    $ctrl.decode = () => {
+      $ctrl.spinner += 1;
       lncli.decodePayReq($ctrl.values.payreq).then((response) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log('DecodePayReq', response);
         if (response.data.error) {
           $ctrl.decodedPayment = null;
@@ -57,7 +57,7 @@
           $ctrl.decodedPayment = response.data;
         }
       }, (err) => {
-        $ctrl.spinner--;
+        $ctrl.spinner -= 1;
         console.log(err);
         $ctrl.decodedPayment = null;
         const errmsg = err.message || err.statusText;
@@ -69,11 +69,11 @@
       });
     };
 
-    $ctrl.cancel = function () {
+    $ctrl.cancel = () => {
       $uibModalInstance.dismiss('cancel');
     };
 
-    $ctrl.dismissAlert = function () {
+    $ctrl.dismissAlert = () => {
       $ctrl.warning = null;
     };
 

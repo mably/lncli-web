@@ -1,12 +1,12 @@
 // set up ========================
-const debug = require('debug')('lncliweb:server');
+/* const debug = */require('debug')('lncliweb:server');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 
 // expose the server to our app with module.exports
-module.exports = function (program) {
+module.exports = function factory(program) {
   const module = {};
 
   // load app default configuration data
@@ -25,7 +25,7 @@ module.exports = function (program) {
   const logger = require('../config/log')((program.logfile || defaults.logfile), (program.loglevel || defaults.loglevel));
 
   // utilities functions =================
-  const utils = require('./server-utils')(module);
+  require('./server-utils')(module);
 
   // setup authentication =================
   const basicauth = require('./basicauth')(program.user, program.pwd, program.limituser, program.limitpwd).filter;
@@ -48,7 +48,11 @@ module.exports = function (program) {
   // app creation =================
   const app = express(); // create our app w/ express
   app.use(session({
-    secret: config.sessionSecret, cookie: { maxAge: config.sessionMaxAge }, resave: true, rolling: true, saveUninitialized: true,
+    secret: config.sessionSecret,
+    cookie: { maxAge: config.sessionMaxAge },
+    resave: true,
+    rolling: true,
+    saveUninitialized: true,
   }));
 
   // app configuration =================
@@ -63,6 +67,7 @@ module.exports = function (program) {
   app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
   app.use(methodOverride());
   // error handler
+  // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     // Do logging and user-friendly error message display
     logger.error(err);

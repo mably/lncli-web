@@ -1,6 +1,8 @@
-(function () {
-  module.exports = function ($rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config) {
-    const $ctrl = this;
+(function listPeers() {
+  module.exports = function controller(
+    $rootScope, $scope, $timeout, $uibModal, $, $q, bootbox, lncli, config,
+  ) {
+    // const $ctrl = this;
 
     $scope.spinner = 0;
     $scope.nextRefresh = null;
@@ -8,25 +10,40 @@
     $scope.numberOfPeers = 0;
     $scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
     $scope.cfg = {};
-    $scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTPEERS_PAGESIZE, $scope.pageSizes[0]);
-    $scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTPEERS_LISTVISIBLE, true);
+    $scope.cfg.itemsPerPage = lncli.getConfigValue(
+      config.keys.LISTPEERS_PAGESIZE, $scope.pageSizes[0],
+    );
+    $scope.cfg.listVisible = lncli.getConfigValue(
+      config.keys.LISTPEERS_LISTVISIBLE, true,
+    );
     $scope.form = {};
     $scope.form.checkbox = false;
 
-    $scope.refresh = function () {
+    const processPeers = (peers) => {
+      peers.forEach((peer) => {
+        peer.sat_sent = parseInt(peer.sat_sent, 10);
+        peer.sat_recv = parseInt(peer.sat_recv, 10);
+        peer.bytes_sent = parseInt(peer.bytes_sent, 10);
+        peer.bytes_recv = parseInt(peer.bytes_recv, 10);
+        peer.ping_time = parseInt(peer.ping_time, 10);
+      });
+      return peers;
+    };
+
+    $scope.refresh = () => {
       if ($scope.cfg.listVisible) {
         $scope.lastRefreshed = Date.now();
         $scope.updateNextRefresh();
-        $scope.spinner++;
+        $scope.spinner += 1;
         lncli.listPeers().then((response) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           console.log(response);
           $scope.data = JSON.stringify(response.data, null, '\t');
           $scope.peers = processPeers(response.data.peers);
           $scope.numberOfPeers = $scope.peers.length;
           $scope.form.checkbox = false;
         }, (err) => {
-          $scope.spinner--;
+          $scope.spinner -= 1;
           $scope.numberOfPeers = 0;
           console.log('Error:', err);
           lncli.alert(err.message || err.statusText);
@@ -34,27 +51,16 @@
       }
     };
 
-    var processPeers = function (peers) {
-      peers.forEach((peer) => {
-        peer.sat_sent = parseInt(peer.sat_sent);
-        peer.sat_recv = parseInt(peer.sat_recv);
-        peer.bytes_sent = parseInt(peer.bytes_sent);
-        peer.bytes_recv = parseInt(peer.bytes_recv);
-        peer.ping_time = parseInt(peer.ping_time);
-      });
-      return peers;
-    };
+    const getRefreshPeriod = () => lncli.getConfigValue(
+      config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH,
+    );
 
-    const getRefreshPeriod = function () {
-      return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
-    };
-
-    $scope.updateNextRefresh = function () {
+    $scope.updateNextRefresh = () => {
       $timeout.cancel($scope.nextRefresh);
       $scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
     };
 
-    $scope.add = function () {
+    $scope.add = () => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'addpeer-modal-title',
@@ -85,12 +91,12 @@
       });
     };
 
-    $scope.disconnect = function (peer) {
+    $scope.disconnect = (peer) => {
       bootbox.confirm('Do you really want to disconnect from that peer?', (result) => {
         if (result) {
-          $scope.spinner++;
+          $scope.spinner += 1;
           lncli.disconnectPeer(peer.pub_key).then((response) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log('DisconnectPeer', response);
             if (response.data.error) {
               lncli.alert(response.data.error);
@@ -98,7 +104,7 @@
               $rootScope.$broadcast(config.events.PEER_REFRESH, response);
             }
           }, (err) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log(err);
             lncli.alert(err.message || err.statusText);
           });
@@ -106,16 +112,16 @@
       });
     };
 
-    const disconnectPeerBatch = function () {
+    const disconnectPeerBatch = () => {
       $scope.peers.forEach((peer) => {
         const promises = [];
         if (peer.selected) {
           promises.push(lncli.disconnectPeer(peer.pub_key));
         }
         if (promises.length > 0) {
-          $scope.spinner++;
+          $scope.spinner += 1;
           $q.all(promises).then((responses) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log('DisconnectPeerBatch', responses);
             const okResponses = [];
             responses.forEach((response) => {
@@ -129,7 +135,7 @@
               $rootScope.$broadcast(config.events.PEER_REFRESH, okResponses);
             }
           }, (err) => {
-            $scope.spinner--;
+            $scope.spinner -= 1;
             console.log(err);
             $scope.refresh();
             lncli.alert(err.message);
@@ -138,14 +144,19 @@
       });
     };
 
-    $scope.disconnectBatch = function (confirm = true) {
+    const hasSelected = () => $scope.peers.some(peer => peer.selected);
+
+    $scope.disconnectBatch = (confirm = true) => {
       if (hasSelected()) {
         if (confirm) {
-          bootbox.confirm('Do you really want to disconnect from those selected peers?', (result) => {
-            if (result) {
-              disconnectPeerBatch();
-            }
-          });
+          bootbox.confirm(
+            'Do you really want to disconnect from those selected peers?',
+            (result) => {
+              if (result) {
+                disconnectPeerBatch();
+              }
+            },
+          );
         } else {
           disconnectPeerBatch();
         }
@@ -154,21 +165,21 @@
       }
     };
 
-    $scope.pubkeyCopied = function (peer) {
+    $scope.pubkeyCopied = (peer) => {
       peer.pubkeyCopied = true;
       $timeout(() => {
         peer.pubkeyCopied = false;
       }, 500);
     };
 
-    $scope.addressCopied = function (peer) {
+    $scope.addressCopied = (peer) => {
       peer.addressCopied = true;
       $timeout(() => {
         peer.addressCopied = false;
       }, 500);
     };
 
-    $scope.showNodeInfo = function (peer) {
+    $scope.showNodeInfo = (peer) => {
       const modalCfg = angular.copy(config.modals.NODE_INFO);
       modalCfg.resolve = {
         defaults: {
@@ -189,17 +200,13 @@
       });
     };
 
-    var hasSelected = function () {
-      return $scope.peers.some(peer => peer.selected);
-    };
-
-    $scope.selectAll = function (stPeers) {
+    $scope.selectAll = (stPeers) => {
       stPeers.forEach((peer) => {
         peer.selected = $scope.form.checkbox;
       });
     };
 
-    $scope.showQRCode = function (data, size) {
+    $scope.showQRCode = (data, size) => {
       const modalInstance = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'qrcode-modal-title',
@@ -230,11 +237,11 @@
       $scope.refresh();
     });
 
-    $scope.pageSizeChanged = function () {
+    $scope.pageSizeChanged = () => {
       lncli.setConfigValue(config.keys.LISTPEERS_PAGESIZE, $scope.cfg.itemsPerPage);
     };
 
-    $scope.toggle = function () {
+    $scope.toggle = () => {
       $scope.cfg.listVisible = !$scope.cfg.listVisible;
       lncli.setConfigValue(config.keys.LISTPEERS_LISTVISIBLE, $scope.cfg.listVisible);
       if ($scope.cfg.listVisible) {
