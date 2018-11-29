@@ -1,37 +1,32 @@
-(function () {
-	"use strict";
+(function importKnownPeers() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
+    const $ctrl = this;
 
-	module.exports = function ($uibModalInstance, defaults, lncli) {
+    $ctrl.values = defaults;
 
-		var $ctrl = this;
+    $ctrl.ok = () => {
+      try {
+        const peersObj = JSON.parse($ctrl.values.peersjson);
+        lncli.importKnownPeers(peersObj).then((response) => {
+          console.log('ImportKnownPeers', response);
+          $ctrl.warning = null;
+          $uibModalInstance.close($ctrl.values);
+          lncli.alert('Peers successfully imported!');
+        }, (err) => {
+          console.log(err);
+          lncli.alert(err.message);
+        });
+      } catch (err) {
+        $ctrl.warning = err.message;
+      }
+    };
 
-		$ctrl.values = defaults;
+    $ctrl.cancel = () => {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		$ctrl.ok = function () {
-			try {
-				var peersObj = JSON.parse($ctrl.values.peersjson);
-				lncli.importKnownPeers(peersObj).then(function (response) {
-					console.log("ImportKnownPeers", response);
-					$ctrl.warning = null;
-					$uibModalInstance.close($ctrl.values);
-					lncli.alert("Peers successfully imported!");
-				}, function (err) {
-					console.log(err);
-					lncli.alert(err.message);
-				});
-			} catch (err) {
-				$ctrl.warning = err.message;
-			}
-		};
-
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-	};
-
-})();
+    $ctrl.dismissAlert = () => {
+      $ctrl.warning = null;
+    };
+  };
+}());

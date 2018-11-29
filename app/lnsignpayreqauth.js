@@ -1,65 +1,59 @@
 // app/lnsignpayreqauth.js
-const basicAuth = require("basic-auth");
-const debug = require("debug")("lncliweb:lnsignpayreqauth");
-const crypto = require("crypto");
-const zpay32 = require("./zpay32.js")();
+const basicAuth = require('basic-auth');
+const debug = require('debug')('lncliweb:lnsignpayreqauth');
+const crypto = require('crypto');
+const zpay32 = require('./zpay32.js')();
 
 // expose the routes to our app with module.exports
-module.exports = function (lightning, config) {
+module.exports = function factory(lightning, config) {
+  const module = {};
 
-	var module = {};
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', `Basic realm=lnsignpayreq:${config.defaultAuthPayReq}`);
+    return res.sendStatus(401);
+  }
 
-	// configure basic authentification for express
-	module.filter = function (req, res, next) {
+  // configure basic authentification for express
+  module.filter = async function filter(req, res, next) {
+    debug('req:', req);
+    debug('url:', req.originalUrl);
 
-		debug("req:", req);
-		debug("url:", req.originalUrl);
+    const user = basicAuth(req);
+    debug('user:', user);
+    if (!user || !user.name || !user.pass) {
+      return unauthorized(res);
+    }
 
-		function unauthorized(res) {
-			res.set("WWW-Authenticate", "Basic realm=lnsignpayreq:" + config.defaultAuthPayReq);
-			return res.sendStatus(401);
-		}
+    debug('payreq.signature:', user.name);
 
-		var user = basicAuth(req);
-		debug("user:", user);
-		if (!user || !user.name || !user.pass) {
-			return unauthorized(res);
-		}
+    const msg = { msg: Buffer.from(config.defaultAuthPayReq, 'utf8'), signature: user.name };
+    try {
+      const verifMsgResponse = await lightning.verifyMessage(msg);
+      debug('VerifyMessage:', verifMsgResponse);
+      if (verifMsgResponse.valid) {
+        debug('payment.preimage', user.pass);
 
-		debug("payreq.signature:", user.name);
+        const preimageHash = crypto.createHash('sha256').update(Buffer.from(user.pass, 'hex')).digest('hex');
 
-		lightning.getActiveClient().verifyMessage({ msg: Buffer.from(config.defaultAuthPayReq, "utf8"), signature: user.name }, function (err, verifMsgResponse) {
-			if (err) {
-				debug("VerifyMessage Error:", err);
-				unauthorized(res);
-			} else {
-				debug("VerifyMessage:", verifMsgResponse);
-				if (verifMsgResponse.valid) {
+        debug('payment.preimage.hash', preimageHash);
 
-					debug("payment.preimage", user.pass);
+        const decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
 
-					var preimageHash = crypto.createHash("sha256").update(Buffer.from(user.pass, "hex")).digest("hex");
+        debug('decodedPayReq', decodedPayReq);
 
-					debug("payment.preimage.hash", preimageHash);
+        if (decodedPayReq.paymentHashHex === preimageHash) {
+          req.userpubkey = verifMsgResponse.pubkey;
+          req.limituser = false;
+          return next();
+        }
+        return unauthorized(res);
+      }
+      return unauthorized(res);
+    } catch (err) {
+      debug('VerifyMessage Error:', err);
+      return unauthorized(res);
+    }
+  };
 
-					var decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
-
-					debug("decodedPayReq", decodedPayReq);
-
-					if (decodedPayReq.paymentHashHex === preimageHash) {
-						req.userpubkey = verifMsgResponse.pubkey;
-						req.limituser = false;
-						next();
-					} else {
-						unauthorized(res);
-					}
-
-				} else {
-					unauthorized(res);
-				}
-			}
-		});
-	};
-
-	return module;
+  return module;
 };

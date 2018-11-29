@@ -1,59 +1,56 @@
-(function () {
-	"use strict";
+(function getNodeInfo() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
+    const $ctrl = this;
 
-	module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+    $ctrl.spinner = 0;
 
-		var $ctrl = this;
+    $ctrl.values = defaults;
+    $ctrl.nodeInfo = null;
 
-		$ctrl.spinner = 0;
+    $ctrl.getNodeInfo = () => {
+      $ctrl.spinner += 1;
+      lncli.getNodeInfo($ctrl.values.pubkey).then((response) => {
+        $ctrl.spinner -= 1;
+        console.log('NodeInfo', response);
+        if (response.data.error) {
+          $ctrl.nodeInfo = null;
+          if ($ctrl.isClosed) {
+            lncli.alert(response.data.error);
+          } else {
+            $ctrl.warning = response.data.error;
+          }
+        } else {
+          $ctrl.warning = null;
+          $ctrl.nodeInfo = angular.toJson(response.data, 4);
+        }
+      }, (err) => {
+        $ctrl.spinner -= 1;
+        console.log(err);
+        $ctrl.nodeInfo = null;
+        const errmsg = err.message || err.statusText;
+        if ($ctrl.isClosed) {
+          lncli.alert(errmsg);
+        } else {
+          $ctrl.warning = errmsg;
+        }
+      });
+    };
 
-		$ctrl.values = defaults;
-		$ctrl.nodeInfo = null;
+    if ($ctrl.values.pubkey) {
+      $ctrl.getNodeInfo();
+    }
 
-		$ctrl.getNodeInfo = function () {
-			$ctrl.spinner++;
-			lncli.getNodeInfo($ctrl.values.pubkey).then(function (response) {
-				$ctrl.spinner--;
-				console.log("NodeInfo", response);
-				if (response.data.error) {
-					$ctrl.nodeInfo = null;
-					if ($ctrl.isClosed) {
-						lncli.alert(response.data.error);
-					} else {
-						$ctrl.warning = response.data.error;
-					}
-				} else {
-					$ctrl.warning = null;
-					$ctrl.nodeInfo = angular.toJson(response.data, 4);
-				}
-			}, function (err) {
-				$ctrl.spinner--;
-				console.log(err);
-				$ctrl.nodeInfo = null;
-				var errmsg = err.message || err.statusText;
-				if ($ctrl.isClosed) {
-					lncli.alert(errmsg);
-				} else {
-					$ctrl.warning = errmsg;
-				}
-			});
-		};
+    $ctrl.cancel = () => {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		if ($ctrl.values.pubkey) {
-			$ctrl.getNodeInfo();
-		}
+    $ctrl.dismissAlert = () => {
+      $ctrl.warning = null;
+    };
 
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-		$scope.$on("modal.closing", function (event, reason, closed) {
-			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
-			$ctrl.isClosed = true;
-		});
-	};
-})();
+    $scope.$on('modal.closing', (event, reason, closed) => {
+      console.log(`modal.closing: ${closed ? 'close' : 'dismiss'}(${reason})`);
+      $ctrl.isClosed = true;
+    });
+  };
+}());

@@ -1,44 +1,44 @@
 // app/lnpayreqauth.js
-const basicAuth = require("basic-auth");
-const debug = require("debug")("lncliweb:lnpayreqauth");
-const crypto = require("crypto");
-const zpay32 = require("./zpay32.js")();
+const basicAuth = require('basic-auth');
+const debug = require('debug')('lncliweb:lnpayreqauth');
+const crypto = require('crypto');
+const zpay32 = require('./zpay32.js')();
 
 // expose the routes to our app with module.exports
-module.exports = function (lightning, config) {
+module.exports = function factory(lightning, config) {
+  const module = {};
 
-	var module = {};
+  function unauthorized(res) {
+    res.set('WWW-Authenticate', `Basic realm=lnpayreq:${config.defaultAuthPayReq}`);
+    return res.sendStatus(401);
+  }
 
-	// configure basic authentification for express
-	module.filter = function (req, res, next) {
-		debug("url: " + req.originalUrl);
-		function unauthorized(res) {
-			res.set("WWW-Authenticate", "Basic realm=lnpayreq:" + config.defaultAuthPayReq);
-			return res.sendStatus(401);
-		}
+  // configure basic authentification for express
+  module.filter = function filter(req, res, next) {
+    debug(`url: ${req.originalUrl}`);
 
-		var user = basicAuth(req);
-		if (!user || !user.name) {
-			return unauthorized(res);
-		}
+    const user = basicAuth(req);
+    if (!user || !user.name) {
+      return unauthorized(res);
+    }
 
-		debug("payment.preimage", user.name);
+    debug('payment.preimage', user.name);
 
-		var preimageHash = crypto.createHash("sha256").update(Buffer.from(user.name, "hex")).digest("hex");
+    const preimageHash = crypto.createHash('sha256').update(Buffer.from(user.name, 'hex')).digest('hex');
 
-		debug("payment.preimage.hash", preimageHash);
+    debug('payment.preimage.hash', preimageHash);
 
-		var decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
+    const decodedPayReq = zpay32.decode(config.defaultAuthPayReq);
 
-		debug("decodedPayReq", decodedPayReq);
+    debug('decodedPayReq', decodedPayReq);
 
-		if (decodedPayReq.paymentHashHex === preimageHash) {
-			req.limituser = false;
-			next();
-		} else {
-			unauthorized(res);
-		}
-	};
+    if (decodedPayReq.paymentHashHex === preimageHash) {
+      req.limituser = false;
+      return next();
+    }
 
-	return module;
+    return unauthorized(res);
+  };
+
+  return module;
 };

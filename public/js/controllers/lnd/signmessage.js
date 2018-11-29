@@ -1,56 +1,51 @@
-(function () {
-	"use strict";
+(function signMessage() {
+  module.exports = function controller($uibModalInstance, defaults, lncli) {
+    const $ctrl = this;
 
-	module.exports = function ($uibModalInstance, defaults, lncli) {
+    $ctrl.spinner = 0;
 
-		var $ctrl = this;
+    $ctrl.values = defaults;
+    $ctrl.signature = null;
 
-		$ctrl.spinner = 0;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
+      lncli.signMessage($ctrl.values.message).then((response) => {
+        $ctrl.spinner -= 1;
+        console.log('SignMessage', response);
+        if (response.data.error) {
+          $ctrl.signature = null;
+          if ($ctrl.isClosed) {
+            lncli.alert(response.data.error);
+          } else {
+            $ctrl.warning = response.data.error;
+          }
+        } else {
+          $ctrl.warning = null;
+          $ctrl.signature = response.data.signature;
+        }
+      }, (err) => {
+        $ctrl.spinner -= 1;
+        console.log(err);
+        $ctrl.signature = null;
+        const errmsg = err.message || err.statusText;
+        if ($ctrl.isClosed) {
+          lncli.alert(errmsg);
+        } else {
+          $ctrl.warning = errmsg;
+        }
+      });
+    };
 
-		$ctrl.values = defaults;
-		$ctrl.signature = null;
+    $ctrl.close = () => {
+      $uibModalInstance.close($ctrl.values);
+    };
 
-		$ctrl.ok = function () {
-			$ctrl.spinner++;
-			lncli.signMessage($ctrl.values.message).then(function (response) {
-				$ctrl.spinner--;
-				console.log("SignMessage", response);
-				if (response.data.error) {
-					$ctrl.signature = null;
-					if ($ctrl.isClosed) {
-						lncli.alert(response.data.error);
-					} else {
-						$ctrl.warning = response.data.error;
-					}
-				} else {
-					$ctrl.warning = null;
-					$ctrl.signature = response.data.signature;
-				}
-			}, function (err) {
-				$ctrl.spinner--;
-				console.log(err);
-				$ctrl.signature = null;
-				var errmsg = err.message || err.statusText;
-				if ($ctrl.isClosed) {
-					lncli.alert(errmsg);
-				} else {
-					$ctrl.warning = errmsg;
-				}
-			});
-		};
+    $ctrl.dismissWarning = () => {
+      $ctrl.warning = null;
+    };
 
-		$ctrl.close = function () {
-			$uibModalInstance.close($ctrl.values);
-		};
-
-		$ctrl.dismissWarning = function () {
-			$ctrl.warning = null;
-		};
-
-		$ctrl.dismissSuccess = function () {
-			$ctrl.success = null;
-		};
-
-	};
-
-})();
+    $ctrl.dismissSuccess = () => {
+      $ctrl.success = null;
+    };
+  };
+}());

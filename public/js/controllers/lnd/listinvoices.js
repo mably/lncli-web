@@ -1,148 +1,142 @@
-(function () {
-	"use strict";
+(function listInvoices() {
+  module.exports = function controller($scope, $timeout, $uibModal, $, lncli, config, utils) {
+    $scope.spinner = 0;
+    $scope.nextRefresh = null;
+    $scope.lastRefreshed = null;
+    $scope.numberOfInvoices = 0;
+    $scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
+    $scope.cfg = {};
+    $scope.cfg.itemsPerPage = lncli.getConfigValue(
+      config.keys.LISTINVOICES_PAGESIZE, $scope.pageSizes[0],
+    );
+    $scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, true);
 
-	module.exports = function ($scope, $timeout, $uibModal, $, lncli, config, utils) {
+    const processInvoices = (invoices) => {
+      invoices.forEach((invoice) => {
+        invoice.value = parseInt(invoice.value, 10);
+        invoice.hash = utils.buffer2hexa(invoice.r_hash.data, false);
+      });
+      return invoices;
+    };
 
-		$scope.spinner = 0;
-		$scope.nextRefresh = null;
-		$scope.lastRefreshed = null;
-		$scope.numberOfInvoices = 0;
-		$scope.pageSizes = lncli.getConfigValue(config.keys.PAGE_SIZES, config.defaults.PAGE_SIZES);
-		$scope.cfg = {};
-		$scope.cfg.itemsPerPage = lncli.getConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.pageSizes[0]);
-		$scope.cfg.listVisible = lncli.getConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, true);
+    $scope.refresh = () => {
+      if ($scope.cfg.listVisible) {
+        $scope.lastRefreshed = Date.now();
+        $scope.updateNextRefresh();
+        $scope.spinner += 1;
+        lncli.listInvoices().then((response) => {
+          $scope.spinner -= 1;
+          console.log(response);
+          $scope.data = JSON.stringify(response.data, null, '\t');
+          $scope.invoices = processInvoices(response.data.invoices);
+          $scope.numberOfInvoices = $scope.invoices.length;
+        }, (err) => {
+          $scope.spinner -= 1;
+          $scope.numberOfInvoices = 0;
+          console.log('Error:', err);
+          lncli.alert(err.message || err.statusText);
+        });
+      }
+    };
 
-		$scope.refresh = function () {
-			if ($scope.cfg.listVisible) {
-				$scope.lastRefreshed = Date.now();
-				$scope.updateNextRefresh();
-				$scope.spinner++;
-				lncli.listInvoices().then(function (response) {
-					$scope.spinner--;
-					console.log(response);
-					$scope.data = JSON.stringify(response.data, null, "\t");
-					$scope.invoices = processInvoices(response.data.invoices);
-					$scope.numberOfInvoices = $scope.invoices.length;
-				}, function (err) {
-					$scope.spinner--;
-					$scope.numberOfInvoices = 0;
-					console.log("Error:", err);
-					lncli.alert(err.message || err.statusText);
-				});
-			}
-		};
+    const getRefreshPeriod = () => lncli.getConfigValue(
+      config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH,
+    );
 
-		var processInvoices = function (invoices) {
-			invoices.forEach(function (invoice) {
-				invoice.value = parseInt(invoice.value);
-				invoice.hash = utils.buffer2hexa(invoice.r_hash.data, false);
-			});
-			return invoices;
-		};
+    $scope.updateNextRefresh = () => {
+      $timeout.cancel($scope.nextRefresh);
+      $scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
+    };
 
-		var getRefreshPeriod = function () {
-			return lncli.getConfigValue(config.keys.AUTO_REFRESH, config.defaults.AUTO_REFRESH);
-		};
+    $scope.add = () => {
+      const expiryTime = lncli.getConfigValue(
+        config.keys.INVOICE_EXPIRY, config.defaults.INVOICE_EXPIRY,
+      );
 
-		$scope.updateNextRefresh = function () {
-			$timeout.cancel($scope.nextRefresh);
-			$scope.nextRefresh = $timeout($scope.refresh, getRefreshPeriod());
-		};
+      const modalInstance = $uibModal.open({
+        animation: true,
+        ariaLabelledBy: 'addinvoice-modal-title',
+        ariaDescribedBy: 'addinvoice-modal-body',
+        templateUrl: 'templates/partials/lnd/addinvoice.html',
+        controller: 'ModalAddInvoiceCtrl',
+        controllerAs: '$ctrl',
+        size: 'lg',
+        resolve: {
+          defaults() {
+            return {
+              memo: 'test',
+              value: '1000',
+              expiry: expiryTime,
+            };
+          },
+        },
+      });
 
-		$scope.add = function () {
+      modalInstance.rendered.then(() => {
+        $('#addinvoice-memo').focus();
+      });
 
-			var expiryTime = lncli.getConfigValue(
-					config.keys.INVOICE_EXPIRY, config.defaults.INVOICE_EXPIRY);
+      modalInstance.result.then((values) => {
+        console.log('values', values);
+        $scope.refresh();
+      }, () => {
+        console.log(`Modal dismissed at: ${new Date()}`);
+      });
+    };
 
-			var modalInstance = $uibModal.open({
-				animation: true,
-				ariaLabelledBy: "addinvoice-modal-title",
-				ariaDescribedBy: "addinvoice-modal-body",
-				templateUrl: "templates/partials/lnd/addinvoice.html",
-				controller: "ModalAddInvoiceCtrl",
-				controllerAs: "$ctrl",
-				size: "lg",
-				resolve: {
-					defaults: function () {
-						return {
-							memo: "test",
-							value: "1000",
-							expiry: expiryTime
-						};
-					}
-				}
-			});
+    $scope.payreqCopied = (invoice) => {
+      invoice.payreqCopied = true;
+      $timeout(() => {
+        invoice.payreqCopied = false;
+      }, 500);
+    };
 
-			modalInstance.rendered.then(function () {
-				$("#addinvoice-memo").focus();
-			});
+    $scope.showQRCode = (data, size) => {
+      const modalInstance = $uibModal.open({
+        animation: true,
+        ariaLabelledBy: 'qrcode-modal-title',
+        ariaDescribedBy: 'qrcode-modal-body',
+        templateUrl: 'templates/partials/lnd/qrcode.html',
+        controller: 'ModalQRCodeCtrl',
+        controllerAs: '$ctrl',
+        size: 'lg',
+        resolve: {
+          qrcode() {
+            return {
+              data,
+              size: (size) || 300,
+            };
+          },
+        },
+      });
 
-			modalInstance.result.then(function (values) {
-				console.log("values", values);
-				$scope.refresh();
-			}, function () {
-				console.log("Modal dismissed at: " + new Date());
-			});
+      modalInstance.result.then((values) => {
+        console.log('values', values);
+      }, () => {
+        console.log(`Modal dismissed at: ${new Date()}`);
+      });
+    };
 
-		};
+    $scope.$on(config.events.INVOICE_REFRESH, (event, args) => {
+      console.log('Received event INVOICE_REFRESH', event, args);
+      $scope.refresh();
+    });
 
-		$scope.payreqCopied = function (invoice) {
-			invoice.payreqCopied = true;
-			$timeout(function () {
-				invoice.payreqCopied = false;
-			}, 500);
-		};
+    $scope.pageSizeChanged = () => {
+      lncli.setConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.cfg.itemsPerPage);
+    };
 
-		$scope.showQRCode = function (data, size) {
+    $scope.toggle = () => {
+      $scope.cfg.listVisible = !$scope.cfg.listVisible;
+      lncli.setConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, $scope.cfg.listVisible);
+      if ($scope.cfg.listVisible) {
+        // Refresh if not been refreshed for more than refresh period
+        if (Date.now() - $scope.lastRefreshed > getRefreshPeriod()) {
+          $scope.refresh();
+        }
+      }
+    };
 
-			var modalInstance = $uibModal.open({
-				animation: true,
-				ariaLabelledBy: "qrcode-modal-title",
-				ariaDescribedBy: "qrcode-modal-body",
-				templateUrl: "templates/partials/lnd/qrcode.html",
-				controller: "ModalQRCodeCtrl",
-				controllerAs: "$ctrl",
-				size: "lg",
-				resolve: {
-					qrcode: function () {
-						return {
-							data: data,
-							size: (size) ? size : 300
-						};
-					}
-				}
-			});
-
-			modalInstance.result.then(function (values) {
-				console.log("values", values);
-			}, function () {
-				console.log("Modal dismissed at: " + new Date());
-			});
-
-		};
-
-		$scope.$on(config.events.INVOICE_REFRESH, function (event, args) {
-			console.log("Received event INVOICE_REFRESH", event, args);
-			$scope.refresh();
-		});
-
-		$scope.pageSizeChanged = function () {
-			lncli.setConfigValue(config.keys.LISTINVOICES_PAGESIZE, $scope.cfg.itemsPerPage);
-		};
-
-		$scope.toggle = function () {
-			$scope.cfg.listVisible = !$scope.cfg.listVisible;
-			lncli.setConfigValue(config.keys.LISTINVOICES_LISTVISIBLE, $scope.cfg.listVisible);
-			if ($scope.cfg.listVisible) {
-				// Refresh if not been refreshed for more than refresh period
-				if (Date.now() - $scope.lastRefreshed > getRefreshPeriod()) {
-					$scope.refresh();
-				}
-			}
-		};
-
-		$scope.refresh();
-
-	};
-
-})();
+    $scope.refresh();
+  };
+}());

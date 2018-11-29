@@ -1,54 +1,53 @@
-(function () {
-	"use strict";
+(function addInvoice() {
+  module.exports = function controller($scope, $uibModalInstance, defaults, lncli) {
+    const $ctrl = this;
 
-	module.exports = function ($scope, $uibModalInstance, defaults, lncli) {
+    $ctrl.spinner = 0;
 
-		var $ctrl = this;
+    $ctrl.values = defaults;
 
-		$ctrl.spinner = 0;
+    $ctrl.ok = () => {
+      $ctrl.spinner += 1;
+      lncli.addInvoice(
+        $ctrl.values.memo,
+        $ctrl.values.value,
+        $ctrl.values.expiry,
+      ).then((response) => {
+        $ctrl.spinner -= 1;
+        console.log('AddInvoice', response);
+        if (response.data.error) {
+          if ($ctrl.isClosed) {
+            lncli.alert(response.data.error);
+          } else {
+            $ctrl.warning = response.data.error;
+          }
+        } else {
+          $ctrl.warning = null;
+          $uibModalInstance.close($ctrl.values);
+        }
+      }, (err) => {
+        $ctrl.spinner -= 1;
+        console.log(err);
+        const errmsg = err.message || err.statusText;
+        if ($ctrl.isClosed) {
+          lncli.alert(errmsg);
+        } else {
+          $ctrl.warning = errmsg;
+        }
+      });
+    };
 
-		$ctrl.values = defaults;
+    $ctrl.cancel = () => {
+      $uibModalInstance.dismiss('cancel');
+    };
 
-		$ctrl.ok = function () {
-			$ctrl.spinner++;
-			lncli.addInvoice($ctrl.values.memo, $ctrl.values.value, $ctrl.values.expiry).then(function (response) {
-				$ctrl.spinner--;
-				console.log("AddInvoice", response);
-				if (response.data.error) {
-					if ($ctrl.isClosed) {
-						lncli.alert(response.data.error);
-					} else {
-						$ctrl.warning = response.data.error;
-					}
-				} else {
-					$ctrl.warning = null;
-					$uibModalInstance.close($ctrl.values);
-				}
-			}, function (err) {
-				$ctrl.spinner--;
-				console.log(err);
-				var errmsg = err.message || err.statusText;
-				if ($ctrl.isClosed) {
-					lncli.alert(errmsg);
-				} else {
-					$ctrl.warning = errmsg;
-				}
-			});
-		};
+    $ctrl.dismissAlert = () => {
+      $ctrl.warning = null;
+    };
 
-		$ctrl.cancel = function () {
-			$uibModalInstance.dismiss("cancel");
-		};
-
-		$ctrl.dismissAlert = function () {
-			$ctrl.warning = null;
-		};
-
-		$scope.$on("modal.closing", function (event, reason, closed) {
-			console.log("modal.closing: " + (closed ? "close" : "dismiss") + "(" + reason + ")");
-			$ctrl.isClosed = true;
-		});
-
-	};
-
-})();
+    $scope.$on('modal.closing', (event, reason, closed) => {
+      console.log(`modal.closing: ${closed ? 'close' : 'dismiss'}(${reason})`);
+      $ctrl.isClosed = true;
+    });
+  };
+}());
