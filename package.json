@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/mably/lncli-web#readme",
   "dependencies": {
+    "@grpc/proto-loader": "^0.5.3",
     "angular": "1.7.0",
     "angular-base64": "^2.0.5",
     "angular-local-storage": "^0.7.1",
