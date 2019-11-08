@@ -60,7 +60,7 @@
     "le-acme-core": "^2.0.9",
     "le-challenge-fs": "^2.0.8",
     "le-store-certbot": "^2.2.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.15",
     "method-override": "^2.3.7",
     "ng-toast": "^2.0.0",
     "ngclipboard": "^1.1.1",
