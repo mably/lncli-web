@@ -45,7 +45,7 @@
     "bitcore-lib": "^8.0.0",
     "body-parser": "^1.16.0",
     "bootbox": "^4.4.0",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^3.4.1",
     "command-exists": "^1.2.7",
     "commander": "^2.16.0",
     "debug": "^3.1.0",
