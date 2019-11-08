@@ -56,7 +56,7 @@
     "graphviz": "0.0.8",
     "greenlock": "^2.6.7",
     "grpc": "^1.18.0",
-    "jquery": "^3.2.1",
+    "jquery": "^3.4.0",
     "le-acme-core": "^2.0.9",
     "le-challenge-fs": "^2.0.8",
     "le-store-certbot": "^2.2.0",
