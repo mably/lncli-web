@@ -85,7 +85,7 @@
     "browserify-css": "^0.13.1",
     "browserify-shim": "^3.8.14",
     "buffer": "^5.2.1",
-    "electron": "^1.4.1",
+    "electron": "^1.8.8",
     "electron-packager": "^9.1.0",
     "electron-rebuild": "^1.8.1",
     "electron-winstaller": "^2.5.2",
