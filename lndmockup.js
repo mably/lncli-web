@@ -1,4 +1,5 @@
 const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
 
 // set log verbosity level
 grpc.setLogVerbosity(0);
@@ -7,7 +8,7 @@ grpc.setLogVerbosity(0);
 const config = require('./config/config');
 
 // load proto file
-const lnrpcProto = grpc.load(config.lndProto);
+const lnrpcProto = grpc.loadPackageDefinition(protoLoader.loadSync(config.lndProto));
 const lnrpc = lnrpcProto.lnrpc;
 
 /**
