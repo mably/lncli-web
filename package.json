@@ -54,7 +54,7 @@
     "fast-crc32c": "^1.0.4",
     "font-awesome": "^4.7.0",
     "graphviz": "0.0.8",
-    "greenlock": "^2.6.7",
+    "greenlock": "^2.8.8",
     "grpc": "^1.18.0",
     "jquery": "^3.4.0",
     "le-acme-core": "^2.0.9",
