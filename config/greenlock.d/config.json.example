@@ -1,0 +1,10 @@
+{
+  "sites": [
+    {
+      "subject": "example.com",
+      "altnames": [
+        "example.com"
+      ],
+    }
+  ]
+}
