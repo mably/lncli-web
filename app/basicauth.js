@@ -17,19 +17,27 @@ module.exports = function factory(login, pass, limitlogin, limitpass) {
     if (login && pass) {
       const user = basicAuth(req);
       if (!user || !user.name || !user.pass) {
-        return unauthorized(res);
+        if (req.session.limituser) {
+          req.limituser = req.session.limituser;
+          return next();
+        } else {
+          return unauthorized(res);
+        }
       }
 
       if (user.name === login && user.pass === pass) {
         req.limituser = false;
+        req.session.limituser = req.limituser;
         return next();
       } if (user.name === limitlogin && user.pass === limitpass) {
         req.limituser = true;
+        req.session.limituser = req.limituser;
         return next();
       }
       return unauthorized(res);
     }
     req.limituser = false;
+    req.session.limituser = req.limituser;
     return next();
   };
 

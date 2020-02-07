@@ -2,6 +2,7 @@
 /* const debug = */require('debug')('lncliweb:server');
 const express = require('express');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 const bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
 
@@ -47,17 +48,20 @@ module.exports = function factory(program) {
 
   // app creation =================
   const app = express(); // create our app w/ express
-  app.use(session({
+  
+  const sessionManager = session({
     secret: config.sessionSecret,
     cookie: { maxAge: config.sessionMaxAge },
+    store: new MemoryStore({ checkPeriod: config.sessionMaxAge }),
     resave: true,
     rolling: true,
     saveUninitialized: true,
-  }));
+  })
+  app.use(sessionManager);
 
   // app configuration =================
   app.use(require('./cors')); // enable CORS headers
-  app.use(['/lnd.html', '/api/lnd/'], basicauth); // enable basic authentication for lnd apis
+  app.use(['/', '/lnd.html', '/api/lnd/'], basicauth); // enable basic authentication for lnd apis
   app.use(['/ln-payreq-auth.html'], lnpayreqauth); // enable LN payment request authentication for specific test page
   app.use(['/ln-sign-auth.html'], lnsignauth); // enable LN signature authentication for specific test page
   app.use(['/ln-signpayreq-auth.html'], lnsignpayreqauth); // enable combined LN payment and signature authentication
@@ -88,7 +92,7 @@ module.exports = function factory(program) {
 
   // setup sockets =================
   const lndLogfile = program.lndlogfile || defaults.lndLogFile;
-  require('./sockets')(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile);
+  require('./sockets')(io, lightning, lnd, program.user, program.pwd, program.limituser, program.limitpwd, lndLogfile, sessionManager);
 
   // setup routes =================
   require('./routes')(app, lightning, db, config);

@@ -4,7 +4,6 @@ const debug = require('debug')('lncliweb:sockets');
 const logger = require('winston');
 const { spawn } = require('child_process');
 const bitcore = require('bitcore-lib');
-
 const BufferUtil = bitcore.util.buffer;
 
 /**
@@ -32,8 +31,9 @@ class SocketAdapter {
 
 // TODO
 module.exports = function factory(
-  io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile,
+  io, lightning, lnd, login, pass, limitlogin, limitpass, lndLogfile, sessionManager,
 ) {
+
   const clients = [];
 
   const authEnabled = (login && pass) || (limitlogin && limitpass);
@@ -290,60 +290,77 @@ module.exports = function factory(
   };
 
   io.on('connection', (socket) => {
-    debug('socket.handshake', socket.handshake);
-
-    let limituser;
-    if (authEnabled) {
-      try {
-        let authorizationHeaderToken;
-        if (socket.handshake.query.auth) {
-          authorizationHeaderToken = socket.handshake.query.auth;
-        } else if (socket.handshake.headers.authorization) {
-          authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
-        } else {
-          socket.disconnect('unauthorized');
-          return;
-        }
-        if (authorizationHeaderToken === userToken) {
-          limituser = false;
-        } else if (authorizationHeaderToken === limitUserToken) {
-          limituser = true;
-        } else {
-          socket.disconnect('unauthorized');
-          return;
-        }
-      } catch (err) { // probably because of missing authorization header
-        debug(err);
-        socket.disconnect('unauthorized');
-        return;
-      }
-    } else {
-      limituser = false;
-    }
-
+   
     /** printing out the client who joined */
     logger.debug(`New socket client connected (id=${socket.id}).`);
 
-    socket.emit('hello', { limitUser: limituser });
+    logger.debug('socket.handshake', socket.handshake);
+   
+    sessionManager(socket.handshake, {}, function (err) {
 
-    socket.broadcast.emit('hello', { remoteAddress: socket.handshake.address });
+      if (err) { logger.error(err); }
 
-    /** pushing new client to client array */
-    const client = new SocketAdapter(socket, limituser);
-    clients[socket.id] = client;
+      const { session } = socket.handshake;
+      logger.debug('socket.handshake.session', session);
 
-    registerGlobalListeners();
-
-    registerSocketListeners(client);
-
-    /** listening if client has disconnected */
-    socket.on('disconnect', () => {
-      try {
-        unregisterSocketListeners(client);
-      } finally {
-        delete clients[socket.id];
+      let limituser;
+      if (authEnabled) {
+        ({ limituser } = session);
+        if (!limituser) {
+          try {
+            let authorizationHeaderToken;
+            if (socket.handshake.query.auth) {
+              authorizationHeaderToken = socket.handshake.query.auth;
+            } else if (socket.handshake.headers.authorization) {
+              authorizationHeaderToken = socket.handshake.headers.authorization.substr(6);
+            } else {
+              socket.disconnect('unauthorized');
+              return;
+            }
+            if (authorizationHeaderToken === userToken) {
+              limituser = false;
+              session.limituser = limituser;
+            } else if (authorizationHeaderToken === limitUserToken) {
+              limituser = true;
+              session.limituser = limituser;
+            } else {
+              socket.disconnect('unauthorized');
+              return;
+            }
+          } catch (error) { // probably because of missing authorization header
+            debug(error);
+            socket.disconnect('unauthorized');
+            return;
+          }
+        }
+      } else {
+        limituser = false;
       }
-      logger.debug(`client disconnected (id=${socket.id}).`);
+      
+      socket.emit('hello', { limitUser: limituser });
+  
+      socket.broadcast.emit('hello', { remoteAddress: socket.handshake.address });
+  
+      /** pushing new client to client array */
+      const client = new SocketAdapter(socket, limituser);
+      clients[socket.id] = client;
+  
+      registerGlobalListeners();
+  
+      registerSocketListeners(client);
+  
+      /** listening if client has disconnected */
+      socket.on('disconnect', () => {
+        try {
+          unregisterSocketListeners(client);
+        } finally {
+          delete clients[socket.id];
+        }
+        logger.debug(`client disconnected (id=${socket.id}).`);
+      });
+
     });
+
   });
 };
+      

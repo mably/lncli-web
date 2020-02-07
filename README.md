@@ -6,7 +6,7 @@
 ### Requirements
 
 * [Git](https://git-scm.com/)
-* [NodeJS 8.x/ npm](https://nodejs.org)
+* [NodeJS 11.2+ / npm](https://nodejs.org)
 
 ### Procedure
 

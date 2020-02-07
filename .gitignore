@@ -51,3 +51,8 @@ jspm_packages
 /*.key
 /.idea
 /.scannerwork
+/.greenlockrc
+/config/greenlock.d/config.json
+/config/greenlock.d/config.json/accounts
+/config/greenlock.d/config.json/live
+/config/greenlock.d/config.json/staging
