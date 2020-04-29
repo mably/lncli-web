@@ -56,7 +56,7 @@
     "graphviz": "0.0.8",
     "greenlock-express": "^4.0.3",
     "grpc": "^1.18.0",
-    "jquery": "^3.4.0",
+    "jquery": "^3.5.0",
     "lodash": "^4.17.15",
     "memorystore": "^1.6.1",
     "method-override": "^2.3.7",
