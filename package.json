@@ -103,7 +103,7 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
     "gulp-util": "^3.0.8",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "rename": "^1.0.4",
     "source": "0.0.3",
     "vinyl-buffer": "^1.0.1",
