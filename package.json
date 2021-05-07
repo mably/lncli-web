@@ -57,7 +57,7 @@
     "greenlock-express": "^4.0.3",
     "grpc": "^1.18.0",
     "jquery": "^3.5.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "memorystore": "^1.6.1",
     "method-override": "^2.3.7",
     "ng-toast": "^2.0.0",
