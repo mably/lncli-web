@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:11
 
 EXPOSE 8280
 
