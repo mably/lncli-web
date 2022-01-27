@@ -55,7 +55,7 @@
     "font-awesome": "^4.7.0",
     "graphviz": "0.0.8",
     "greenlock-express": "^4.0.3",
-    "grpc": "^1.18.0",
+    "grpc": "^1.24.11",
     "jquery": "^3.5.0",
     "lodash": "^4.17.15",
     "memorystore": "^1.6.1",
